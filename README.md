@@ -24,7 +24,6 @@ import wxp from 'wechatpay-axios-plugin'
 import {readFileSync} from 'fs'
 
 const merchantPrivateKey  = readFileSync('/your/home/hellowechatpay/apiclient_key.pem')
-const merchantPublicCert  = readFileSync('/your/home/hellowechatpay/apiclient_cert.pem')
 const wechatpayPublicCert = '-----BEGIN CERTIFICATE-----' + '...' + '-----END CERTIFICATE-----'
 
 const instance = axios.create({
@@ -34,7 +33,6 @@ const instance = axios.create({
 const client = wxp(instance, {
   mchid: 'your_merchant_id',
   serial: 'serial_number_of_your_merchant_public_cert',
-  publicCert: merchantPublicCert,
   privateKey: merchantPrivateKey,
   certs: {
     'serial_number': wechatpayPublicCert,
@@ -146,7 +144,7 @@ client.post('/v3/combine-transactions/jsapi', {}).then(response => {
 })()
 ```
 
-You may find the advanced usage examples via the [Axios](https://github.com/axios/axios) project.
+You may find some advance usage examples via the [Axios](https://github.com/axios/axios) project.
 
 ## TODO
 
