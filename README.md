@@ -6,9 +6,9 @@
 
 ## Features
 
-- [x] The Node native code of the wechatpay APIV3's AES cryptography(`aes-256-gcm`) encrypt/decrypt
-- [x] The Node native code of wechatpay APIV3's RSA cryptography(`sha256WithRSAEncryption` with `RSA_PKCS1_OAEP_PADDING`) encrypt/decrypt/sign/verify
-- [x] Most of the APIV3's GET/POST requests, except the media file upload and the wechatpay public certificates download
+- [x] The Node native code of the wechatpay APIv3's AES cryptography(`aes-256-gcm`) encrypt/decrypt
+- [x] The Node native code of the wechatpay APIv3's RSA cryptography(`sha256WithRSAEncryption` with `RSA_PKCS1_OAEP_PADDING`) encrypt/decrypt/sign/verify
+- [x] Most of the APIv3's GET/POST requests, except the media file upload and the wechatpay public certificates download
 
 ## Installing
 
@@ -46,7 +46,7 @@ const client = wxp(instance, {
 
 ### Promise style
 
-#### POST `/v3/combine-transactions/jsapi` with body `JSON` payload
+#### POST `/v3/combine-transactions/jsapi` with `JSON` body payload
 
 ```js
 client.post('/v3/combine-transactions/jsapi', {}).then(response => {
@@ -62,40 +62,48 @@ client.post('/v3/combine-transactions/jsapi', {}).then(response => {
 
 ```js
 (async () => {
-  const res = await client.get('/v3/merchant-service/complaints', {
-    params: {
-      limit      : 5,
-      offset     : 0,
-      begin_date : '2020-03-07',
-      end_date   : '2020-03-14',
-    }
-  })
-  console.info(res.data)
+  try {
+    const res = await client.get('/v3/merchant-service/complaints', {
+      params: {
+        limit      : 5,
+        offset     : 0,
+        begin_date : '2020-03-07',
+        end_date   : '2020-03-14',
+      }
+    })
+    console.info(res.data)
+  } catch (error) {
+    console.info(error)
+  }
 })()
 ```
 
-#### POST `/v3/pay/partner/transactions/native` with body `JSON` payload
+#### POST `/v3/pay/partner/transactions/native` with `JSON` body payload
 
 ```js
 (async () => {
-  const res = await client.post('/v3/pay/partner/transactions/native', {
-    sp_appid,
-    sp_mchid,
-    sub_mchid,
-    description,
-    out_trade_no,
-    time_expire: new Date( (+new Date) + 33*60*1000 ), //after 33 minutes
-    attach,
-    notify_url,
-    amount: {
-      total: 1,
-    }
-  })
-  console.info(res.data.code_url)
+  try {
+    const res = await client.post('/v3/pay/partner/transactions/native', {
+      sp_appid,
+      sp_mchid,
+      sub_mchid,
+      description,
+      out_trade_no,
+      time_expire: new Date( (+new Date) + 33*60*1000 ), //after 33 minutes
+      attach,
+      notify_url,
+      amount: {
+        total: 1,
+      }
+    })
+    console.info(res.data.code_url)
+  } catch (error) {
+    console.info(error)
+  }
 })()
 ```
 
-#### GET `/v3/marketing/favor/stocks/{stock_id}` mixed `query` parameters with `RESTful`
+#### GET `/v3/marketing/favor/stocks/{stock_id}` mixed `query` with `RESTful` parameters
 
 ```js
 (async () => {
@@ -116,21 +124,25 @@ client.post('/v3/combine-transactions/jsapi', {}).then(response => {
 
 ```js
 (async () => {
-  const res = await client.post(`/v3/marketing/partnerships/build`, {
-    partner: {
-      type,
-      appid
-    },
-    authorized_data: {
-      business_type,
-      stock_id
-    }
-  }, {
-    headers: {
-      [`Idempotency-Key`]: 12345
-    }
-  })
-  console.info(res.data)
+  try {
+    const res = await client.post(`/v3/marketing/partnerships/build`, {
+      partner: {
+        type,
+        appid
+      },
+      authorized_data: {
+        business_type,
+        stock_id
+      }
+    }, {
+      headers: {
+        [`Idempotency-Key`]: 12345
+      }
+    })
+    console.info(res.data)
+  } catch (error) {
+    console.info(error)
+  }
 })()
 ```
 
