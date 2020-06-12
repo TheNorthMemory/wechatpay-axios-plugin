@@ -38,18 +38,16 @@ import {readFileSync} from 'fs'
   })
   console.info(res1.data)
   cons res2 = await client.post('/v3/pay/partner/transactions/native', {
-    data: {
-      sp_appid,
-      sp_mchid,
-      sub_mchid,
-      description,
-      out_trade_no,
-      time_expire: new Date( (+new Date) + 33*60*1000 ), //after 33 minutes
-      attach,
-      notify_url,
-      amount: {
-        total: 1,
-      }
+    sp_appid,
+    sp_mchid,
+    sub_mchid,
+    description,
+    out_trade_no,
+    time_expire: new Date( (+new Date) + 33*60*1000 ), //after 33 minutes
+    attach,
+    notify_url,
+    amount: {
+      total: 1,
     }
   })
   console.info(rers2.data.code_url)
