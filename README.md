@@ -112,7 +112,7 @@ client.post('/v3/combine-transactions/jsapi', {}).then(response => {
 })()
 ```
 
-#### POST `/v3/marketing/favor/stocks/{stock_id}` with special `Header` field parameter
+#### POST `/v3/marketing/partnerships/build` with special `Header` field parameter
 
 ```js
 (async () => {
@@ -134,7 +134,7 @@ client.post('/v3/combine-transactions/jsapi', {}).then(response => {
 })()
 ```
 
-You may find the advanced usage of scenarios via the [Axios](https://github.com/axios/axios) project.
+You may find the advanced usage examples via the [Axios](https://github.com/axios/axios) project.
 
 ## TODO
 
