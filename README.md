@@ -1,34 +1,68 @@
 # Wechatpay Axios Plugin
 
 [![NPM version](https://badge.fury.io/js/wechatpay-axios-plugin.svg)](http://badge.fury.io/js/wechatpay-axios-plugin)
-[![npm module downloads per month](http://img.shields.io/npm/dm/wechatpay-axios-plugin.svg)](https://www.npmjs.org/package/wechatpay-axios-plugin)
+[![npm module downloads per month](http://img.shields.io/npm/dm/wechatpay-axios-plugin.svg)](https://www.npmjs.com/package/wechatpay-axios-plugin)
+
+
+## Features
+
+- [x] The Node native code of the wechatpay APIV3's AES cryptography(`aes-256-gcm`) encrypt/decrypt
+- [x] The Node native code of wechatpay APIV3's RSA cryptography(`sha256WithRSAEncryption` with `RSA_PKCS1_OAEP_PADDING`) encrypt/decrypt/sign/verify
+- [x] Most of the APIV3's GET/POST requests, except the media file upload and the wechatpay public certificates download
+
+## Installing
+
+`$ npm install wechatpay-axios-plugin`
 
 ## Examples
+
+### Initialization
 
 ```js
 import axios from 'axios'
 import wxp from 'wechatpay-axios-plugin'
 import {readFileSync} from 'fs'
 
+const merchantPrivateKey  = readFileSync('/your/home/hellowechatpay/apiclient_key.pem')
+const merchantPublicCert  = readFileSync('/your/home/hellowechatpay/apiclient_cert.pem')
+const wechatpayPublicCert = '-----BEGIN CERTIFICATE-----' + '...' + '-----END CERTIFICATE-----'
+
+const instance = axios.create({
+  baseURL: 'https://api.mch.weixin.qq.com',
+})
+
+const client = wxp(instance, {
+  mchid: 'your_merchant_id',
+  serial: 'serial_number_of_your_merchant_public_cert',
+  publicCert: merchantPublicCert,
+  privateKey: merchantPrivateKey,
+  certs: {
+    'serial_number': wechatpayPublicCert,
+  }
+})
+```
+
+**Note:** The `readFileSync` function is not mandatares, you may passed the plaintext certs such as `wechatpayPublicCert` sample.
+
+### Promise style
+
+#### POST `/v3/combine-transactions/jsapi` with body `JSON` payload
+
+```js
+client.post('/v3/combine-transactions/jsapi', {}).then(response => {
+  console.info(response)
+}, error => {
+  console.error(error)
+})
+```
+
+### Async/Await style
+
+#### GET `/v3/merchant-service/complaints` with `query` parameters
+
+```js
 (async () => {
-
-  const merchantPrivateKey  = readFileSync('/your/home/hellowechatpay/apiclient_key.pem')
-  const merchantPublicCert  = readFileSync('/your/home/hellowechatpay/apiclient_cert.pem')
-  const wechatpayPublicCert = '-----BEGIN CERTIFICATE-----' + '...' + '-----END CERTIFICATE-----'
-
-  const instance = axios.create({
-    baseURL: 'https://api.mch.weixin.qq.com',
-  })
-  const client = wxp(instance, {
-    mchid: 'your_merchant_id',
-    serial: 'serial_number_of_your_merchant_public_cert',
-    publicCert: merchantPublicCert,
-    privateKey: merchantPrivateKey,
-    certs: {
-      'serial_number': wechatpayPublicCert,
-    }
-  })
-  const res1 = await client.get('/v3/merchant-service/complaints', {
+  const res = await client.get('/v3/merchant-service/complaints', {
     params: {
       limit      : 5,
       offset     : 0,
@@ -36,8 +70,15 @@ import {readFileSync} from 'fs'
       end_date   : '2020-03-14',
     }
   })
-  console.info(res1.data)
-  cons res2 = await client.post('/v3/pay/partner/transactions/native', {
+  console.info(res.data)
+})()
+```
+
+#### POST `/v3/pay/partner/transactions/native` with body `JSON` payload
+
+```js
+(async () => {
+  cons res = await client.post('/v3/pay/partner/transactions/native', {
     sp_appid,
     sp_mchid,
     sub_mchid,
@@ -50,15 +91,53 @@ import {readFileSync} from 'fs'
       total: 1,
     }
   })
-  console.info(rers2.data.code_url)
+  console.info(res.data.code_url)
+})()
+```
+
+#### GET `/v3/marketing/favor/stocks/{stock_id}` mixed `query` parameters with `RESTful`
+
+```js
+(async () => {
+  try {
+    cons res = await client.post(`/v3/marketing/favor/stocks/${stock_id}`, {
+      params: {
+        stock_creator_mchid,
+      }
+    })
+    console.info(res.data)
+  } catch(error) {
+    console.error(error)
+  }
+})()
+```
+
+#### POST `/v3/marketing/favor/stocks/{stock_id}` with special `Header` field parameter
+
+```js
+(async () => {
+  cons res = await client.post(`/v3/marketing/partnerships/build`, {
+    partner: {
+      type,
+      appid
+    },
+    authorized_data: {
+      business_type,
+      stock_id
+    }
+  }, {
+    headers: {
+      [`Idempotency-Key`]: 12345
+    }
+  })
+  console.info(res.data)
 })()
 ```
 
 ## TODO
 
-- [x] AES encrypt/decrypt
-- [x] RSA encrypt/decrypt/sign/verify
-- [x] general API GET/POST requests
+- [ ] documentation
+- [ ] coding comments
 - [ ] media(image/video) upload
 - [ ] certificates download
 
