@@ -1,4 +1,4 @@
-# Wechatpay Axios Plugin
+# Wechatpay [Axios](https://github.com/axios/axios) Plugin
 
 [![NPM version](https://badge.fury.io/js/wechatpay-axios-plugin.svg)](http://badge.fury.io/js/wechatpay-axios-plugin)
 [![npm module downloads per month](http://img.shields.io/npm/dm/wechatpay-axios-plugin.svg)](https://www.npmjs.com/package/wechatpay-axios-plugin)
@@ -78,7 +78,7 @@ client.post('/v3/combine-transactions/jsapi', {}).then(response => {
 
 ```js
 (async () => {
-  cons res = await client.post('/v3/pay/partner/transactions/native', {
+  const res = await client.post('/v3/pay/partner/transactions/native', {
     sp_appid,
     sp_mchid,
     sub_mchid,
@@ -100,7 +100,7 @@ client.post('/v3/combine-transactions/jsapi', {}).then(response => {
 ```js
 (async () => {
   try {
-    cons res = await client.post(`/v3/marketing/favor/stocks/${stock_id}`, {
+    const res = await client.post(`/v3/marketing/favor/stocks/${stock_id}`, {
       params: {
         stock_creator_mchid,
       }
@@ -116,7 +116,7 @@ client.post('/v3/combine-transactions/jsapi', {}).then(response => {
 
 ```js
 (async () => {
-  cons res = await client.post(`/v3/marketing/partnerships/build`, {
+  const res = await client.post(`/v3/marketing/partnerships/build`, {
     partner: {
       type,
       appid
@@ -133,6 +133,8 @@ client.post('/v3/combine-transactions/jsapi', {}).then(response => {
   console.info(res.data)
 })()
 ```
+
+You may find the advanced usage of scenarios via the [Axios](https://github.com/axios/axios) project.
 
 ## TODO
 
