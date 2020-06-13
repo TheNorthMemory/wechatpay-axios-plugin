@@ -1,4 +1,4 @@
-# Wechatpay [Axios](https://github.com/axios/axios) Plugin
+# Wechatpay APIv3 [Axios](https://github.com/axios/axios) Plugin
 
 [![NPM version](https://badge.fury.io/js/wechatpay-axios-plugin.svg)](http://badge.fury.io/js/wechatpay-axios-plugin)
 [![npm module downloads per month](http://img.shields.io/npm/dm/wechatpay-axios-plugin.svg)](https://www.npmjs.com/package/wechatpay-axios-plugin)
@@ -16,7 +16,7 @@
 
 ## Requirements
 
-`Rsa.encrypt` and `Rsa.decrypt` with `oaepHash` was added on Node v12.9.0. So that the Node minimum version should be 12.9.0(I'm not very sure).
+The `oaepHash` used in `Rsa.encrypt` and `Rsa.decrypt` were added on Node v12.9.0. So that the Node minimum version should be 12.9.0(I'm not very sure).
 
 ## Examples
 
