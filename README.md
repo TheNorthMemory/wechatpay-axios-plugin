@@ -23,9 +23,9 @@ The `oaepHash` used in `Rsa.encrypt` and `Rsa.decrypt` were added on Node v12.9.
 ### Initialization
 
 ```js
-import axios from 'axios'
-import wxp from 'wechatpay-axios-plugin'
-import {readFileSync} from 'fs'
+const axios = require('axios')
+const wxp = require('wechatpay-axios-plugin')
+const {readFileSync} = require('fs')
 
 const merchantPrivateKey  = readFileSync('/your/home/hellowechatpay/apiclient_key.pem')
 const wechatpayPublicCert = '-----BEGIN CERTIFICATE-----' + '...' + '-----END CERTIFICATE-----'

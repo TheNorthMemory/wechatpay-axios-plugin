@@ -3,7 +3,6 @@
   "version": "0.0.1",
   "description": "The Wechatpay APIV3 Axios plugin",
   "main": "index.js",
-  "type": "module",
   "files": [
     "index.js",
     "lib/",

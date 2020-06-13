@@ -1,2 +1,3 @@
-import interceptor from './lib/interceptor.js'
-export default interceptor
+const interceptor = require('./lib/interceptor')
+module.exports = interceptor
+module.exports.default = interceptor
