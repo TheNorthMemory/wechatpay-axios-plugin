@@ -14,6 +14,10 @@
 
 `$ npm install wechatpay-axios-plugin`
 
+## Requirements
+
+`Rsa.encrypt` and `Rsa.decrypt` with `oaepHash` was added on Node v12.9.0. So that the Node minimum version should be 12.9.0(I'm not very sure).
+
 ## Examples
 
 ### Initialization
@@ -54,6 +58,17 @@ client.post('/v3/combine-transactions/jsapi', {}).then(response => {
 })
 ```
 
+#### POST `/v3/smartguide/guides/{guide_id}/assign` mixed `RESTful` parameter with `JSON` body payload, response as `204` status code.
+
+```js
+client.post(`/v3/smartguide/guides/${guide_id}/assign`, {
+  sub_mchid,
+  out_trade_no,
+}).catch(error => {
+  console.error(error)
+})
+```
+
 ### Async/Await style
 
 #### GET `/v3/merchant-service/complaints` with `query` parameters
@@ -71,7 +86,7 @@ client.post('/v3/combine-transactions/jsapi', {}).then(response => {
     })
     console.info(res.data)
   } catch (error) {
-    console.info(error)
+    console.error(error)
   }
 })()
 ```
@@ -96,7 +111,7 @@ client.post('/v3/combine-transactions/jsapi', {}).then(response => {
     })
     console.info(res.data.code_url)
   } catch (error) {
-    console.info(error)
+    console.error(error)
   }
 })()
 ```
@@ -139,7 +154,7 @@ client.post('/v3/combine-transactions/jsapi', {}).then(response => {
     })
     console.info(res.data)
   } catch (error) {
-    console.info(error)
+    console.error(error)
   }
 })()
 ```
