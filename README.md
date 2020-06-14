@@ -204,9 +204,9 @@ const {createReadStream} = require('fs')
   videoData.append('file', createReadStream('./hellowechatpay.mp4'))
 
   try {
-    const res = await client.post('/v3/merchant/media/video_upload', videoMeta, {
+    const res = await client.post('/v3/merchant/media/video_upload', videoData, {
       meta: videoMeta,
-      headers: videoMeta.getHeaders()
+      headers: videoData.getHeaders()
     })
     console.info(res.data.media_id)
   } catch (error) {
