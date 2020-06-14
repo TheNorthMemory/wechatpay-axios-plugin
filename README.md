@@ -1,8 +1,9 @@
-# Wechatpay APIv3 [Axios](https://github.com/axios/axios) Plugin
+# Wechatpay APIv3 Axios Plugin
 
 [![GitHub version](https://img.shields.io/github/package-json/v/TheNorthMemory/wechatpay-axios-plugin?label=Github)](https://github.com/TheNorthMemory/wechatpay-axios-plugin)
 [![GitHub issues](https://img.shields.io/github/issues/TheNorthMemory/wechatpay-axios-plugin)](https://github.com/TheNorthMemory/wechatpay-axios-plugin)
-[![GitHub dependency](https://img.shields.io/github/package-json/dependency-version/thenorthmemory/wechatpay-axios-plugin/axios)](https://github.com/TheNorthMemory/wechatpay-axios-plugin)
+[![GitHub dependency](https://img.shields.io/github/package-json/dependency-version/thenorthmemory/wechatpay-axios-plugin/axios)](https://github.com/axios/axios)
+[![GitHub dependency](https://img.shields.io/github/package-json/dependency-version/thenorthmemory/wechatpay-axios-plugin/commander.js)](https://github.com/tj/commander.js)
 [![NPM module version](https://img.shields.io/npm/v/wechatpay-axios-plugin)](https://www.npmjs.com/package/wechatpay-axios-plugin)
 [![NPM module downloads per month](https://img.shields.io/npm/dm/wechatpay-axios-plugin)](https://www.npmjs.com/package/wechatpay-axios-plugin)
 [![NPM module license](https://img.shields.io/npm/l/wechatpay-axios-plugin)](https://www.npmjs.com/package/wechatpay-axios-plugin)
@@ -11,8 +12,9 @@
 
 - [x] The Node native code of the wechatpay APIv3's AES cryptography(`aes-256-gcm`) encrypt/decrypt
 - [x] The Node native code of the wechatpay APIv3's RSA cryptography(`sha256WithRSAEncryption` with `RSA_PKCS1_OAEP_PADDING`) encrypt/decrypt/sign/verify
-- [x] Most of the APIv3's GET/POST requests, except the wechatpay public certificates download
-- [x] The APIv3's media file upload is out, optional dependency on [form-data](https://github.com/form-data/form-data)
+- [x] Most of the APIv3's GET/POST requests should working fine
+- [x] The wechatpay APIv3's media file upload is out, optional dependency on [form-data](https://github.com/form-data/form-data)
+- [x] The wechatpay APIv3's public certification(s) downloader is out, dependency on [commander](https://github.com/tj/commander.js), usage manual followed
 
 ## Installing
 
@@ -21,6 +23,40 @@
 ## Requirements
 
 The `oaepHash` used in `Rsa.encrypt` and `Rsa.decrypt` were added on Node v12.9.0. So that the Node minimum version should be 12.9.0(I'm not very sure).
+
+## Before the before
+
+<details>
+  <summary>$ <b>./bin/certificationDownloader -h</b> (click to show)</summary>
+
+```
+Usage: certificationDownloader [options]
+
+Options:
+  -V, --version              output the version number
+  -m, --mchid <string>       The merchant's ID, aka mchid.
+  -s, --serialno <string>    The serial number of the merchant's public certification aka serialno.
+  -f, --privatekey <string>  The path of the merchant's private key certification aka privatekey.
+  -k, --key <string>         The secret key string of the merchant's APIv3 aka key.
+  -o, --output [string]      Path to output the downloaded wechatpay's public certification(s) (default: "/tmp")
+  -h, --help                 display help for command
+```
+</details>
+
+<details>
+  <summary>$ <b>./bin/certificationDownloader</b> -m NUMERICAL -s HEXADECIAL -f apiclient_key.pem -k YOURAPIV3SECRETKEY -o .</summary>
+
+```
+Wechatpay Public Certification#0
+  serial=HEXADECIALHEXADECIALHEXADECIAL
+  notBefore=Wed, 22 Apr 2020 01:43:19 GMT
+  notAfter=Mon, 21 Apr 2025 01:43:19 GMT
+  Saved to: wechatpay_HEXADECIALHEXADECIALHEXADECIAL.pem
+You must double verify the above infos by the command:
+    openssl x509 -in wechatpay_HEXADECIALHEXADECIALHEXADECIAL.pem -noout -serial -dates
+
+```
+</details>
 
 ## Examples
 
@@ -224,7 +260,6 @@ You may find some advance usage examples via the [Axios](https://github.com/axio
 
 - [ ] documentation
 - [ ] coding comments
-- [ ] certificates download
 
 ## License
 
