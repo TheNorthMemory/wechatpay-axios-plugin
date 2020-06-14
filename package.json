@@ -1,14 +1,18 @@
 {
   "name": "wechatpay-axios-plugin",
   "version": "0.0.3",
-  "description": "The Wechatpay APIV3 Axios plugin",
+  "description": "The Wechatpay APIv3 Axios Plugin",
   "main": "index.js",
   "files": [
     "index.js",
     "lib/",
+    "bin/",
     "README.md",
     "LICENSE"
   ],
+  "bin": {
+    "certificateDownloader": "./bin/certificateDownloader"
+  },
   "bugs": {
     "url": "https://github.com/TheNorthMemory/wechatpay-axios-plugin/issues"
   },
@@ -23,7 +27,8 @@
   "author": "James ZHANG",
   "license": "MIT",
   "dependencies": {
-    "axios": "^0.19.0"
+    "axios": "^0.19.0",
+    "commander": "^5.1.0"
   },
   "optionalDependencies": {
     "form-data": "^3.0.0"
