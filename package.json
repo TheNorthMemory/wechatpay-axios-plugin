@@ -7,7 +7,7 @@
     "index.js",
     "lib/",
     "README.md",
-    "LISCENCE"
+    "LICENSE"
   ],
   "bugs": {
     "url": "https://github.com/TheNorthMemory/wechatpay-axios-plugin/issues"
