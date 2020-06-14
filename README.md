@@ -8,7 +8,8 @@
 
 - [x] The Node native code of the wechatpay APIv3's AES cryptography(`aes-256-gcm`) encrypt/decrypt
 - [x] The Node native code of the wechatpay APIv3's RSA cryptography(`sha256WithRSAEncryption` with `RSA_PKCS1_OAEP_PADDING`) encrypt/decrypt/sign/verify
-- [x] Most of the APIv3's GET/POST requests, except the media file upload and the wechatpay public certificates download
+- [x] Most of the APIv3's GET/POST requests, except the wechatpay public certificates download
+- [x] The APIv3's media file upload is out, optional dependency on [form-data](https://github.com/form-data/form-data)
 
 ## Installing
 
@@ -64,6 +65,32 @@ client.post('/v3/combine-transactions/jsapi', {}).then(response => {
 client.post(`/v3/smartguide/guides/${guide_id}/assign`, {
   sub_mchid,
   out_trade_no,
+}).catch(error => {
+  console.error(error)
+})
+```
+
+#### POST `/v3/marketing/favor/media/image-upload` image file uploading
+
+```js
+const FormData = require('form-data')
+const {createReadStream} = require('fs')
+
+const imageMeta = {
+  filename: 'hellowechatpay.png',
+  // easy calculated by the command `sha256sum hellowechatpay.png` on OSX
+  sha256: '1a47b1eb40f501457eaeafb1b1417edaddfbe7a4a8f9decec2d330d1b4477fbe',
+}
+
+const imageData = new FormData()
+imageData.append('meta', JSON.stringify(imageMeta), {contentType: 'application/json'})
+imageData.append('file', createReadStream('./hellowechatpay.png'))
+
+client.post('/v3/marketing/favor/media/image-upload', imageData, {
+  meta: imageMeta,
+  headers: imageData.getHeaders()
+}).then(res => {
+  console.info(res.data.media_url)
 }).catch(error => {
   console.error(error)
 })
@@ -159,13 +186,41 @@ client.post(`/v3/smartguide/guides/${guide_id}/assign`, {
 })()
 ```
 
+#### POST `/v3/merchant/media/video_upload` video file uploading
+
+```js
+const FormData = require('form-data')
+const {createReadStream} = require('fs')
+
+(async () => {
+  const videoMeta = {
+    filename: 'hellowechatpay.mp4',
+    // easy calculated by the command `sha256sum hellowechatpay.mp4` on OSX
+    sha256: '1a47b1eb40f501457eaeafb1b1417edaddfbe7a4a8f9decec2d330d1b4477fbe',
+  }
+
+  const videoData = new FormData()
+  videoData.append('meta', JSON.stringify(videoMeta), {contentType: 'application/json'})
+  videoData.append('file', createReadStream('./hellowechatpay.mp4'))
+
+  try {
+    const res = await client.post('/v3/merchant/media/video_upload', videoMeta, {
+      meta: videoMeta,
+      headers: videoMeta.getHeaders()
+    })
+    console.info(res.data.media_id)
+  } catch (error) {
+    console.error(error)
+  }
+})()
+```
+
 You may find some advance usage examples via the [Axios](https://github.com/axios/axios) project.
 
 ## TODO
 
 - [ ] documentation
 - [ ] coding comments
-- [ ] media(image/video) upload
 - [ ] certificates download
 
 ## License
