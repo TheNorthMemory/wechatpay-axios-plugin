@@ -70,7 +70,7 @@ client.post(`/v3/smartguide/guides/${guide_id}/assign`, {
 })
 ```
 
-#### POST `/v3/marketing/favor/media/image-upload` image file uploading
+#### POST `/v3/marketing/favor/media/image-upload` with `multipart/form-data` payload
 
 ```js
 const FormData = require('form-data')
@@ -186,7 +186,7 @@ client.post('/v3/marketing/favor/media/image-upload', imageData, {
 })()
 ```
 
-#### POST `/v3/merchant/media/video_upload` video file uploading
+#### POST `/v3/merchant/media/video_upload` with `multipart/form-data` payload
 
 ```js
 const FormData = require('form-data')
