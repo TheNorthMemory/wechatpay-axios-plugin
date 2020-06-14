@@ -254,7 +254,9 @@ const {createReadStream} = require('fs')
 })()
 ```
 
-You may find some advance usage examples via the [Axios](https://github.com/axios/axios) project.
+You may find some advance usages via the [Axios](https://github.com/axios/axios) and [form-data](https://github.com/form-data/form-data) projects.
+
+If you find a bug, please issue [here](https://github.com/TheNorthMemory/wechatpay-axios-plugin/issues).
 
 ## TODO
 
