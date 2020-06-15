@@ -10,11 +10,11 @@
 
 ## Features
 
-- [x] The Node native code of the wechatpay APIv3's AES cryptography(`aes-256-gcm`) encrypt/decrypt
-- [x] The Node native code of the wechatpay APIv3's RSA cryptography(`sha256WithRSAEncryption` with `RSA_PKCS1_OAEP_PADDING`) encrypt/decrypt/sign/verify
-- [x] Most of the APIv3's GET/POST requests should working fine
-- [x] The wechatpay APIv3's media file upload is out, optional dependency on [form-data](https://github.com/form-data/form-data)
-- [x] The wechatpay APIv3's public certification(s) downloader is out, dependency on [commander](https://github.com/tj/commander.js), usage manual followed
+- [x] The Node's native code of the wechatpay APIv3's AES encrypt/decrypt cryptography(`aes-256-gcm`)
+- [x] The Node's native code of the wechatpay APIv3's RSA encrypt/decrypt/sign/verify cryptography(`sha256WithRSAEncryption` with `RSA_PKCS1_OAEP_PADDING`)
+- [x] Most of the APIv3's GET/POST requests should working fine, dependency on [Axios](https://www.npmjs.com/package/wechatpay-axios-plugin), examples below
+- [x] The wechatpay APIv3's media file upload is out, optional dependency on [form-data](https://github.com/form-data/form-data), examples below
+- [x] The wechatpay APIv3's public certificate(s) downloader is out, dependency on [commander](https://github.com/tj/commander.js), usage manual followed
 
 ## Installing
 
@@ -24,35 +24,37 @@
 
 The `oaepHash` used in `Rsa.encrypt` and `Rsa.decrypt` were added on Node v12.9.0. So that the Node minimum version should be 12.9.0(I'm not very sure).
 
-## Before the before
+## First of all
+
+The Wechatpay APIv3 did a greate architecture of the HTTP(s) request/response data exchange. It was by the `RSA` cryptography(see above feature list). The merchant's `RSA` certificate which is for HTTP(s) request can be downloaded via the merchant management platform. However, the APIv3's response certificate(s) was only placed via `/v3/certificates`. The following CLI tools is doing the `DOWNLOAD` thing. Usage manual here:
 
 <details>
-  <summary>$ <b>./bin/certificationDownloader -h</b> (click to show)</summary>
+  <summary>$ <b>./bin/certificateDownloader -h</b> (click to show)</summary>
 
 ```
-Usage: certificationDownloader [options]
+Usage: certificateDownloader [options]
 
 Options:
   -V, --version              output the version number
   -m, --mchid <string>       The merchant's ID, aka mchid.
-  -s, --serialno <string>    The serial number of the merchant's public certification aka serialno.
-  -f, --privatekey <string>  The path of the merchant's private key certification aka privatekey.
+  -s, --serialno <string>    The serial number of the merchant's public certificate aka serialno.
+  -f, --privatekey <string>  The path of the merchant's private key certificate aka privatekey.
   -k, --key <string>         The secret key string of the merchant's APIv3 aka key.
-  -o, --output [string]      Path to output the downloaded wechatpay's public certification(s) (default: "/tmp")
+  -o, --output [string]      Path to output the downloaded wechatpay's public certificate(s) (default: "/tmp")
   -h, --help                 display help for command
 ```
 </details>
 
 <details>
-  <summary>$ <b>./bin/certificationDownloader</b> -m NUMERICAL -s HEXADECIAL -f apiclient_key.pem -k YOURAPIV3SECRETKEY -o .</summary>
+  <summary>$ <b>./bin/certificateDownloader</b> -m NUMERICAL -s HEXADECIAL -f apiclient_key.pem -k YOURAPIV3SECRETKEY -o .</summary>
 
 ```
-Wechatpay Public Certification#0
+Wechatpay Public Certificate#0
   serial=HEXADECIALHEXADECIALHEXADECIAL
   notBefore=Wed, 22 Apr 2020 01:43:19 GMT
   notAfter=Mon, 21 Apr 2025 01:43:19 GMT
   Saved to: wechatpay_HEXADECIALHEXADECIALHEXADECIAL.pem
-You must double verify the above infos by the command:
+You should verify the above infos again even if this library already did(by rsa.verify):
     openssl x509 -in wechatpay_HEXADECIALHEXADECIALHEXADECIAL.pem -noout -serial -dates
 
 ```
