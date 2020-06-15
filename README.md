@@ -60,6 +60,8 @@ You should verify the above infos again even if this library already did(by rsa.
 ```
 </details>
 
+For now, you need pass the above `serial` and `wechatpay_HEXADECIALHEXADECIALHEXADECIAL.pem` (buffer or plaintext) as {key:value} pairs to the following `certs` Object. And then, most of request the APIv3 should working fine.
+
 ## Examples
 
 ### Initialization
