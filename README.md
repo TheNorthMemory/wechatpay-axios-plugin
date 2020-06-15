@@ -10,7 +10,7 @@
 
 ## Features
 
-- [x] The Node's native code of the wechatpay APIv3's AES encrypt/decrypt cryptography(`aes-256-gcm`)
+- [x] The Node's native code of the wechatpay APIv3's AES encrypt/decrypt cryptography(`aes-256-gcm` with `aad`)
 - [x] The Node's native code of the wechatpay APIv3's RSA encrypt/decrypt/sign/verify cryptography(`sha256WithRSAEncryption` with `RSA_PKCS1_OAEP_PADDING`)
 - [x] Most of the APIv3's GET/POST requests should working fine, dependency on [Axios](https://github.com/axios/axios), examples below
 - [x] The wechatpay APIv3's media file upload is out, optional dependency on [form-data](https://github.com/form-data/form-data), examples below
