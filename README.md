@@ -265,7 +265,6 @@ If you find a bug, please issue [here](https://github.com/TheNorthMemory/wechatp
 ## TODO
 
 - [ ] documentation
-- [ ] coding comments
 
 ## License
 
