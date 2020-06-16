@@ -30,8 +30,13 @@ const {mchid, serialno: serial, privatekey, key: secret, output} = program
 // loading the merchant's private key certificaiton
 const privateKey = readFileSync(privatekey)
 
-// mockup, lets the `client` pass the init
-let certs = {'any': undefined}
+// Thought here: It's a trick,
+// not only lets the `client` pass the init,
+// but also lets the `downloader` inject the pem(s).
+// The looping sequences in `Axios/lib/core/transformData` should be
+// #0(fn=downloader) -> #1(fn=anonymous).
+// These `global` certs will be passed in #1 to verify the response' `signature`.
+var certs = {'any': undefined}
 
 const instance = axios.create()
 
