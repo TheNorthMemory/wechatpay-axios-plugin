@@ -1,6 +1,6 @@
 {
   "name": "wechatpay-axios-plugin",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "The Wechatpay APIv3 Axios Plugin",
   "main": "index.js",
   "files": [
@@ -22,6 +22,9 @@
   },
   "keywords": [
     "wechatpay",
+    "wechatpay apiv3",
+    "aes-256-gcm",
+    "rsa-oaep",
     "axios-plugin"
   ],
   "author": "James ZHANG",
