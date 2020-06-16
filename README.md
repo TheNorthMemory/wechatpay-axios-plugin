@@ -1,4 +1,4 @@
-# Wechatpay APIv3 Axios Plugin
+# 微信支付 APIv3 Axios 插件版
 
 [![GitHub version](https://img.shields.io/github/package-json/v/TheNorthMemory/wechatpay-axios-plugin?label=Github)](https://github.com/TheNorthMemory/wechatpay-axios-plugin)
 [![GitHub issues](https://img.shields.io/github/issues/TheNorthMemory/wechatpay-axios-plugin)](https://github.com/TheNorthMemory/wechatpay-axios-plugin)
@@ -7,6 +7,71 @@
 [![NPM module version](https://img.shields.io/npm/v/wechatpay-axios-plugin)](https://www.npmjs.com/package/wechatpay-axios-plugin)
 [![NPM module downloads per month](https://img.shields.io/npm/dm/wechatpay-axios-plugin)](https://www.npmjs.com/package/wechatpay-axios-plugin)
 [![NPM module license](https://img.shields.io/npm/l/wechatpay-axios-plugin)](https://www.npmjs.com/package/wechatpay-axios-plugin)
+
+## 主要功能
+
+- [x] 使用Node原生代码实现微信支付APIv3的AES加/解密功能(`aes-256-gcm` with `aad`)
+- [x] 使用Node原生代码实现微信支付APIv3的RSA加/解密、签名、验签功能(`sha256WithRSAEncryption` with `RSA_PKCS1_OAEP_PADDING`)
+- [x] 大部分微信支付APIv3的HTTP GET/POST应该能够正常工作，依赖 [Axios](https://github.com/axios/axios), 示例代码如下
+- [x] 支持微信支付APIv3的媒体文件上传(图片/视频)功能，可选依赖 [form-data](https://github.com/form-data/form-data), 示例代码如下
+- [x] 支持微信支付APIv3的应答证书下载功能，依赖 [commander](https://github.com/tj/commander.js), 使用手册如下
+
+## 安装
+
+`$ npm install wechatpay-axios-plugin`
+
+## 系统要求
+
+NodeJS的原生`crypto`模块，自v12.9.0在 `publicEncrypt` 及 `privateDecrypt` 增加了 `oaepHash` 入参选项，本项目显式声明入参，本人不确定其在v12.9.0以下是否正常工作。所以Node的最低版本要求应该是v12.9.0.
+
+## 万里长征第一步
+
+微信支付APIv3使用了许多成熟且牛逼的接口设计（RESTful API with JSON over HTTP），数据交换使用非对称（RSA）加/解密方案，对上行数据要求（RSA）签名，对下行数据要求（RSA）验签。API上行所需的`商户RSA私钥证书`，可以由商户的`超级管理员`在`微信支付商户平台`生成并获取到，然而，API下行所需的`平台RSA公共证书`只能从`/v3/certificates`接口获取（应答证书还经过了AES对称加密，得用`APIv3密钥`才能解密 :+1: ）。本项目也提供了命令行下载工具，使用手册如下：
+
+<details>
+  <summary>$ <b>./bin/certificateDownloader -h</b> (点击显示)</summary>
+
+```
+Usage: certificateDownloader [options]
+
+Options:
+  -V, --version              output the version number
+  -m, --mchid <string>       The merchant's ID, aka mchid.
+  -s, --serialno <string>    The serial number of the merchant's public certificate aka serialno.
+  -f, --privatekey <string>  The path of the merchant's private key certificate aka privatekey.
+  -k, --key <string>         The secret key string of the merchant's APIv3 aka key.
+  -o, --output [string]      Path to output the downloaded wechatpay's public certificate(s) (default: "/tmp")
+  -h, --help                 display help for command
+```
+
+**注：** 像其他通用命令行工具一样，`-h` `--help` 均会打印出帮助手册，说明档里的`<string>`指 必选参数，类型是字符串； `[string]`指 可选字符串参数，默认值是 `/temp`（系统默认临时目录）
+
+</details>
+
+<details>
+  <summary>$ <b>./bin/certificateDownloader</b> -m NUMERICAL -s HEXADECIAL -f apiclient_key.pem -k YOURAPIV3SECRETKEY -o .</summary>
+
+```
+Wechatpay Public Certificate#0
+  serial=HEXADECIALHEXADECIALHEXADECIAL
+  notBefore=Wed, 22 Apr 2020 01:43:19 GMT
+  notAfter=Mon, 21 Apr 2025 01:43:19 GMT
+  Saved to: wechatpay_HEXADECIALHEXADECIALHEXADECIAL.pem
+You should verify the above infos again even if this library already did(by rsa.verify):
+    openssl x509 -in wechatpay_HEXADECIALHEXADECIALHEXADECIAL.pem -noout -serial -dates
+
+```
+**注：** 提供必选参数且运行后，屏幕即打印出如上信息，提示`证书序列号`及`起、止格林威治(GMT)时间`以及证书下载保存位置。
+</details>
+
+接口通讯要用`商户RSA私钥证书`签名及`平台RSA公共证书`验签，只有获取到了`平台RSA公共证书`，后续的其他接口才能正常应答验签，所谓“万里长征第一步”就在这里。本下载工具也无例外对应答内容，做了验签处理，技法“剑(qí)走(zhāo)偏(yín)锋(jì)“而已，即：用Axios的拦截器把下载的证书(AES解密)处理完后，立即用于验签。
+
+得到证书之后，开发者需要把所得`serial`及`wechatpay_HEXADECIALHEXADECIALHEXADECIAL.pem`（文件流或者文本内容）组成 {key:value} 对，key为证书序列号，value为证书内容，传入以下的构造函数的`certs`字段里。 其他接口使用就基本上没有啥问题了。
+
+以下文档及示例都是基本用法，没啥花活儿，祝开心。 :smile:
+
+
+# Wechatpay APIv3 Axios Plugin
 
 ## Features
 
@@ -262,9 +327,29 @@ You may find some advance usages via the [Axios](https://github.com/axios/axios)
 
 If you find a bug, please issue [here](https://github.com/TheNorthMemory/wechatpay-axios-plugin/issues).
 
-## TODO
+## Changelog
 
-- [ ] documentation
+- v0.0.6
+  - Chinese document
+
+- v0.0.5
+  - Renew document and codes comments
+
+- v0.0.4
+  - Feature: certificate downloader, deps on `commander`
+
+- v0.0.3
+  - Feature: media file upload, optional deps on `form-data`
+
+- v0.0.2
+  - Feature: Assert the response's timestamp ± 5 mins
+  - Refactor as CommonJS style(#6)
+  - Limits the communicating parameters(#7)
+  - Coding styles(#5)
+  - Coding comments and Document(#4, #3, #2, #1)
+
+- v0.0.1
+  - Init ES2015+ style
 
 ## License
 
