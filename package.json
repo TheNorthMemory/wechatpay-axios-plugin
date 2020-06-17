@@ -13,12 +13,22 @@
   "bin": {
     "certificateDownloader": "./bin/certificateDownloader"
   },
+  "scripts": {
+    "lint": "eslint --ext \".js\" lib"
+  },
   "bugs": {
     "url": "https://github.com/TheNorthMemory/wechatpay-axios-plugin/issues"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/TheNorthMemory/wechatpay-axios-plugin.git"
+  },
+  "engines": {
+    "node": ">=12.9.0"
+  },
+  "directories": {
+    "bin": "./bin",
+    "lib": "./lib"
   },
   "keywords": [
     "wechatpay",
@@ -35,5 +45,10 @@
   },
   "optionalDependencies": {
     "form-data": "^3.0.0"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.2.0",
+    "eslint-plugin-mocha": "^7.0.1"
   }
 }
