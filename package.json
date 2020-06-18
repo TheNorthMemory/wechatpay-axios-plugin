@@ -1,6 +1,6 @@
 {
   "name": "wechatpay-axios-plugin",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "The Wechatpay APIv3 Axios Plugin",
   "main": "index.js",
   "files": [
