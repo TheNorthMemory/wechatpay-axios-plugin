@@ -81,6 +81,7 @@ You should verify the above infos again even if this library already did(by rsa.
 - [x] Most of the APIv3's GET/POST requests should working fine, dependency on [Axios](https://github.com/axios/axios), examples below
 - [x] The wechatpay APIv3's media file upload is out, optional dependency on [form-data](https://github.com/form-data/form-data), examples below
 - [x] The wechatpay APIv3's public certificate(s) downloader is out, dependency on [commander](https://github.com/tj/commander.js), usage manual followed
+- [x] The wechatpay APIv3's billdownload and castCsvBill are there, example below
 
 ## Installing
 
