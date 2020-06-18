@@ -81,7 +81,7 @@ You should verify the above infos again even if this library already did(by rsa.
 - [x] Most of the APIv3's GET/POST requests should working fine, dependency on [Axios](https://github.com/axios/axios), examples below
 - [x] The wechatpay APIv3's media file upload is out, optional dependency on [form-data](https://github.com/form-data/form-data), examples below
 - [x] The wechatpay APIv3's public certificate(s) downloader is out, dependency on [commander](https://github.com/tj/commander.js), usage manual followed
-- [x] The wechatpay APIv3's billdownload and castCsvBill are there, example below
+- [x] The wechatpay APIv3's billdownload and castCsvBill are there, examples below
 
 ## Installing
 
@@ -344,6 +344,38 @@ const {createReadStream} = require('fs')
       headers: videoData.getHeaders()
     })
     console.info(res.data.media_id)
+  } catch (error) {
+    console.error(error)
+  }
+})()
+```
+
+#### GET `/v3/bill/tradebill` and `/v3/billdownload/file` with `gzip` special
+
+```js
+const {unzipSync} = require('zlib')
+const assert = require('assert')
+const crypto = require('crypto')
+const sha1 = (data) => crypto.createHash('sha1').update(data).copy().digest('hex')
+
+const fmt = require('./lib/formatter')
+
+(async () => {
+  try {
+    // recommend way, because of limits of the network transport
+    const {data: {download_url, hash_value}} = await client.get('/v3/bill/tradebill', {
+      params: {
+        bill_date: '2020-06-01',
+        bill_type: 'ALL',
+        tar_type: 'GZIP',
+      }
+    })
+    const {data} = await client.get(download_url, {responseType: 'arraybuffer'})
+    // note here: previous `hash_value` was about the source `csv`, not the `gzip` data
+    //            so it needs unziped first, then to compare the `SHA1` degest
+    const bill = unzipSync(data)
+    assert.ok(hash_value === sha1(bill.toString()), 'SHA1 verification failed')
+    console.info(fmt.castCsvBill(bill))
   } catch (error) {
     console.error(error)
   }
