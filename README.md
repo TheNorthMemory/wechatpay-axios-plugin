@@ -356,6 +356,10 @@ If you find a bug, please issue [here](https://github.com/TheNorthMemory/wechatp
 
 ## Changelog
 
+- v0.0.7
+  - Feature: billdownload and castCsvBill
+  - eslint enabled (`npm run lint`)
+
 - v0.0.6
   - Chinese document
 
