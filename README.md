@@ -15,6 +15,7 @@
 - [x] 大部分微信支付APIv3的HTTP GET/POST应该能够正常工作，依赖 [Axios](https://github.com/axios/axios), 示例代码如下
 - [x] 支持微信支付APIv3的媒体文件上传(图片/视频)功能，可选依赖 [form-data](https://github.com/form-data/form-data), 示例代码如下
 - [x] 支持微信支付APIv3的应答证书下载功能，依赖 [commander](https://github.com/tj/commander.js), 使用手册如下
+- [x] 支持微信支付APIv3的帐单下载及解析功能，示例代码如下
 
 ## 安装
 
@@ -199,6 +200,31 @@ client.post('/v3/marketing/favor/media/image-upload', imageData, {
   headers: imageData.getHeaders()
 }).then(res => {
   console.info(res.data.media_url)
+}).catch(error => {
+  console.error(error)
+})
+```
+
+#### GET `/v3/bill/tradebill` chains with `/v3/billdownload/file`
+
+```js
+const assert = require('assert')
+const crypto = require('crypto')
+const sha1 = (data) => crypto.createHash('sha1').update(data).copy().digest('hex')
+
+const fmt = require('./lib/formatter')
+
+client.get('/v3/bill/tradebill', {
+  params: {
+    bill_date: '2020-06-01',
+    bill_type: 'ALL',
+  }
+}).then(({data: {download_url, hash_value}}) => client.get(download_url, {
+    signed: hash_value,
+    responseType: 'arraybuffer',
+})).then(res => {
+  assert(sha1(res.data.toString()) === res.config.signed, 'verify the SHA1 digest failed.')
+  console.info(fmt.castCsvBill(res.data))
 }).catch(error => {
   console.error(error)
 })
