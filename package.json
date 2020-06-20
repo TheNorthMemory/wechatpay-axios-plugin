@@ -14,6 +14,7 @@
     "certificateDownloader": "./bin/certificateDownloader"
   },
   "scripts": {
+    "test": "mocha --check-leaks ./tests/*.test.js ./tests/**/*.test.js",
     "lint": "eslint --ext \".js\" lib"
   },
   "bugs": {
@@ -49,6 +50,8 @@
   "devDependencies": {
     "babel-eslint": "^10.1.0",
     "eslint": "^7.2.0",
+    "mocha": "^8.0.1",
+    "should": "^13.2.3",
     "eslint-plugin-mocha": "^7.0.1"
   }
 }
