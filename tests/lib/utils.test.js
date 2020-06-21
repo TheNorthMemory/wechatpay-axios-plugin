@@ -42,7 +42,7 @@ describe('lib/utils', () => {
     })
 
     it('method `isProcessEnv` should returns boolean `true` under Node environment', () => {
-      utils.isProcessEnv().should.be.a.Boolean().and.equal(true)
+      utils.isProcessEnv().should.be.a.Boolean().and.be.True()
     })
   })
 
@@ -60,7 +60,7 @@ describe('lib/utils', () => {
     }
     it('method `isProcessFormData` should returns boolean `true` under Node environment', () => {
       mockup.should.be.an.Object()
-      utils.isProcessFormData(mockup).should.be.a.Boolean().and.equal(true)
+      utils.isProcessFormData(mockup).should.be.a.Boolean().and.be.True()
     })
   })
 })
