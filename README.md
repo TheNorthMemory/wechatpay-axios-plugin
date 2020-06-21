@@ -80,7 +80,7 @@ You should verify the above infos again even if this library already did(by rsa.
 - [x] The Node's native code of the wechatpay APIv3's RSA encrypt/decrypt/sign/verify cryptography(`sha256WithRSAEncryption` with `RSA_PKCS1_OAEP_PADDING`)
 - [x] Most of the APIv3's GET/POST requests should working fine, dependency on [Axios](https://github.com/axios/axios), examples below
 - [x] The wechatpay APIv3's media file upload is out, optional dependency on [form-data](https://github.com/form-data/form-data), examples below
-- [x] The wechatpay APIv3's public certificate(s) downloader is out, dependency on [commander](https://github.com/tj/commander.js), usage manual followed
+- [x] The wechatpay APIv3's public certificate(s) downloader is out, optional dependency on [commander](https://github.com/tj/commander.js), usage manual followed
 - [x] The wechatpay APIv3's billdownload and castCsvBill are there, examples below
 
 ## Installing
@@ -387,6 +387,12 @@ You may find some advance usages via the [Axios](https://github.com/axios/axios)
 If you find a bug, please issue [here](https://github.com/TheNorthMemory/wechatpay-axios-plugin/issues).
 
 ## Changelog
+
+- v0.0.8
+  - Optim: on `castCsvBill`, drop the `trim` on each rows
+  - Optim: on `response` validation, checking ± 5 mins first then to `Rsa.verify`
+  - Optim: moved the `commander` optional dependency, because it's only for the `CLI` tool
+  - Feature: shipped 99 tests(`npm test`)
 
 - v0.0.7
   - Feature: billdownload and castCsvBill
