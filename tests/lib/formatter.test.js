@@ -1,3 +1,6 @@
+const {readFileSync} = require('fs')
+const {join} = require('path')
+
 const should = require('should')
 
 const fmt = require('../../lib/formatter')
@@ -12,12 +15,94 @@ describe('lib/formatter', () => {
       should(fmt.castCsvBill).be.a.Function()
       should((new fmt).castCsvBill).is.Undefined()
     })
+
+    it('method `castCsvBill` should thrown TypeError when none argument given', () => {
+      should(() => {
+        fmt.castCsvBill()
+      }).throw(TypeError, {
+        code: 'ERR_INVALID_ARG_TYPE',
+        message: 'The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received undefined',
+        stack: /at Function\.from \(buffer\.js/
+      })
+    })
+
+    it('method `castCsvBill` should returns {"rows":[],"summary":{"0":""}} when empty string given', () => {
+      fmt.castCsvBill('').should.be.an.Object().and.have.properties(['rows', 'summary'])
+      fmt.castCsvBill('').should.have.value('rows', [])
+      fmt.castCsvBill('').should.have.value('summary', {'0': ''})
+    })
+
+    it('method `castCsvBill` should returns {"rows":[],"summary":{"0":""}} when empty Buffer given', () => {
+      fmt.castCsvBill(Buffer.from('')).should.be.an.Object().and.have.properties(['rows', 'summary'])
+      fmt.castCsvBill(Buffer.from('')).should.have.value('rows', [])
+      fmt.castCsvBill(Buffer.from('')).should.have.value('summary', {'0': ''})
+    })
+
+    it('method `castCsvBill` should returns {"rows":[],"summary":{"0":""}} when the utf8 BOM Buffer.from([0xef, 0xbb, 0xbf]) given', () => {
+      fmt.castCsvBill(Buffer.from([0xef, 0xbb, 0xbf])).should.be.an.Object().and.have.properties(['rows', 'summary'])
+      fmt.castCsvBill(Buffer.from([0xef, 0xbb, 0xbf])).should.have.value('rows', [])
+      fmt.castCsvBill(Buffer.from([0xef, 0xbb, 0xbf])).should.have.value('summary', {'0': ''})
+    })
+
+    it('method `castCsvBill` should returns current when read the `CSV` from file(sample as `fixtures/bill.ALL.csv`)', () => {
+      const buf = readFileSync(join(__dirname, '../fixtures/bill.ALL.csv'))
+      const all = fmt.castCsvBill(buf)
+
+      all.should.be.an.Object().and.have.properties(['rows', 'summary'])
+      all.rows.should.be.an.Array().and.have.length(45)
+      all.rows[0].should.be.an.Object().and.have.property('交易时间')
+      all.summary.should.have.properties(['总交易单数', '应结订单总金额', '退款总金额', '充值券退款总金额', '手续费总金额', '订单总金额', '申请退款总金额'])
+      all.summary.should.have.value('总交易单数', '45.0')
+    })
+
+    it('method `castCsvBill` should returns current when simulate the `CSV` as String(sample as `fixtures/bill.ALL.csv`)', () => {
+      const str = readFileSync(join(__dirname, '../fixtures/bill.ALL.csv')).toString()
+      const all = fmt.castCsvBill(str)
+
+      all.should.be.an.Object().and.have.properties(['rows', 'summary'])
+      all.rows.should.be.an.Array().and.have.length(45)
+      all.rows[0].should.be.an.Object().and.have.property('交易时间')
+      all.summary.should.have.properties(['总交易单数', '应结订单总金额', '退款总金额', '充值券退款总金额', '手续费总金额', '订单总金额', '申请退款总金额'])
+      all.summary.should.have.value('总交易单数', '45.0')
+    })
   })
 
   describe('Formatter::castCsvLine', () => {
     it('method `castCsvLine` should be static', () => {
       should(fmt.castCsvLine).be.a.Function()
       should((new fmt).castCsvLine).is.Undefined()
+    })
+
+    it('method `castCsvLine` should returns an (not empty) plainObject when none arguments given', () => {
+      fmt.castCsvLine().should.be.Object().and.not.be.empty()
+    })
+
+    it('method `castCsvLine` should returns an {"0":"a"} when given "`a"', () => {
+      fmt.castCsvLine('`a').should.be.Object().and.not.be.empty().and.have.properties(['0']).and.have.value('0', 'a')
+    })
+
+    it('method `castCsvLine` should returns an {"0":"a","1":"b"} when given "`a,`b"', () => {
+      fmt.castCsvLine('`a,`b').should.be.Object().and.not.be.empty().and.have.properties(['0', '1'])
+      fmt.castCsvLine('`a,`b').should.have.value('0', 'a')
+      fmt.castCsvLine('`a,`b').should.have.value('1', 'b')
+    })
+
+    it('method `castCsvLine` should returns an {"Z":"a","Y":"b"} when given ("`a,`b", ["Z","Y"])', () => {
+      fmt.castCsvLine('`a,`b', ['Z', 'Y']).should.be.Object().and.not.be.empty().and.have.properties(['Z', 'Y'])
+      fmt.castCsvLine('`a,`b', ['Z', 'Y']).should.have.value('Z', 'a')
+      fmt.castCsvLine('`a,`b', ['Z', 'Y']).should.have.value('Y', 'b')
+    })
+
+    it('method `castCsvLine` should returns an {"Z":"`a","Y":"b"} when given ("`a,`b", ["Z","Y"], false)', () => {
+      fmt.castCsvLine('`a,`b', ['Z', 'Y'], false).should.be.Object().and.not.be.empty().and.have.properties(['Z', 'Y'])
+      fmt.castCsvLine('`a,`b', ['Z', 'Y'], false).should.have.value('Z', '`a')
+      fmt.castCsvLine('`a,`b', ['Z', 'Y'], false).should.have.value('Y', 'b')
+    })
+
+    it('method `castCsvLine` should returns an {"Z":"`a","Y":"`b"} when given ("`a,`b", ["Z","Y"], false, \',\')', () => {
+      fmt.castCsvLine('`a,`b', ['Z', 'Y'], false, ',').should.be.Object().and.not.be.empty().and.have.properties(['Z', 'Y'])
+      fmt.castCsvLine('`a,`b', ['Z', 'Y'], false, ',').should.have.value('Z', '`a')
+      fmt.castCsvLine('`a,`b', ['Z', 'Y'], false, ',').should.have.value('Y', '`b')
     })
   })
 
