@@ -3,7 +3,6 @@
 [![GitHub version](https://img.shields.io/github/package-json/v/TheNorthMemory/wechatpay-axios-plugin?label=Github)](https://github.com/TheNorthMemory/wechatpay-axios-plugin)
 [![GitHub issues](https://img.shields.io/github/issues/TheNorthMemory/wechatpay-axios-plugin)](https://github.com/TheNorthMemory/wechatpay-axios-plugin)
 [![GitHub dependency](https://img.shields.io/github/package-json/dependency-version/thenorthmemory/wechatpay-axios-plugin/axios)](https://github.com/axios/axios)
-[![GitHub dependency](https://img.shields.io/github/package-json/dependency-version/thenorthmemory/wechatpay-axios-plugin/commander)](https://github.com/tj/commander.js)
 [![NPM module version](https://img.shields.io/npm/v/wechatpay-axios-plugin)](https://www.npmjs.com/package/wechatpay-axios-plugin)
 [![NPM module downloads per month](https://img.shields.io/npm/dm/wechatpay-axios-plugin)](https://www.npmjs.com/package/wechatpay-axios-plugin)
 [![NPM module license](https://img.shields.io/npm/l/wechatpay-axios-plugin)](https://www.npmjs.com/package/wechatpay-axios-plugin)
@@ -14,7 +13,7 @@
 - [x] 使用Node原生代码实现微信支付APIv3的RSA加/解密、签名、验签功能(`sha256WithRSAEncryption` with `RSA_PKCS1_OAEP_PADDING`)
 - [x] 大部分微信支付APIv3的HTTP GET/POST应该能够正常工作，依赖 [Axios](https://github.com/axios/axios), 示例代码如下
 - [x] 支持微信支付APIv3的媒体文件上传(图片/视频)功能，可选依赖 [form-data](https://github.com/form-data/form-data), 示例代码如下
-- [x] 支持微信支付APIv3的应答证书下载功能，依赖 [commander](https://github.com/tj/commander.js), 使用手册如下
+- [x] 支持微信支付APIv3的应答证书下载功能，可选依赖 [commander](https://github.com/tj/commander.js), 使用手册如下
 - [x] 支持微信支付APIv3的帐单下载及解析功能，示例代码如下
 
 ## 安装
