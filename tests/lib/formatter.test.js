@@ -122,7 +122,7 @@ describe('lib/formatter', () => {
     })
 
     it('method `nonce` should returns a string which match to `/[0-9a-zA-Z]{32}/` and not cantain any other chars', () => {
-      fmt.nonce().should.be.a.String().match(/[0-9a-zA-Z]{32}/).not.match(/[$#%^&\*~'"\/<>+-]/)
+      fmt.nonce().should.be.a.String().match(/[0-9a-zA-Z]{32}/).not.match(/[$#%^&~<>+-]/)
     })
   })
 
@@ -175,17 +175,19 @@ describe('lib/formatter', () => {
 
     it('method `request(1,2,3,4,5)` should returns a string, and filled as `1LF2LF3LF4LF5LF`', () => {
       fmt.request(1,2,3,4,5).should.be.a.String()
+        /*eslint-disable-next-line quotes*/
         .equal("1\n2\n3\n4\n5\n")
         .and.startWith('1')
-        .and.endWith("\n")
+        .and.endWith(`\n`)
     })
 
     it('method `request(6,7,8,9)` should accept last empty optional argument and return a string, and filled as `6LF7LF8LF9LFLF`', () => {
       fmt.request(6,7,8,9).should.be.a.String()
+        /*eslint-disable-next-line quotes*/
         .equal("6\n7\n8\n\9\n\n")
         .and.startWith('6')
-        .and.endWith("\n")
-      fmt.request(6,7,8,9).substr(-2).should.equal("\n\n")
+        .and.endWith(`\n`)
+      fmt.request(6,7,8,9).substr(-2).should.equal(`\n\n`)
     })
   })
 
@@ -202,17 +204,19 @@ describe('lib/formatter', () => {
 
     it('method `response(3,2,1)` should returns a string, and filled as `3LF2LF1LF`', () => {
       fmt.response(3,2,1).should.be.a.String()
+        /*eslint-disable-next-line quotes*/
         .equal("3\n2\n1\n")
         .and.startWith('3')
-        .and.endWith("\n")
+        .and.endWith(`\n`)
     })
 
     it('method `response(9,8)` should accept last empty optional argument and return a string, and filled as `9LF8LFLF`', () => {
       fmt.response(9,8).should.be.a.String()
+        /*eslint-disable-next-line quotes*/
         .equal("\9\n8\n\n")
         .and.startWith('9')
-        .and.endWith("\n")
-      fmt.response(9,8).substr(-2).should.equal("\n\n")
+        .and.endWith(`\n`)
+      fmt.response(9,8).substr(-2).should.equal(`\n\n`)
     })
   })
 })

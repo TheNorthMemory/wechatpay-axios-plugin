@@ -4,6 +4,6 @@ const wxpay = require('../')
 
 describe('index', () => {
   it('should be Function interceptor', () => {
-    wxpay.should.be.a.Function().and.have.property('name', 'interceptor')
+    should(wxpay).is.a.Function().and.have.property('name', 'interceptor')
   })
 })

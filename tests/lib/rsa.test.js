@@ -155,7 +155,7 @@ describe('lib/rsa', () => {
       }).throw(TypeError, {
         code: 'ERR_INVALID_ARG_TYPE',
         message: 'The "data" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received undefined',
-        stack: /at Sign\.update \(internal\/crypto\/sig.\js/
+        stack: /at Sign\.update \(internal\/crypto\/sig\.js/
       })
     })
 
@@ -204,7 +204,7 @@ describe('lib/rsa', () => {
       }).throw(TypeError, {
         code: 'ERR_INVALID_ARG_TYPE',
         message: 'The "data" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received undefined',
-        stack: /at Verify\.update \(internal\/crypto\/sig.\js/
+        stack: /at Verify\.update \(internal\/crypto\/sig\.js/
       })
     })
 

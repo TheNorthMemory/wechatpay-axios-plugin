@@ -45,22 +45,22 @@ instance.interceptors.response.use(function downloader(response) {
   (response.data.data || []).map(({
     effective_time: notBefore,
     expire_time: notAfter,
-    serial_no, encrypt_certificate: {nonce, associated_data, ciphertext}
+    serial_no: serialNo, encrypt_certificate: {nonce, associated_data: aad, ciphertext}
   }, index) => {
     // @see {aes.decrypt} decrypt the ciphertext which is the `Wechatpay Public Certificate`
-    const cert = aes.decrypt(nonce, secret, ciphertext, associated_data)
+    const cert = aes.decrypt(nonce, secret, ciphertext, aad)
 
     // injection onto the global `certs` Object, using in the next `${interceptor.response}`
-    certs = Object.assign(certs, {[serial_no]: cert})
+    certs = Object.assign(certs, {[serialNo]: cert})
 
     // scope a file path based on given `--output` dir
-    const savedTo = join(output, `wechatpay_${serial_no}.pem`)
+    const savedTo = join(output, `wechatpay_${serialNo}.pem`)
 
     // write the PEM to file ...
     writeFileSync(savedTo, cert)
 
     console.group(`Wechatpay Public Certificate\x1B[1;31m#${index}\x1B[0m`)
-    console.info(`serial=\x1B[1;32m${serial_no}\x1B[0m`)
+    console.info(`serial=\x1B[1;32m${serialNo}\x1B[0m`)
     console.info(`notBefore=${(new Date(notBefore)).toUTCString()}`)
     console.info(`notAfter=${(new Date(notAfter)).toUTCString()}`)
     console.info(`Saved to: \x1B[1;32m${savedTo}\x1B[0m`)
@@ -77,4 +77,4 @@ instance.interceptors.response.use(function downloader(response) {
 const client = wxp(instance, {mchid, serial, privateKey, certs})
 
 // Execute a HTTPs request
-;(async () => await client.get('https://api.mch.weixin.qq.com/v3/certificates'))();
+;(async () => await client.get('https://api.mch.weixin.qq.com/v3/certificates'))()

@@ -1,5 +1,3 @@
-const assert = require('assert')
-
 const should = require('should')
 const aes = require('../../lib/aes')
 
