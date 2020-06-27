@@ -1,4 +1,4 @@
-import { AxiosStatic } from "axios";
+import { AxiosInstance } from "axios";
 
 /**
  * Wechatpay Axios Plugin
@@ -105,6 +105,13 @@ export declare namespace WechatpayAxiosPlugin {
         static response(timestamp: string | number, nonce: string, body?: string): string;
     }
 
+    /**
+     * @typedef {Object} apiConfig - The wechatpay consumer side configuration
+     * @prop {string|number} mchid - The merchant ID
+     * @prop {string} serial - The serial number of the merchant certificate
+     * @prop {string|Buffer} privateKey - The merchant private key certificate
+     * @prop {platformCertificates} certs - The wechatpay provider size configuration, `{serial: publicCert}` pair
+     */
     type apiConfig = {
         mchid: string | number,
         serial: string,
@@ -112,23 +119,25 @@ export declare namespace WechatpayAxiosPlugin {
         certs: platformCertificates
     }
 
+    /**
+     * @typedef {Object} platformCertificates - The wechatpay provider side configuration
+     * @prop {string} key - The serial number of the wechatpay certificate
+     */
     type platformCertificates = {
         [key: string]: string | Buffer
     }
 
     /**
-     * `Axios.interceptors` registry a request(for APIv3 Authorization)
-     *                           and a response(for APIv3 Verification)
+     * register a named request as `signer`(for APIv3 Authorization)
+     *      and a named response as `verifier`(for APIv3 Verification)
+     * onto `Axios.interceptors`
      *
-     * @param {AxiosStatic} axios The AxiosStatic
-     * @param {string|number} mchid - The merchant ID
-     * @param {string} serial - The serial number of the merchant public certificate
-     * @param {string|Buffer} privateKey - The merchant private key certificate
-     * @param {Object} certs - Pair of the `{serial: publicCert}`
+     * @param {AxiosInstance} axios - The AxiosInstance
+     * @param {apiConfig} apiConfig - The wechatpay consumer side configuration
      *
-     * @returns {AxiosStatic} - A decorated AxiosStatic
+     * @returns {AxiosInstance} - A decorated AxiosInstance
      */
-    function interceptor(axios: AxiosStatic, {mchid, serial, privateKey, certs}: apiConfig): AxiosStatic;
+    function interceptor(axios: AxiosInstance, {mchid, serial, privateKey, certs}: apiConfig): AxiosInstance;
 
     /**
      * Provides some methods for the RSA `sha256WithRSAEncryption` with `RSA_PKCS1_OAEP_PADDING`.

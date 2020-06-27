@@ -15,6 +15,7 @@
 - [x] 支持微信支付APIv3的媒体文件上传(图片/视频)功能，可选依赖 [form-data](https://github.com/form-data/form-data), 示例代码如下
 - [x] 支持微信支付APIv3的应答证书下载功能，可选依赖 [commander](https://github.com/tj/commander.js), 使用手册如下
 - [x] 支持微信支付APIv3的帐单下载及解析功能，示例代码如下
+- [x] 支持 `Typescript`
 
 ## 安装
 
@@ -81,6 +82,7 @@ You should verify the above infos again even if this library already did(by rsa.
 - [x] The wechatpay APIv3's media file upload is out, optional dependency on [form-data](https://github.com/form-data/form-data), examples below
 - [x] The wechatpay APIv3's public certificate(s) downloader is out, optional dependency on [commander](https://github.com/tj/commander.js), usage manual followed
 - [x] The wechatpay APIv3's billdownload and castCsvBill are there, examples below
+- [x] `Typescript` supported
 
 ## Installing
 
@@ -386,6 +388,9 @@ You may find some advance usages via the [Axios](https://github.com/axios/axios)
 If you find a bug, please issue [here](https://github.com/TheNorthMemory/wechatpay-axios-plugin/issues).
 
 ## Changelog
+
+- v0.0.9
+  - Feature: defination of the `Typescript`
 
 - v0.0.8
   - Optim: on `castCsvBill`, drop the `trim` on each rows
