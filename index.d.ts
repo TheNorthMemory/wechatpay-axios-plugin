@@ -185,10 +185,10 @@ export declare namespace WechatpayAxiosPlugin {
     }
 }
 
-export declare const Formatter: WechatpayAxiosPlugin.Formatter;
+export declare class Formatter extends WechatpayAxiosPlugin.Formatter{}
 
-export declare const Aes: WechatpayAxiosPlugin.Aes;
+export declare class Aes extends WechatpayAxiosPlugin.Aes{}
 
-export declare const Rsa: WechatpayAxiosPlugin.Rsa;
+export declare class Rsa extends WechatpayAxiosPlugin.Rsa{}
 
 export default WechatpayAxiosPlugin.interceptor;

@@ -387,6 +387,48 @@ You may find some advance usages via the [Axios](https://github.com/axios/axios)
 
 If you find a bug, please issue [here](https://github.com/TheNorthMemory/wechatpay-axios-plugin/issues).
 
+## `Typescript` basic example
+
+### Initialization
+
+```typescript
+import {default as axios, AxiosRequestConfig, AxiosError} from 'axios'
+import {default as wxpay, Rsa as rsa, Aes as aes, Formatter as fmt, WechatpayAxiosPlugin} from 'wechatpay-axios-plugin'
+
+const merchantPrivateKey = '-----BEGIN PRIVATE KEY-----' + '...' + '-----END PRIVATE KEY-----'
+const wechatpayPublicCert = '-----BEGIN CERTIFICATE-----' + '...' + '-----END CERTIFICATE-----'
+
+const instance = axios.create({baseURL: `https://api.mch.weixin.qq.com`} as AxiosRequestConfig)
+const client = wxpay(instance, {
+  mchid: 'your_merchant_id',
+  serial: 'serial_number_of_your_merchant_public_cert',
+  privateKey: merchantPrivateKey,
+  certs: {
+    'serial_number': wechatpayPublicCert
+  } as WechatpayAxiosPlugin.platformCertificates
+} as WechatpayAxiosPlugin.apiConfig)
+```
+
+### Sensitive Information Decryption Usage
+
+```typescript
+;(async () => {
+  try {
+    const res = await client.get('/v3/merchant-service/complaints', {params: {
+      limit: 50,
+      offset: 0,
+      begin_date: (new Date(+new Date - 29*86400*1000)).toJSON().slice(0, 10),
+      end_date: (new Date).toJSON().slice(0, 10),
+    }})
+    // decrypt the `Sensitive Information`
+    res.data.data.map(row => (row.payer_phone = rsa.decrypt(row.payer_phone, merchantPrivateKey), row))
+    console.info(res.data)
+  } catch({response: {status, statusText, data, headers}, request, config}) {
+    console.error(status, statusText, data)
+  }
+})()
+```
+
 ## Changelog
 
 - v0.0.9
