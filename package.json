@@ -27,7 +27,7 @@
     "url": "git+https://github.com/TheNorthMemory/wechatpay-axios-plugin.git"
   },
   "engines": {
-    "node": ">=12.9.0"
+    "node": ">=10.15.0"
   },
   "directories": {
     "bin": "./bin",

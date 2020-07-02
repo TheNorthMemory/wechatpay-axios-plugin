@@ -23,7 +23,7 @@
 
 ## 系统要求
 
-NodeJS的原生`crypto`模块，自v12.9.0在 `publicEncrypt` 及 `privateDecrypt` 增加了 `oaepHash` 入参选项，本项目显式声明入参，本人不确定其在v12.9.0以下是否正常工作。所以Node的最低版本要求应该是v12.9.0.
+此库在v10.15.0上已测试，可以正常使用。NodeJS的原生`crypto`模块，自v12.9.0在 `publicEncrypt` 及 `privateDecrypt` 增加了 `oaepHash` 入参选项，本类库在 `Rsa.encrypt` 及 `Rsa.decrypt` 显式声明了此入参，Nodejs10.15.0应该是内置了此参数的默认值，所以可以正常工作；虽然可用，不过仍旧推荐使用 Nodejs ≧ v12.9.0。
 
 ## 万里长征第一步
 
@@ -90,7 +90,7 @@ You should verify the above infos again even if this library already did(by rsa.
 
 ## Requirements
 
-The `oaepHash` used in `Rsa.encrypt` and `Rsa.decrypt` were added on Node v12.9.0. So that the Node minimum version should be 12.9.0(I'm not very sure).
+This library was tested under v10.15.0, it works. However, the recommended node version is ≧ v12.9.0. Because the `oaepHash` parameter were available since Node v12.9.0 which is used on the `Rsa.encrypt` and `Rsa.decrypt` functions even if the lower version nodejs was built in that value.
 
 ## First of all
 
