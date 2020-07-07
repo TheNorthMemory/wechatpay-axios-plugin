@@ -15,6 +15,7 @@
 - [x] 支持微信支付APIv3的媒体文件上传(图片/视频)功能，可选依赖 [form-data](https://github.com/form-data/form-data), 示例代码如下
 - [x] 支持微信支付APIv3的应答证书下载功能，可选依赖 [commander](https://github.com/tj/commander.js), 使用手册如下
 - [x] 支持微信支付APIv3的帐单下载及解析功能，示例代码如下
+- [x] 支持微信支付APIv3面向对象编程模式<sup>:bulb:</sup>
 - [x] 支持 `Typescript`
 
 ## 安装
@@ -71,6 +72,74 @@ You should verify the above infos again even if this library already did(by rsa.
 
 以下文档及示例都是基本用法，没啥花活儿，祝开心。 :smile:
 
+## 面向对象模式
+
+`v0.2.0` 开始支持面向对象方式，自然书写请求/响应过程，有如下约定：
+
+1. 请求 `URI` 作为级联对象，可以轻松构建请求对象，例如 `/v3/pay/transactions/native` 即自然翻译成 `v3.pay.transactions.native`;
+2. 每个 `URI` 所支持的 `HTTP METHOD`，即作为 请求对象的末尾执行方法，例如: `v3.pay.transactions.native.post({})`;
+3. 每个 `URI` 有中线(dash)分隔符的，可以使用驼峰`camelCase`风格书写，例如: `merchant-service`可写成 `merchantService`，或者属性风格，例如 `v3['merchant-service']`;
+4. 每个 `URI`.pathname 中，若有动态参数，例如 `business_code/{business_code}` 可写成 `business_code.$business_code$` 或者属性风格书写，例如 `business_code['{business_code}']`，抑或直接按属性风格，直接写参数值也可以，例如 `business_code['2000001234567890']`;
+5. 建议 `URI` 按照 `PascalCase` 风格书写, `TS Defination` 已在路上(还有若干问题没解决)，将是这种风格，代码提示将会很自然;
+
+### 初始化
+
+```js
+const {Wechatpay} = require('wechatpay-axios-plugin')
+const wxpay = new Wechatpay({
+  mchid: 'your_merchant_id',
+  serial: 'serial_number_of_your_merchant_public_cert',
+  privateKey: '-----BEGIN PRIVATE CERTIFICATE-----' + '...' + '-----END PRIVATE CERTIFICATE-----',
+  certs: {
+    'serial_number': '-----BEGIN CERTIFICATE-----' + '...' + '-----END CERTIFICATE-----',
+  }
+})
+```
+
+### Native下单API
+```js
+wxpay.v3.pay.transactions.native.post({/*文档参数放这里就好*/})
+  .then(({data: {code_url}}) => console.info(code_url))
+  .catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
+```
+
+### 查询订单API
+```js
+wxpay.v3.pay.transactions.id['{transaction_id}']
+  .withEntities({transaction_id: '1217752501201407033233368018'})
+  .get({params: {mchid: '1230000109'}})
+  .then(({data}) => console.info(data))
+  .catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
+```
+
+### 关单API
+```js
+wxpay.v3.pay.transactions.outTradeNo['1217752501201407033233368018']
+  .post({mchid: '1230000109'})
+  .then(({status, statusText}) => console.info(status, statusText))
+  .catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
+```
+
+### 创建商家券API
+```js
+wxpay.v3.marketing.busifavor.stocks
+  .post({/*商家券创建条件*/})
+  .then(({data}) => console.info(data))
+  .catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
+```
+
+### 查询用户单张券详情API
+```js
+;(async () => {
+  try {
+    const {data: detail} = await wxpay.v3.marketing.busifavor.users.$openid$.coupons['{coupon_code}'].appids['wx233544546545989']
+      .withEntities({openid: '2323dfsdf342342', coupon_code: '123446565767'})
+      .get()
+  } catch({response: {status, statusText, data}}) {
+    console.error(status, statusText, data)
+  }
+}
+```
 
 # Wechatpay APIv3 Axios Plugin
 
@@ -82,6 +151,7 @@ You should verify the above infos again even if this library already did(by rsa.
 - [x] The wechatpay APIv3's media file upload is out, optional dependency on [form-data](https://github.com/form-data/form-data), examples below
 - [x] The wechatpay APIv3's public certificate(s) downloader is out, optional dependency on [commander](https://github.com/tj/commander.js), usage manual followed
 - [x] The wechatpay APIv3's billdownload and castCsvBill are there, examples below
+- [x] The `OOP` developing style of the wechatpay APIv3
 - [x] `Typescript` supported
 
 ## Installing
@@ -430,6 +500,13 @@ const client = wxpay(instance, {
 ```
 
 ## Changelog
+
+- v0.2.0
+  - Feature: `OOP` developing style of the wechatpay APIv3.
+
+- v0.1.0
+  - Optim: Toggle the `Nodejs` version ≧ `10.15.0`.
+  - Optim: Documentation and coding comments.
 
 - v0.0.9
   - Feature: defination of the `Typescript`
