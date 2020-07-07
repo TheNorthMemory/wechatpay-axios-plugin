@@ -3,7 +3,7 @@ import { AxiosInstance } from "axios";
 /**
  * Wechatpay Axios Plugin
  */
-export declare namespace WechatpayAxiosPlugin {
+export namespace WechatpayAxiosPlugin {
     /**
      * Aes encrypt/decrypt using `aes-256-gcm` algorithm with `AAD`.
      */
@@ -185,10 +185,10 @@ export declare namespace WechatpayAxiosPlugin {
     }
 }
 
-export declare class Formatter extends WechatpayAxiosPlugin.Formatter{}
+export class Formatter extends WechatpayAxiosPlugin.Formatter{}
 
-export declare class Aes extends WechatpayAxiosPlugin.Aes{}
+export class Aes extends WechatpayAxiosPlugin.Aes{}
 
-export declare class Rsa extends WechatpayAxiosPlugin.Rsa{}
+export class Rsa extends WechatpayAxiosPlugin.Rsa{}
 
 export default WechatpayAxiosPlugin.interceptor;
