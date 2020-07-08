@@ -74,13 +74,13 @@ You should verify the above infos again even if this library already did(by rsa.
 
 ## 面向对象模式
 
-`v0.2.0` 开始支持面向对象方式，自然书写请求/响应过程，有如下约定：
+`v0.2.0` 开始支持面向对象方式编程，书写请求/响应过程，有如下约定：
 
 1. 请求 `URI` 作为级联对象，可以轻松构建请求对象，例如 `/v3/pay/transactions/native` 即自然翻译成 `v3.pay.transactions.native`;
 2. 每个 `URI` 所支持的 `HTTP METHOD`，即作为 请求对象的末尾执行方法，例如: `v3.pay.transactions.native.post({})`;
 3. 每个 `URI` 有中线(dash)分隔符的，可以使用驼峰`camelCase`风格书写，例如: `merchant-service`可写成 `merchantService`，或者属性风格，例如 `v3['merchant-service']`;
 4. 每个 `URI`.pathname 中，若有动态参数，例如 `business_code/{business_code}` 可写成 `business_code.$business_code$` 或者属性风格书写，例如 `business_code['{business_code}']`，抑或直接按属性风格，直接写参数值也可以，例如 `business_code['2000001234567890']`;
-5. 建议 `URI` 按照 `PascalCase` 风格书写, `TS Defination` 已在路上(还有若干问题没解决)，将是这种风格，代码提示将会很自然;
+5. 建议 `URI` 按照 `PascalCase` 风格书写, `TS Definition` 已在路上(还有若干问题没解决)，将是这种风格，代码提示将会很自然;
 
 ### 初始化
 
@@ -89,7 +89,7 @@ const {Wechatpay} = require('wechatpay-axios-plugin')
 const wxpay = new Wechatpay({
   mchid: 'your_merchant_id',
   serial: 'serial_number_of_your_merchant_public_cert',
-  privateKey: '-----BEGIN PRIVATE CERTIFICATE-----' + '...' + '-----END PRIVATE CERTIFICATE-----',
+  privateKey: '-----BEGIN PRIVATE KEY-----' + '...' + '-----END PRIVATE KEY-----',
   certs: {
     'serial_number': '-----BEGIN CERTIFICATE-----' + '...' + '-----END CERTIFICATE-----',
   }
@@ -98,7 +98,8 @@ const wxpay = new Wechatpay({
 
 ### Native下单API
 ```js
-wxpay.v3.pay.transactions.native.post({/*文档参数放这里就好*/})
+wxpay.v3.pay.transactions.native
+  .post({/*文档参数放这里就好*/})
   .then(({data: {code_url}}) => console.info(code_url))
   .catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
 ```
@@ -135,6 +136,7 @@ wxpay.v3.marketing.busifavor.stocks
     const {data: detail} = await wxpay.v3.marketing.busifavor.users.$openid$.coupons['{coupon_code}'].appids['wx233544546545989']
       .withEntities({openid: '2323dfsdf342342', coupon_code: '123446565767'})
       .get()
+    console.info(detail)
   } catch({response: {status, statusText, data}}) {
     console.error(status, statusText, data)
   }
@@ -151,7 +153,7 @@ wxpay.v3.marketing.busifavor.stocks
 - [x] The wechatpay APIv3's media file upload is out, optional dependency on [form-data](https://github.com/form-data/form-data), examples below
 - [x] The wechatpay APIv3's public certificate(s) downloader is out, optional dependency on [commander](https://github.com/tj/commander.js), usage manual followed
 - [x] The wechatpay APIv3's billdownload and castCsvBill are there, examples below
-- [x] The `OOP` developing style of the wechatpay APIv3
+- [x] The `OOP` developing style of the wechatpay APIv3<sup>:bulb:</sup>
 - [x] `Typescript` supported
 
 ## Installing
@@ -199,6 +201,20 @@ You should verify the above infos again even if this library already did(by rsa.
 </details>
 
 For now, you need pass the above `serial` and `wechatpay_HEXADECIALHEXADECIALHEXADECIAL.pem` (buffer or plaintext) as {key:value} pairs to the following `certs` Object. And then, most of the APIv3 requests/responses should working fine.
+
+## OOP style development
+
+Since `v0.2.0`, here's avaliable the `OOP` style development. All of the remote's `URI.pathname` is mapping as the `SDK`'s `Object` which contains the HTTP `get` `post` and `upload` (named for `multipart/form-data`) methods. Specially, while the `Object`(named as `container`) with dynamic veriable parameter(s) (`uri_template`), those may be transformed by the `container`'s `withEntities` method.
+
+With this style, the following conversions should be known:
+
+1. Each of the `URI`, eg: `/v3/pay/transactions/native` is mapping to `v3.pay.transactions.native`;
+2. Each of the `URI`'s `HTTP METHOD`，are mapping to the `container`'s executor, eg: `v3.pay.transactions.native.post({})`;
+3. While the `URI` contains the `dash-split-words`, the entity can be wrote as `camelCase` style, eg: `merchant-service` to `merchantService` or by the `Object.property`'s style as `v3['merchant-service']`;
+4. While the `URI` contains the `dynamic_veriable_parameter`, eg: `business_code/{business_code}`, it can be `business_code.$business_code$` or `business_code['{business_code}']` or directly replaced with actual value eg: `business_code['2000001234567890']`;
+5. Recommend writing the `URI` entities with `PascalCase` style. Because the `TS Definition` is on the road, those shall be this style;
+
+With this style, the simples were shown above.
 
 ## Examples
 
