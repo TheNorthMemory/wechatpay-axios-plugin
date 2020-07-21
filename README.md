@@ -517,6 +517,9 @@ const client = wxpay(instance, {
 
 ## Changelog
 
+- v0.2.2
+  - Fix: #8 `verfier` on the `204` status case.
+
 - v0.2.1
   - Optim: Back compatiable for `12.4.0` < `Node` ≧ `10.15.0`.
 
