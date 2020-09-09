@@ -20,8 +20,6 @@ describe('lib/rsa', () => {
         rsa.encrypt()
       }).throw(TypeError, {
         code: 'ERR_INVALID_ARG_TYPE',
-        message: 'The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received undefined',
-        stack: /at Function\.from \(buffer\.js/
       })
     })
 
@@ -30,8 +28,6 @@ describe('lib/rsa', () => {
         rsa.encrypt('')
       }).throw(TypeError, {
         code: 'ERR_INVALID_ARG_TYPE',
-        message: 'The "key" argument must be of type string or an instance of Buffer, TypedArray, DataView, or KeyObject. Received an instance of Object',
-        stack: /at prepareAsymmetricKey \(internal\/crypto\/keys\.js/
       })
     })
 
@@ -72,8 +68,6 @@ describe('lib/rsa', () => {
         rsa.decrypt()
       }).throw(TypeError, {
         code: 'ERR_INVALID_ARG_TYPE',
-        message: 'The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received undefined',
-        stack: /at Function\.from \(buffer\.js/
       })
     })
 
@@ -82,8 +76,6 @@ describe('lib/rsa', () => {
         rsa.decrypt('')
       }).throw(TypeError, {
         code: 'ERR_INVALID_ARG_TYPE',
-        message: 'The "key" argument must be of type string or an instance of Buffer, TypedArray, DataView, or KeyObject. Received an instance of Object',
-        stack: /at prepareAsymmetricKey \(internal\/crypto\/keys\.js/
       })
     })
 

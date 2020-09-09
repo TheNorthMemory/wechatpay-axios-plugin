@@ -219,4 +219,48 @@ describe('lib/formatter', () => {
       fmt.response(9,8).substr(-2).should.equal(`\n\n`)
     })
   })
+
+  describe('Formatter::joinedByLineFeed', () => {
+    it('method `joinedByLineFeed` should be static', () => {
+      should(fmt.joinedByLineFeed).be.a.Function()
+      should((new fmt).joinedByLineFeed).is.Undefined()
+    })
+
+    it('method `joinedByLineFeed` should returns a string which is end with LF(ASCII 10)', () => {
+      fmt.joinedByLineFeed('').should.be.a.String().endWith(`\n`)
+      fmt.joinedByLineFeed('').substr(-1).charCodeAt().should.equal(10)
+    })
+
+    it('method `joinedByLineFeed(a,b,c,d,e,f,g)` should returns a string, and filled as `aLFbLFcLFdLFeLFfLFgLF`', () => {
+      fmt.joinedByLineFeed('a', 'b', 'c', 'd', 'e', 'f', 'g').should.be.a.String()
+        /*eslint-disable-next-line quotes*/
+        .equal(`a\nb\nc\nd\ne\nf\ng\n`)
+        .and.startWith('a')
+        .and.endWith(`\n`)
+    })
+  })
+
+  describe('Formatter::ksort', () => {
+    it('method `ksort` should be static', () => {
+      should(fmt.ksort).be.a.Function()
+      should((new fmt).ksort).is.Undefined()
+    })
+
+    it('method `ksort({b: 1, a: 0})` should returns an object and deepEqual to {a: 0, b: 1}', () => {
+      fmt.ksort({b: 1, a: 0}).should.be.an.instanceOf(Object).and.have.properties([`a`, `b`])
+      fmt.ksort({b: 1, a: 0}).should.deepEqual({a: 0, b: 1})
+    })
+  })
+
+  describe('Formatter::queryStringLike', () => {
+    it('method `queryStringLike` should be static', () => {
+      should(fmt.queryStringLike).be.a.Function()
+      should((new fmt).queryStringLike).is.Undefined()
+    })
+
+    it('method `queryStringLike({appid: 3, mchid: 2, openid: \'\', sign: 0})` should returns a string and equal to `appid=3&mchid=2`', () => {
+      fmt.queryStringLike({appid: 3, mchid: 2, openid: '', sign: 0}).should.be.a.String()
+      fmt.queryStringLike({appid: 3, mchid: 2, openid: '', sign: 0}).should.equal(`appid=3&mchid=2`)
+    })
+  })
 })
