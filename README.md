@@ -1,4 +1,4 @@
-# 微信支付 APIv3 Axios 插件版
+# 微信支付 Axios 插件版
 
 [![GitHub version](https://badgen.net/github/release/TheNorthMemory/wechatpay-axios-plugin)](https://github.com/TheNorthMemory/wechatpay-axios-plugin)
 [![GitHub issues](https://badgen.net/github/open-issues/TheNorthMemory/wechatpay-axios-plugin)](https://github.com/TheNorthMemory/wechatpay-axios-plugin)
@@ -16,8 +16,9 @@
 - [x] 支持微信支付APIv3的媒体文件上传(图片/视频)功能，可选依赖 [form-data](https://github.com/form-data/form-data), 示例代码如下
 - [x] 支持微信支付APIv3的应答证书下载功能，可选依赖 [commander](https://github.com/tj/commander.js), 使用手册如下
 - [x] 支持微信支付APIv3的帐单下载及解析功能，示例代码如下
-- [x] 支持微信支付APIv3面向对象编程模式<sup>:bulb:</sup>
+- [x] 支持微信支付APIv3面向对象编程模式
 - [x] 支持 `Typescript`
+- [x] 支持微信支付XML风格的接口(通常所说v2)调用，依赖 [node-xml2js](https://github.com/Leonidas-from-XIV/node-xml2js), 示例代码如下<sup>:bulb:</sup>
 
 ## 安装
 
@@ -144,7 +145,66 @@ wxpay.v3.marketing.busifavor.stocks
 }
 ```
 
-# Wechatpay APIv3 Axios Plugin
+## 支持 `XML based` 接口调用
+
+`v0.3.0` 开始支持微信支付以XML为交换负载的接口调用，使用方式如下：
+
+### 实例化客户端
+
+```js
+const {Wechatpay, Formatter: fmt} = require('../')
+const client = Wechatpay.xmlBased({
+  secret: 'your_merchant_secret_key_string',
+  merchant: {
+    cert: '-----BEGIN CERTIFICATE-----' + '...' + '-----END CERTIFICATE-----',
+    key: '-----BEGIN PRIVATE KEY-----' + '...' + '-----END PRIVATE KEY-----',
+    // or
+    // passphrase: 'your_merchant_id',
+    // pfx: fs.readFileSync('/your/merchant/cert/apiclient_cert.p12'),
+  },
+})
+```
+
+### 自定义打印日志
+
+```js
+client.defaults.transformRequest.push(data => (console.log(data), data))
+client.defaults.transformResponse.unshift(data => (console.log(data), data))
+```
+
+### 申请退款
+
+```js
+client.post('/secapi/pay/refund', {
+  appid: 'wx8888888888888888',
+  mch_id: '1900000109',
+  out_trade_no: '1217752501201407033233368018',
+  out_refund_no: '1217752501201407033233368018',
+  total_fee: 100,
+  refund_fee: 100,
+  refund_fee_type: 'CNY',
+  nonce_str: fmt.nonce(),
+}).then(res => console.info(res.data)).catch(({response}) => console.error(response))
+```
+
+### 企业付款
+
+```js
+client.post('/mmpaymkttransfers/promotion/transfers', {
+  appid: 'wx8888888888888888',
+  mch_id: '1900000109',
+  partner_trade_no: '10000098201411111234567890',
+  openid: 'oxTWIuGaIt6gTKsQRLau2M0yL16E',
+  check_name: 'FORCE_CHECK',
+  re_user_name: '王小王',
+  amount: 10099,
+  desc: '理赔',
+  spbill_create_ip: '192.168.0.1',
+  nonce_str: fmt.nonce(),
+}).then(res => console.info(res.data)).catch(({response}) => console.error(response))
+```
+
+# Wechatpay Axios Plugin
 
 ## Features
 
@@ -154,8 +214,9 @@ wxpay.v3.marketing.busifavor.stocks
 - [x] The wechatpay APIv3's media file upload is out, optional dependency on [form-data](https://github.com/form-data/form-data), examples below
 - [x] The wechatpay APIv3's public certificate(s) downloader is out, optional dependency on [commander](https://github.com/tj/commander.js), usage manual followed
 - [x] The wechatpay APIv3's billdownload and castCsvBill are there, examples below
-- [x] The `OOP` developing style of the wechatpay APIv3<sup>:bulb:</sup>
+- [x] The `OOP` developing style of the wechatpay APIv3
 - [x] `Typescript` supported
+- [x] Fulfill the XML based API requests, dependency on [node-xml2js](https://github.com/Leonidas-from-XIV/node-xml2js) <sup>:bulb:</sup>
 
 ## Installing
 
@@ -518,6 +579,12 @@ const client = wxpay(instance, {
 
 ## Changelog
 
+- v0.3.0
+  - Feature: The XML based API requests.
+
+- v0.2.3
+  - Optim: Coding quality.
+
 - v0.2.2
   - Fix: #8 `verfier` on the `204` status case.
 
@@ -532,7 +599,7 @@ const client = wxpay(instance, {
   - Optim: Documentation and coding comments.
 
 - v0.0.9
-  - Feature: defination of the `Typescript`
+  - Feature: definition of the `Typescript`
 
 - v0.0.8
   - Optim: on `castCsvBill`, drop the `trim` on each rows
