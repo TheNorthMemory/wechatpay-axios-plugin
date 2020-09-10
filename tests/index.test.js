@@ -16,7 +16,19 @@ describe('index', () => {
     should(wxpay.Aes).is.a.Function().and.have.property('name', 'Aes')
   })
 
+  it('should have `Hash` property and be a Class', () => {
+    should(wxpay.Hash).is.a.Function().and.have.property('name', 'Hash')
+  })
+
   it('should have `Formatter` property and be a Class', () => {
     should(wxpay.Formatter).is.a.Function().and.have.property('name', 'Formatter')
+  })
+
+  it('should have `Wechatpay` property and be a Class', () => {
+    should(wxpay.Wechatpay).is.a.Function().and.have.property('name', 'Wechatpay')
+  })
+
+  it('should have `Transformer` property and be a Class', () => {
+    should(wxpay.Transformer).is.a.Function().and.have.property('name', 'Transformer')
   })
 })

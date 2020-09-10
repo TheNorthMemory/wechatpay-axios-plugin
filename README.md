@@ -152,7 +152,7 @@ wxpay.v3.marketing.busifavor.stocks
 ### 实例化客户端
 
 ```js
-const {Wechatpay, Formatter: fmt} = require('../')
+const {Wechatpay, Formatter: fmt} = require('wechatpay-axios-plugin')
 const client = Wechatpay.xmlBased({
   secret: 'your_merchant_secret_key_string',
   merchant: {
@@ -164,6 +164,8 @@ const client = Wechatpay.xmlBased({
   },
 })
 ```
+
+注： 如果不涉及资金变动，如仅收款，证书参数可选，仅需 `secret` 一个参数，注意其为v2版的。
 
 ### 自定义打印日志
 
