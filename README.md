@@ -377,6 +377,7 @@ const {createReadStream} = require('fs')
 const imageMeta = {
   filename: 'hellowechatpay.png',
   // easy calculated by the command `sha256sum hellowechatpay.png` on OSX
+  // or by require('wechatpay-axios-plugin').Hash.sha256(filebuffer)
   sha256: '1a47b1eb40f501457eaeafb1b1417edaddfbe7a4a8f9decec2d330d1b4477fbe',
 }
 
@@ -398,8 +399,7 @@ client.post('/v3/marketing/favor/media/image-upload', imageData, {
 
 ```js
 const assert = require('assert')
-const crypto = require('crypto')
-const sha1 = (data) => crypto.createHash('sha1').update(data).copy().digest('hex')
+const {Hash: {sha1}} = require('wechatpay-axios-plugin')
 
 const fmt = require('./lib/formatter')
 
@@ -519,6 +519,7 @@ const {createReadStream} = require('fs')
   const videoMeta = {
     filename: 'hellowechatpay.mp4',
     // easy calculated by the command `sha256sum hellowechatpay.mp4` on OSX
+    // or by require('wechatpay-axios-plugin').Hash.sha256(filebuffer)
     sha256: '1a47b1eb40f501457eaeafb1b1417edaddfbe7a4a8f9decec2d330d1b4477fbe',
   }
 
