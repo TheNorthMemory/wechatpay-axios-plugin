@@ -174,6 +174,23 @@ client.defaults.transformRequest.push(data => (console.log(data), data))
 client.defaults.transformResponse.unshift(data => (console.log(data), data))
 ```
 
+### 付款码(刷卡)支付
+
+```js
+client.post('/pay/micropay', {
+  appid: 'wx8888888888888888',
+  mch_id: '1900000109',
+  nonce_str: fmt.nonce(),
+  sign_type: 'HMAC-SHA256',
+  body: 'image形象店-深圳腾大-QQ公仔',
+  out_trade_no: '1217752501201407033233368018',
+  total_fee: 888,
+  fee_type: 'CNY',
+  spbill_create_ip: '8.8.8.8',
+  auth_code: '120061098828009406',
+}).then(res => console.info(res.data)).catch(({response}) => console.error(response))
+```
+
 ### 申请退款
 
 ```js
@@ -186,6 +203,26 @@ client.post('/secapi/pay/refund', {
   refund_fee: 100,
   refund_fee_type: 'CNY',
   nonce_str: fmt.nonce(),
+}).then(res => console.info(res.data)).catch(({response}) => console.error(response))
+```
+
+### 现金红包
+
+```js
+client.post('/mmpaymkttransfers/sendredpack', {
+  nonce_str: fmt.nonce(),
+  mch_billno: '10000098201411111234567890',
+  mch_id: '10000098',
+  wxappid: 'wx8888888888888888',
+  send_name: '鹅企支付',
+  re_openid: 'oxTWIuGaIt6gTKsQRLau2M0yL16E',
+  total_amount: 1000,
+  total_num: 1,
+  wishing: 'HAPPY BIRTHDAY',
+  client_ip: '192.168.0.1',
+  act_name: '回馈活动',
+  remark: '会员回馈活动',
+  scene_id: 'PRODUCT_4',
 }).then(res => console.info(res.data)).catch(({response}) => console.error(response))
 ```
 
