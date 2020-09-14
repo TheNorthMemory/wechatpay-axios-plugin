@@ -629,7 +629,7 @@ const client = wxpay(instance, {
   - Fix: #8 `verfier` on the `204` status case.
 
 - v0.2.1
-  - Optim: Back compatiable for `12.4.0` < `Node` ≧ `10.15.0`.
+  - Optim: Back compatible for `12.4.0` < `Node` ≧ `10.15.0`.
 
 - v0.2.0
   - Feature: `OOP` developing style of the wechatpay APIv3.
