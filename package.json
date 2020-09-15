@@ -1,7 +1,7 @@
 {
   "name": "wechatpay-axios-plugin",
-  "version": "0.3.0",
-  "description": "The Wechatpay APIv3 Axios Plugin",
+  "version": "0.3.1",
+  "description": "The Wechatpay Axios Plugin 微信支付APIv2及APIv3 SDK，支持v3证书下载，v2付款码支付、企业付款、退款，v2&v3 Native支付、扫码支付、H5支付、小程序支付、合单支付...",
   "main": "index.js",
   "typings": "index.d.ts",
   "files": [
@@ -37,6 +37,8 @@
     "wechatpay",
     "wechatpay apiv3",
     "aes-256-gcm",
+    "aes-256-ecb",
+    "pkcs7padding",
     "rsa-oaep",
     "axios-plugin"
   ],

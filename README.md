@@ -617,7 +617,16 @@ const client = wxpay(instance, {
 })()
 ```
 
+## Unit Test
+
+`npm test`
+
 ## Changelog
+
+- v0.3.1
+  - Optim: new param on `xmlBased({mchid})`, while passed in, then `Transformer.signer` doing the `assert` with the post data.
+  - Feature: Customize the HTTP `User-Agent`.
+  - Refactor: Split `aes.js` as of `Aes`, `AesGcm` and `AesEcb` classes for `aes-256-ecb/pkcs7padding` algo.
 
 - v0.3.0
   - Feature: The XML based API requests.
