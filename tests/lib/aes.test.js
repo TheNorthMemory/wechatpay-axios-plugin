@@ -6,6 +6,95 @@ describe('lib/aes', () => {
     aes.should.be.a.Function().and.have.property('name', 'Aes')
   })
 
+  it('should have a subclass AesGcm', () => {
+    aes.AesGcm.should.be.a.Function().and.have.property('name', 'AesGcm')
+  })
+
+  it('should have a subclass AesEcb', () => {
+    aes.AesEcb.should.be.a.Function().and.have.property('name', 'AesEcb')
+  })
+
+  describe('Aes::hex', () => {
+    it('property `hex` should be static', () => {
+      should(aes.hex).be.a.String()
+      should((new aes).hex).is.Undefined()
+    })
+
+    it('property `hex` should have a fixed value `hex`', () => {
+      should(aes.hex).be.a.String().and.equal(`hex`)
+    })
+  })
+
+  describe('Aes::utf8', () => {
+    it('property `utf8` should be static', () => {
+      should(aes.utf8).be.a.String()
+      should((new aes).utf8).is.Undefined()
+    })
+
+    it('property `utf8` should have a fixed value `utf8`', () => {
+      should(aes.utf8).be.a.String().and.equal(`utf8`)
+    })
+  })
+
+  describe('Aes::base64', () => {
+    it('property `base64` should be static', () => {
+      should(aes.base64).be.a.String()
+      should((new aes).base64).is.Undefined()
+    })
+
+    it('property `base64` should have a fixed value `base64`', () => {
+      should(aes.base64).be.a.String().and.equal(`base64`)
+    })
+  })
+
+  describe('Aes::BLOCK_SIZES', () => {
+    it('property `BLOCK_SIZES` should be static', () => {
+      should(aes.BLOCK_SIZES).be.a.Number()
+      should((new aes).BLOCK_SIZES).is.Undefined()
+    })
+
+    it('property `BLOCK_SIZES` should have a fixed value 16', () => {
+      should(aes.BLOCK_SIZES).be.a.Number().and.equal(16)
+    })
+  })
+
+  describe('Aes::ALGO_AES_256_GCM', () => {
+    it('property `ALGO_AES_256_GCM` should be static', () => {
+      should(aes.ALGO_AES_256_GCM).be.a.String()
+      should((new aes).ALGO_AES_256_GCM).is.Undefined()
+    })
+
+    it('property `ALGO_AES_256_GCM` should have a fixed value `aes-256-gcm`', () => {
+      should(aes.ALGO_AES_256_GCM).be.a.String().and.equal('aes-256-gcm')
+    })
+  })
+
+  describe('Aes::ALGO_AES_256_ECB', () => {
+    it('property `ALGO_AES_256_ECB` should be static', () => {
+      should(aes.ALGO_AES_256_ECB).be.a.String()
+      should((new aes).ALGO_AES_256_ECB).is.Undefined()
+    })
+
+    it('property `ALGO_AES_256_ECB` should have a fixed value `aes-256-ecb`', () => {
+      should(aes.ALGO_AES_256_ECB).be.a.String().and.equal('aes-256-ecb')
+    })
+  })
+
+  describe('Aes::pkcs7', () => {
+    it('property `pkcs7` should be static', () => {
+      should(aes.pkcs7).be.an.Object()
+      should((new aes).pkcs7).is.Undefined()
+    })
+
+    it('property `pkcs7` should have `padding` method', () => {
+      should(aes.pkcs7.padding).be.a.Function()
+    })
+
+    it('property `pkcs7` should have `unpadding` method', () => {
+      should(aes.pkcs7.unpadding).be.a.Function()
+    })
+  })
+
   const mockupIv = '0123456789abcdef'
   const mockupKey = '0123456789abcdef0123456789abcdef'
   describe('Aes::encrypt', () => {
@@ -182,6 +271,18 @@ describe('lib/aes', () => {
       mockupIv.should.be.String().and.have.length(16)
       mockupKey.should.be.String().and.have.length(32)
       aes.decrypt(mockupIv, mockupKey, 'APoZlYpivU3HjbAiB4CvW1rAFr8J', 'world').should.be.String().and.equal('hello')
+    })
+  })
+
+  describe('Aes::AesGcm', () => {
+    it('should be class AesGcm', () => {
+      aes.AesGcm.should.be.a.Function().and.have.property('name', 'AesGcm')
+    })
+  })
+
+  describe('Aes::AesEcb', () => {
+    it('should be class AesEcb', () => {
+      aes.AesEcb.should.be.a.Function().and.have.property('name', 'AesEcb')
     })
   })
 })
