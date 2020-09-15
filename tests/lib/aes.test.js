@@ -47,14 +47,14 @@ describe('lib/aes', () => {
     })
   })
 
-  describe('Aes::BLOCK_SIZES', () => {
-    it('property `BLOCK_SIZES` should be static', () => {
-      should(aes.BLOCK_SIZES).be.a.Number()
-      should((new aes).BLOCK_SIZES).is.Undefined()
+  describe('Aes::BLOCK_SIZE', () => {
+    it('property `BLOCK_SIZE` should be static', () => {
+      should(aes.BLOCK_SIZE).be.a.Number()
+      should((new aes).BLOCK_SIZE).is.Undefined()
     })
 
-    it('property `BLOCK_SIZES` should have a fixed value 16', () => {
-      should(aes.BLOCK_SIZES).be.a.Number().and.equal(16)
+    it('property `BLOCK_SIZE` should have a fixed value 16', () => {
+      should(aes.BLOCK_SIZE).be.a.Number().and.equal(16)
     })
   })
 
