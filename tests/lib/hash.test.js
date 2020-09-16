@@ -12,8 +12,17 @@ describe('lib/hash', () => {
       should((new hash).md5).is.Undefined()
     })
 
-    it('method `md5` should accept none-arguments calling and returns a 32 length string', () => {
-      hash.md5().should.be.String().and.have.length(32)
+    it('method `md5` should thrown TypeError while none-arguments passed', () => {
+      should(() => {
+        hash.hmacSha256()
+      }).throw(TypeError, {
+        code: 'ERR_INVALID_ARG_TYPE',
+      })
+    })
+
+    it('method `md5` should accept empty string and returns a 32 length string and equal to `d41d8cd98f00b204e9800998ecf8427e`', () => {
+      hash.md5('').should.be.String().and.have.length(32)
+      hash.md5('').should.be.String().and.equal('d41d8cd98f00b204e9800998ecf8427e')
     })
   })
 
