@@ -749,6 +749,11 @@ const client = wxpay(instance, {
 
 ## Changelog
 
+- v0.3.2
+  - Optim: Strict `Aes.pkcs7.padding` following of the `rfc2315` spec
+  - Optim: Better of `Hash.md5` and `Hash.hmacSha256`
+  - Coding comments and REAME
+
 - v0.3.1
   - Optim: new param on `xmlBased({mchid})`, while passed in, then `Transformer.signer` doing the `assert` with the post data.
   - Feature: Customize the HTTP `User-Agent`.
