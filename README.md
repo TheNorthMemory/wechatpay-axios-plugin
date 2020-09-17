@@ -156,6 +156,7 @@ wxpay.v3.marketing.busifavor.stocks
 ```js
 const {Wechatpay, Formatter: fmt} = require('wechatpay-axios-plugin')
 const client = Wechatpay.xmlBased({
+  mchid: 'your_merchan_id', // It's optional, while passed in, then `Transformer.signer` doing the `assert` the one in the post data with it.
   secret: 'your_merchant_secret_key_string',
   merchant: {
     cert: '-----BEGIN CERTIFICATE-----' + '...' + '-----END CERTIFICATE-----',
@@ -243,6 +244,18 @@ client.post('/mmpaymkttransfers/promotion/transfers', {
   spbill_create_ip: '192.168.0.1',
   nonce_str: fmt.nonce(),
 }).then(res => console.info(res.data)).catch(({response}) => console.error(response))
+```
+
+### 获取RSA公钥
+
+非标准接口地址，同样支持
+
+```javascript
+client.post('https://fraud.mch.weixin.qq.com/risk/getpublickey', {
+  mch_id: '1900000109',
+  nonce_str: Formatter.nonce(),
+  sign_type: 'HMAC-SHA256',
+}).then(({data}) => console.info(data)).catch(({response}) => console.error(response))
 ```
 
 ## aes-256-ecb/pcks7padding
@@ -752,7 +765,7 @@ const client = wxpay(instance, {
 - v0.3.2
   - Optim: Strict `Aes.pkcs7.padding` following of the `rfc2315` spec
   - Optim: Better of `Hash.md5` and `Hash.hmacSha256`
-  - Coding comments and REAME
+  - Coding comments and README
 
 - v0.3.1
   - Optim: new param on `xmlBased({mchid})`, while passed in, then `Transformer.signer` doing the `assert` with the post data.
