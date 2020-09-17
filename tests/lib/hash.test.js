@@ -14,7 +14,7 @@ describe('lib/hash', () => {
 
     it('method `md5` should thrown TypeError while none-arguments passed', () => {
       should(() => {
-        hash.hmacSha256()
+        hash.md5()
       }).throw(TypeError, {
         code: 'ERR_INVALID_ARG_TYPE',
       })
