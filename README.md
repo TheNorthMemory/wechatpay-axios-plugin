@@ -18,7 +18,9 @@
 - [x] 支持微信支付APIv3的帐单下载及解析功能，示例代码如下
 - [x] 支持微信支付APIv3面向对象编程模式
 - [x] 支持 `Typescript`
-- [x] 支持微信支付XML风格的接口(通常所说v2)调用，依赖 [node-xml2js](https://github.com/Leonidas-from-XIV/node-xml2js), 示例代码如下<sup>:bulb:</sup>
+- [x] 支持微信支付XML风格的接口(通常所说v2)调用，依赖 [node-xml2js](https://github.com/Leonidas-from-XIV/node-xml2js), 示例代码如下
+- [x] 支持微信支付APIv2版的 `AES-256-ECB/PKCS7PADDING` 通知消息加/解密
+- [x] APIv2 & APIv3 与微信交互的各种数据签名用法示例
 
 ## 安装
 
@@ -243,6 +245,130 @@ client.post('/mmpaymkttransfers/promotion/transfers', {
 }).then(res => console.info(res.data)).catch(({response}) => console.error(response))
 ```
 
+## aes-256-ecb/pcks7padding
+
+### v0.3.1开始支持解密
+
+```javascript
+const {Aes: {AesEcb}, Transformer, Hash} = require('wechatpay-axios-plugin')
+const secret = 'exposed_your_key_here_have_risks'
+const xml = '<xml>' + ... '</xml>'
+const obj = Transformer.toObject(xml)
+const res = AesEcb.decrypt(obj.req_info, Hash.md5(secret))
+obj.req_info = Transformer.toObject(res)
+console.info(obj)
+```
+
+### v0.3.2开始支持加密
+
+```javascript
+const obj = Transformer.toObject(xml)
+const ciphertext = AesEcb.encrypt(obj.req_info, Hash.md5(secret))
+console.assert(obj.req_info === ciphertext, `The notify hash digest should be matched the local one`)
+```
+
+## APIv2数据签名
+
+### JSAPI
+
+```javascript
+const {Hash, Formatter} = require('wechatpay-axios-plugin')
+const v2Secret = 'exposed_your_key_here_have_risks'
+const params = {
+  appId: 'wx8888888888888888',
+  timeStamp: `${Formatter.timestamp()}`,
+  nonceStr: Formatter.nonce(),
+  package: 'prepay_id=wx201410272009395522657a690389285100',
+  signType: 'HMAC-SHA256',
+}
+params.paySign = Hash.sign(params.signType, params, v2Secret)
+
+console.info(params)
+```
+
+### APP
+
+```javascript
+const {Hash, Formatter} = require('wechatpay-axios-plugin')
+const v2Secret = 'exposed_your_key_here_have_risks'
+const params = {
+  appid: 'wx8888888888888888',
+  partnerid: '1900000109',
+  prepayid: 'WX1217752501201407033233368018',
+  package: 'Sign=WXPay',
+  timestamp: `${Formatter.timestamp()}`,
+  noncestr: Formatter.nonce(),
+}
+params.sign = Hash.sign('MD5', params, v2Secret)
+
+console.info(params)
+```
+
+## APIv3数据签名
+
+### JSAPI
+
+```javascript
+const {Rsa, Formatter} = require('wechatpay-axios-plugin')
+const privateKey = require('fs').readFileSync('/your/merchant/priviate_key.pem')
+
+const params = {
+  appId: 'wx8888888888888888',
+  timeStamp: `${Formatter.timestamp()}`,
+  nonceStr: Formatter.nonce(),
+  package: 'prepay_id=wx201410272009395522657a690389285100',
+  signType: 'RSA',
+}
+params.paySign = Rsa.sign(Formatter.joinedByLineFeed(jsapi.appId, jsapi.timeStamp, jsapi.nonceStr, jsapi.package), privateKey)
+
+console.info(params)
+```
+
+### 商家券-小程序发券v2版签名规则
+
+```javascript
+const {Hash, Formatter} = require('wechatpay-axios-plugin')
+const v2Secret = 'exposed_your_key_here_have_risks'
+
+// flat the miniprogram data transferring structure for sign
+const busiFavorFlat = ({send_coupon_merchant, send_coupon_params = []} = {}) => {
+  return {
+    send_coupon_merchant,
+    ...send_coupon_params.reduce((des, row, idx) => (Object.keys(row).map(one => des[`${one}${idx}`] = row[one]), des), {}),
+  }
+}
+
+// the miniprogram data transferring structure
+const busiFavor = {
+  send_coupon_params: [
+    {out_request_no:'1234567',stock_id:'abc123'},
+    {out_request_no:'7654321',stock_id:'321cba'},
+  ],
+  send_coupon_merchant: '10016226'
+}
+
+busiFavor.sign = Hash.sign('HMAC-SHA256', busiFavorFlat(busiFavor), v2Secret)
+
+console.info(busiFavor)
+```
+
+### 商家券-H5发券v2版签名规则
+
+```javascript
+const {Hash, Formatter} = require('wechatpay-axios-plugin')
+const v2Secret = 'exposed_your_key_here_have_risks'
+const params = {
+  stock_id: '12111100000001',
+  out_request_no: '20191204550002',
+  send_coupon_merchant: '10016226',
+  open_id: 'oVvBvwEurkeUJpBzX90-6MfCHbec',
+  coupon_code: '75345199',
+}
+params.sign = Hash.sign('HMAC-SHA256', params, v2Secret)
+
+console.info(params)
+```
+
 # Wechatpay Axios Plugin
 
 ## Features
@@ -255,7 +381,7 @@ client.post('/mmpaymkttransfers/promotion/transfers', {
 - [x] The wechatpay APIv3's billdownload and castCsvBill are there, examples below
 - [x] The `OOP` developing style of the wechatpay APIv3
 - [x] `Typescript` supported
-- [x] Fulfill the XML based API requests, dependency on [node-xml2js](https://github.com/Leonidas-from-XIV/node-xml2js) <sup>:bulb:</sup>
+- [x] Fulfill the XML based API requests, dependency on [node-xml2js](https://github.com/Leonidas-from-XIV/node-xml2js)
 
 ## Installing
 
