@@ -258,6 +258,18 @@ client.post('https://fraud.mch.weixin.qq.com/risk/getpublickey', {
 }).then(({data}) => console.info(data)).catch(({response}) => console.error(response))
 ```
 
+### 通知应答
+
+```javascript
+const {Transformer} = require('wechatpay-axios-plugin')
+const xml = Transformer.toXml({
+  return_code: 'SUCCESS',
+  return_msg: 'OK',
+})
+
+console.info(xml)
+```
+
 ## aes-256-ecb/pcks7padding
 
 ### v0.3.1开始支持解密
