@@ -407,6 +407,8 @@ console.info(params)
 - [x] The `OOP` developing style of the wechatpay APIv3
 - [x] `Typescript` supported
 - [x] Fulfill the XML based API requests, dependency on [node-xml2js](https://github.com/Leonidas-from-XIV/node-xml2js)
+- [x] Yet another `AES-256-ECB/PKCS7PADDING` implementation for encryption/decryption the APIv2's notification
+- [x] Usage samples of the APIv2 and APIv3's data exchange signature
 
 ## Installing
 
@@ -498,7 +500,9 @@ const client = wxp(instance, {
 
 ### Promise style
 
-#### POST `/v3/combine-transactions/jsapi` with `JSON` body payload
+#### combined orders payment
+
+POST `/v3/combine-transactions/jsapi` with `JSON` body payload
 
 ```js
 client.post('/v3/combine-transactions/jsapi', {}).then(response => {
@@ -508,7 +512,9 @@ client.post('/v3/combine-transactions/jsapi', {}).then(response => {
 })
 ```
 
-#### POST `/v3/smartguide/guides/{guide_id}/assign` mixed `RESTful` parameter with `JSON` body payload, response as `204` status code.
+#### payment as customer service
+
+POST `/v3/smartguide/guides/{guide_id}/assign` mixed `RESTful` parameter with `JSON` body payload, response as `204` status code.
 
 ```js
 client.post(`/v3/smartguide/guides/${guide_id}/assign`, {
@@ -519,7 +525,9 @@ client.post(`/v3/smartguide/guides/${guide_id}/assign`, {
 })
 ```
 
-#### POST `/v3/marketing/favor/media/image-upload` with `multipart/form-data` payload
+#### image file upload
+
+POST `/v3/marketing/favor/media/image-upload` with `multipart/form-data` payload
 
 ```js
 const FormData = require('form-data')
@@ -546,7 +554,9 @@ client.post('/v3/marketing/favor/media/image-upload', imageData, {
 })
 ```
 
-#### GET `/v3/bill/tradebill` chains with `/v3/billdownload/file`
+#### download trade bill and cast
+
+GET `/v3/bill/tradebill` chains with `/v3/billdownload/file`
 
 ```js
 const assert = require('assert')
@@ -572,7 +582,9 @@ client.get('/v3/bill/tradebill', {
 
 ### Async/Await style
 
-#### GET `/v3/merchant-service/complaints` with `query` parameters
+#### retrieve the customer complaints
+
+GET `/v3/merchant-service/complaints` with `query` parameters
 
 ```js
 (async () => {
@@ -592,7 +604,9 @@ client.get('/v3/bill/tradebill', {
 })()
 ```
 
-#### POST `/v3/pay/partner/transactions/native` with `JSON` body payload
+#### order payment by scanning qrcode
+
+POST `/v3/pay/partner/transactions/native` with `JSON` body payload
 
 ```js
 (async () => {
@@ -617,7 +631,9 @@ client.get('/v3/bill/tradebill', {
 })()
 ```
 
-#### GET `/v3/marketing/favor/stocks/{stock_id}` mixed `query` with `RESTful` parameters
+#### detail the coupon stock
+
+GET `/v3/marketing/favor/stocks/{stock_id}` mixed `query` with `RESTful` parameters
 
 ```js
 (async () => {
@@ -634,7 +650,9 @@ client.get('/v3/bill/tradebill', {
 })()
 ```
 
-#### POST `/v3/marketing/partnerships/build` with special `Header` field parameter
+#### the coupon stock associated
+
+POST `/v3/marketing/partnerships/build` with special `Header` field parameter
 
 ```js
 (async () => {
@@ -660,7 +678,9 @@ client.get('/v3/bill/tradebill', {
 })()
 ```
 
-#### POST `/v3/merchant/media/video_upload` with `multipart/form-data` payload
+#### video file upload
+
+POST `/v3/merchant/media/video_upload` with `multipart/form-data` payload
 
 ```js
 const FormData = require('form-data')
@@ -690,7 +710,9 @@ const {createReadStream} = require('fs')
 })()
 ```
 
-#### GET `/v3/bill/tradebill` and `/v3/billdownload/file` with `gzip` special
+#### download trade bill with `gzip` and cast
+
+GET `/v3/bill/tradebill` and `/v3/billdownload/file` with `gzip` special
 
 ```js
 const {unzipSync} = require('zlib')
