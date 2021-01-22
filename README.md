@@ -796,6 +796,12 @@ const client = wxpay(instance, {
 
 ## Changelog
 
+- v0.3.4
+  - Typed and tips on `Wechatpay` class(#9), thanks @ipoa
+
+- v0.3.3
+  - Upgrade Axios for the CVE-2020-28168
+
 - v0.3.2
   - Optim: Strict `Aes.pkcs7.padding` following of the `rfc2315` spec
   - Optim: Better of `Hash.md5` and `Hash.hmacSha256`
@@ -864,7 +870,7 @@ const client = wxpay(instance, {
 
 The MIT License (MIT)
 
-Copyright (c) 2020 James ZHANG(TheNorthMemory)
+Copyright (c) 2020-2021 James ZHANG(TheNorthMemory)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
