@@ -1,4 +1,4 @@
-import { AxiosInstance } from "axios";
+import { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 
 /**
  * Wechatpay Axios Plugin
@@ -183,6 +183,101 @@ export namespace WechatpayAxiosPlugin {
          */
         static verify(message: string, signature: string, publicCertificate: string | Buffer): boolean;
     }
+    /**
+     * A Wechatpay APIv3's amazing client.
+     *
+     * ```js
+     * const {Wechatpay} = require('wechatpay-axios-plugin')
+     * const wxpay = new Wechatpay({
+     *   mchid,
+     *   serial,
+     *   privateKey: '-----BEGIN PRIVATE KEY-----' + '...' + '-----END PRIVATE KEY-----',
+     *   certs: {
+     *     'serial_number': '-----BEGIN CERTIFICATE-----' + '...' + '-----END CERTIFICATE-----'
+     *   }
+     * })
+     *
+     * wxpay.V3.Marketing.Busifavor.Stocks.post({})
+     *   .then(({data}) => console.info(data))
+     *   .catch(({response: {data}}) => console.error(data))
+     *
+     * wxpay.V3.Pay.Transactions.Native.post({})
+     *   .then(({data: {code_url}}) => console.info(code_url))
+     *   .catch(({response: {data}}) => console.error(data))
+     *
+     * ;(async () => {
+     *   try {
+     *     const {data: detail} = await wxpay.V3.Pay.Transactions.Id.$transaction_id$
+     *       .withEntities({transaction_id: '1217752501201407033233368018'})
+     *       .get({params: {mchid: '1230000109'}})
+     *     // or simple like this
+     *     // const {data: detail} = await wxpay.V3.Pay.Transactions.Id['{transaction_id}']
+     *     //   .withEntities({transaction_id: '1217752501201407033233368018'})
+     *     //   .get({params: {mchid: '1230000109'}})
+     *     // or simple like this
+     *     // const {data: detail} = await wxpay.v3.pay.transactions.id['1217752501201407033233368018']
+     *     //   .get({params: {mchid: '1230000109'}})
+     *     console.info(detail)
+     *   } catch({response: {status, statusText, data}}) {
+     *     console.error(status, statusText, data)
+     *   }
+     * })()
+     * ```
+     */
+    class Wechatpay {
+        /**
+         * Constructor of the magic APIv3 container
+         * @param {object} wxpayConfig - @see {apiConfig}
+         * @param {object} axiosConfig - @see {import('axios').AxiosRequestConfig}
+         * @constructor
+         * @returns {Proxy} - The magic APIv3 container
+         */
+        constructor(wxpayConfig: apiConfig, axiosConfig?: AxiosRequestConfig)
+
+        /**
+         * @property {function} withEntities - Replace the `uri_template` with real entities' mapping
+         * @param {string[]} list - The real entities' mapping
+         * @returns {object} - the container's instance
+         */
+        withEntities(list: any): this
+
+        /**
+         * @property {function} get - The alias of the HTTP `GET` request
+         * @param {...any} arg - The request arguments
+         * @returns {PromiseLike} - The `AxiosPromise`
+         */
+        get<T = any, R = AxiosResponse<T>>(config?: AxiosRequestConfig): Promise<R>;
+
+        /**
+         * @property {function} post - The alias of the HTTP `POST` request
+         * @param {...any} arg - The request arguments
+         * @returns {PromiseLike} - The `AxiosPromise`
+         */
+        post<T = any, R = AxiosResponse<T>>(data?: any, config?: AxiosRequestConfig): Promise<R>;
+
+        /**
+         * @property {function} put - The alias of the HTTP 'PUT' request
+         * @param {...any} arg - The request arguments
+         * @returns {PromiseLike} - The `AxiosPromise`
+         */
+        put<T = any, R = AxiosResponse<T>>(data?: any, config?: AxiosRequestConfig): Promise<R>;
+
+        /**
+         * @property {function} put - The alias of the HTTP 'PATCH' request
+         * @param {...any} arg - The request arguments
+         * @returns {PromiseLike} - The `AxiosPromise`
+         */
+        patch<T = any, R = AxiosResponse<T>>(data?: any, config?: AxiosRequestConfig): Promise<R>;
+
+        /**
+         * @property {function} put - The alias of the HTTP 'DELETE' request
+         * @param {...any} arg - The request arguments
+         * @returns {PromiseLike} - The `AxiosPromise`
+         */
+        delete<T = any, R = AxiosResponse<T>>(config?: AxiosRequestConfig): Promise<R>;
+
+        [key: string]: this
+    }
 }
 
 export class Formatter extends WechatpayAxiosPlugin.Formatter{}
@@ -190,5 +285,7 @@ export class Formatter extends WechatpayAxiosPlugin.Formatter{}
 export class Aes extends WechatpayAxiosPlugin.Aes{}
 
 export class Rsa extends WechatpayAxiosPlugin.Rsa{}
+
+export class Wechatpay extends WechatpayAxiosPlugin.Wechatpay {}
 
 export default WechatpayAxiosPlugin.interceptor;
