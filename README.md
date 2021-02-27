@@ -223,8 +223,6 @@ wxpay.v3.marketing.busifavor.stocks
 
 ### 合单支付API
 
-POST `/v3/combine-transactions/jsapi` with `JSON` body payload
-
 ```js
 wxpay.v3.combineTransactions.jsapi
   .post({/*文档参数放这里就好*/})
@@ -259,7 +257,8 @@ wxpay.v3.bill.tradebill.get({
 ```js
 ;(async () => {
   try {
-    const {data: detail} = await wxpay.v3.marketing.busifavor.users.$openid$.coupons['{coupon_code}'].appids['wx233544546545989']
+    const {data: detail} = await wxpay.v3.marketing.busifavor
+      .users.$openid$.coupons['{coupon_code}'].appids['wx233544546545989']
       .get({openid: '2323dfsdf342342', coupon_code: '123446565767'})
     console.info(detail)
   } catch({response: {status, statusText, data}}) {
@@ -513,7 +512,10 @@ console.info(obj)
 ```js
 const obj = Transformer.toObject(xml)
 const ciphertext = AesEcb.encrypt(obj.req_info, Hash.md5(secret))
-console.assert(obj.req_info === ciphertext, `The notify hash digest should be matched the local one`)
+console.assert(
+  obj.req_info === ciphertext,
+  `The notify hash digest should be matched the local one`
+)
 ```
 
 ## APIv2数据签名
