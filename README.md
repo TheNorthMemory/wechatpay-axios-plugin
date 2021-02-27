@@ -1,4 +1,6 @@
-# 微信支付 Wechatpay APIv2&v3' Smart Develop Kit
+# 微信支付 OpenAPI SDK
+
+The WeChatPay OpenAPI v2&v3' Smart Develop Kit
 
 [![GitHub version](https://badgen.net/github/release/TheNorthMemory/wechatpay-axios-plugin)](https://github.com/TheNorthMemory/wechatpay-axios-plugin)
 [![GitHub issues](https://badgen.net/github/open-issues/TheNorthMemory/wechatpay-axios-plugin)](https://github.com/TheNorthMemory/wechatpay-axios-plugin)
@@ -81,10 +83,10 @@ You should verify the above infos again even if this library already did(by rsa.
 3. 每个 `URI` 有中线(dash)分隔符的，可以使用驼峰`camelCase`风格书写，例如: `merchant-service`可写成 `merchantService`，或者属性风格，例如 `v3['merchant-service']`;
 4. 每个 `URI`.pathname 中，若有动态参数，例如 `business_code/{business_code}` 可写成 `business_code.$business_code$` 或者属性风格书写，例如 `business_code['{business_code}']`，抑或直接按属性风格，直接写参数值也可以，例如 `business_code['2000001234567890']`;
 5. 建议 `URI` 按照 `PascalCase` 风格书写, `TS Definition` 已在路上(还有若干问题没解决)，将是这种风格，代码提示将会很自然;
-6. 内置以 `/v2` APIv2版的请求区分，如 `/v2/pay/micropay` 即以XML形式请求远端接口；
-7. `GET/POST/PUT/PATCH/DELETE` 作为内置HTTP请求的操作函数，支持全大写及全小写(未来可能会删除)两种编码方式，说明见`变更历史`;
+6. SDK内置的 `/v2` 对象，其特殊标识为APIv2级联对象，之后串接切分后的`pathname`，如 `/v2/pay/micropay` 即以XML形式请求远端接口；
+7. 每个级联对象默认为HTTP`POST`函数，其同时隐式内置`GET/POST/PUT/PATCH/DELETE` 操作方法链，支持全大写及全小写(未来有可能会删除)两种编码方式，说明见`变更历史`;
 
-以下事例用法，均以此种编码模式展开。
+以下事例用法，均以`Promise`或`Async/Await`结合此种编码模式展开，级联对象操作符的调试信息见文档末。
 
 ### 初始化
 
@@ -110,7 +112,7 @@ const wxpay = new Wechatpay({
 })
 ```
 
-**注：** 0.4.0版本开始，做了优化， APIv2&v3参数以及Axios初始参数，均融合在一个型参上。
+**注：** 0.4.0版本做了重构及优化，APIv2&v3以及Axios初始参数，均融合在一个型参上。
 
 ### 付款码(刷卡)支付
 
@@ -481,7 +483,7 @@ Wechatpay.client.v2.post('https://fraud.mch.weixin.qq.com/risk/getpublickey', {
 .catch(({response}) => console.error(response))
 ```
 
-### 通知应答
+### XML形式通知应答
 
 ```js
 const {Transformer} = require('wechatpay-axios-plugin')
@@ -721,7 +723,7 @@ console.info(params)
 
 - v0.4.0
   - 重构 `Wechatpay` 类，同时支持 APIv2&v3's 链式调用
-  - 废弃 `withEntities` 方法，其链式多次调用时，有可能达不到预期 #10
+  - 废弃 `withEntities` 方法，其在链式多次调用时，有可能达不到预期，详情见 #10
   - README 文档中文化
 
 - v0.3.4
