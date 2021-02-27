@@ -6,4 +6,5 @@ module.exports.Hash = require('./lib/hash')
 module.exports.Formatter = require('./lib/formatter')
 module.exports.Wechatpay = require('./lib/wechatpay')
 module.exports.Transformer = require('./lib/transformer')
+module.exports.Decorator = require('./lib/Decorator')
 module.exports.default = interceptor

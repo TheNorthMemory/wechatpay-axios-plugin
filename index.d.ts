@@ -116,7 +116,20 @@ export namespace WechatpayAxiosPlugin {
         mchid: string | number,
         serial: string,
         privateKey: string | Buffer,
-        certs: platformCertificates
+        certs: platformCertificates,
+        secret?: string,
+        merchant?: merchantCertificate
+    }
+
+    /**
+     * @typedef {Object} merchantCertificate - The merchant certification for APIv2
+     * @prop {string} key - The serial number of the wechatpay certificate
+     */
+    type merchantCertificate = {
+        key?: string | Buffer,
+        cert?: string | Buffer,
+        pfx?: Buffer,
+        passphase?: string
     }
 
     /**
@@ -183,8 +196,104 @@ export namespace WechatpayAxiosPlugin {
          */
         static verify(message: string, signature: string, publicCertificate: string | Buffer): boolean;
     }
+
     /**
-     * A Wechatpay APIv3's amazing client.
+    * Decorate the `Axios` instance
+    */
+    class Decorator {
+        /**
+        * @property {object} defaults - The defaults configuration whose pased in `Axios`.
+        */
+        static get defaults(): {
+            baseURL: string;
+        };
+        /**
+        * Deep merge the input with the defaults
+        *
+        * @param {object} config - The configuration.
+        *
+        * @returns {object} - With the built-in configuration.
+        */
+        static withDefaults(config?: object): object;
+        /**
+        * Create an APIv2's client
+        *
+        * @param {object} config - configuration
+        * @param {string|number} [config[.mchid] - The merchant ID
+        * @param {string} [config.secret] - The merchant secret key string
+        * @param {object} [config.merchant] - The merchant certificates, more @see {import('tls').createSecureContext}
+        * @param {string|buffer} [config.merchant.cert] - The merchant cert chains in PEM format
+        * @param {string|buffer} [config.merchant.key] - The merchant private keys in PEM format
+        * @param {string|buffer} [config.merchant.pfx] - The merchant PFX or PKCS12 encoded private key and certificate chain.
+        * @param {string|buffer} [config.merchant.passphrase] - The merchant shared passphrase used for a single private key and/or a PFX.
+        *
+        * @returns {AxiosInstance} - The axios instance
+        */
+        static xmlBased(config?: {
+            mchid: string | number;
+            secret: string;
+            merchant: merchantCertificate;
+        }): AxiosInstance;
+        /**
+        * Create an APIv3's client
+        *
+        * @param {object} config - configuration
+        * @param {string|number} config.mchid - The merchant ID
+        * @param {string} config.serial - The serial number of the merchant certificate
+        * @param {string|Buffer} config.privateKey - The merchant private key certificate
+        * @param {object} config.certs - The wechatpay provider size configuration, `{serial: publicCert}` pair
+        *
+        * @returns {AxiosInstance} - The axios instance
+        */
+        static jsonBased(config?: {
+            mchid: string | number;
+            serial: string;
+            privateKey: string | Buffer;
+            certs: platformCertificates;
+        }): AxiosInstance;
+        /**
+        * Decorate factory
+        * @param {object} config - configuration
+        * @param {string|number} config.mchid - The merchant ID
+        * @param {string} config.serial - The serial number of the merchant certificate
+        * @param {string|Buffer} config.privateKey - The merchant private key certificate
+        * @param {object} config.certs - The wechatpay provider size configuration, `{serial: publicCert}` pair
+        * @param {string} [config.secret] - The merchant secret key string
+        * @param {object} [config.merchant] - The merchant certificates, more @see {import('tls').createSecureContext}
+        * @param {string|buffer} [config.merchant.cert] - The merchant cert chains in PEM format
+        * @param {string|buffer} [config.merchant.key] - The merchant private keys in PEM format
+        * @param {string|buffer} [config.merchant.pfx] - The merchant PFX or PKCS12 encoded private key and certificate chain.
+        * @param {string|buffer} [config.merchant.passphrase] - The merchant shared passphrase used for a single private key and/or a PFX.
+        * @constructor
+        */
+        constructor(config: apiConfig & AxiosRequestConfig);
+        /**
+        * Getter APIv2's client (xmlBased)
+        *
+        * @returns {AxiosInstance} - The axios instance
+        */
+        get v2(): AxiosInstance;
+        /**
+        * Getter APIv3's client (jsonBased)
+        *
+        * @returns {AxiosInstance} - The axios instance
+        */
+        get v3(): AxiosInstance;
+        /**
+        * Request the remote `pathname` by a HTTP `method` verb
+        *
+        * @param {string} [pathname] - The pathname string.
+        * @param {string} [method] - The method string.
+        * @param {object|Buffer} [data] - The data.
+        * @param {object} [config] - The config.
+        *
+        * @returns {PromiseLike} - The `AxiosPromise`
+        */
+        request<T = any, R = AxiosResponse<T>>(pathname?: string | undefined, method?: string | undefined, data?: object | any, config?: AxiosRequestConfig): PromiseLike<R>;
+    }
+
+    /**
+     * A Wechatpay APIv2&v3's amazing client.
      *
      * ```js
      * const {Wechatpay} = require('wechatpay-axios-plugin')
@@ -194,8 +303,19 @@ export namespace WechatpayAxiosPlugin {
      *   privateKey: '-----BEGIN PRIVATE KEY-----' + '...' + '-----END PRIVATE KEY-----',
      *   certs: {
      *     'serial_number': '-----BEGIN CERTIFICATE-----' + '...' + '-----END CERTIFICATE-----'
+     *   },
+     *   secret,
+     *   merchant: {
+     *     cert,
+     *     key,
+     *     // pfx,
+     *     // passphase,
      *   }
      * })
+     *
+     * wxpay.v2.pay.micropay({}).then(console.info).catch(console.error)
+     *
+     * wxpay.v2.secapi.pay.refund.POST({}).then(console.info).catch(console.error)
      *
      * wxpay.V3.Marketing.Busifavor.Stocks.post({})
      *   .then(({data}) => console.info(data))
@@ -208,12 +328,10 @@ export namespace WechatpayAxiosPlugin {
      * ;(async () => {
      *   try {
      *     const {data: detail} = await wxpay.V3.Pay.Transactions.Id.$transaction_id$
-     *       .withEntities({transaction_id: '1217752501201407033233368018'})
-     *       .get({params: {mchid: '1230000109'}})
+     *       .get({params: {mchid: '1230000109'}, transaction_id: '1217752501201407033233368018'})
      *     // or simple like this
      *     // const {data: detail} = await wxpay.V3.Pay.Transactions.Id['{transaction_id}']
-     *     //   .withEntities({transaction_id: '1217752501201407033233368018'})
-     *     //   .get({params: {mchid: '1230000109'}})
+     *     //   .get({params: {mchid: '1230000109'}, transaction_id: '1217752501201407033233368018'})
      *     // or simple like this
      *     // const {data: detail} = await wxpay.v3.pay.transactions.id['1217752501201407033233368018']
      *     //   .get({params: {mchid: '1230000109'}})
@@ -226,20 +344,53 @@ export namespace WechatpayAxiosPlugin {
      */
     class Wechatpay {
         /**
-         * Constructor of the magic APIv3 container
-         * @param {object} wxpayConfig - @see {apiConfig}
-         * @param {object} axiosConfig - @see {import('axios').AxiosRequestConfig}
+        * @property {Decorator} client - The Decorator instance
+        *
+        * @returns {Decorator}
+        */
+        static get client(): Decorator;
+        /**
+         * Constructor of the magic APIv2&v3's `chain`.
+         * @param {object} config - @see {apiConfig}
          * @constructor
-         * @returns {Proxy} - The magic APIv3 container
+         * @returns {Proxy} - The magic APIv2&v3 container
          */
-        constructor(wxpayConfig: apiConfig, axiosConfig?: AxiosRequestConfig)
+        constructor(config: apiConfig & AxiosRequestConfig)
 
         /**
-         * @property {function} withEntities - Replace the `uri_template` with real entities' mapping
-         * @param {string[]} list - The real entities' mapping
-         * @returns {object} - the container's instance
+         * @property {function} GET - The alias of the HTTP `GET` request
+         * @param {...any} arg - The request arguments
+         * @returns {PromiseLike} - The `AxiosPromise`
          */
-        withEntities(list: any): this
+        GET<T = any, R = AxiosResponse<T>>(config?: AxiosRequestConfig): Promise<R>;
+
+        /**
+         * @property {function} POST - The alias of the HTTP `POST` request
+         * @param {...any} arg - The request arguments
+         * @returns {PromiseLike} - The `AxiosPromise`
+         */
+        POST<T = any, R = AxiosResponse<T>>(data?: any, config?: AxiosRequestConfig): Promise<R>;
+
+        /**
+         * @property {function} PUT - The alias of the HTTP 'PUT' request
+         * @param {...any} arg - The request arguments
+         * @returns {PromiseLike} - The `AxiosPromise`
+         */
+        PUT<T = any, R = AxiosResponse<T>>(data?: any, config?: AxiosRequestConfig): Promise<R>;
+
+        /**
+         * @property {function} PATCH - The alias of the HTTP 'PATCH' request
+         * @param {...any} arg - The request arguments
+         * @returns {PromiseLike} - The `AxiosPromise`
+         */
+        PATCH<T = any, R = AxiosResponse<T>>(data?: any, config?: AxiosRequestConfig): Promise<R>;
+
+        /**
+         * @property {function} DELETE - The alias of the HTTP 'DELETE' request
+         * @param {...any} arg - The request arguments
+         * @returns {PromiseLike} - The `AxiosPromise`
+         */
+        DELETE<T = any, R = AxiosResponse<T>>(config?: AxiosRequestConfig): Promise<R>;
 
         /**
          * @property {function} get - The alias of the HTTP `GET` request
@@ -263,14 +414,14 @@ export namespace WechatpayAxiosPlugin {
         put<T = any, R = AxiosResponse<T>>(data?: any, config?: AxiosRequestConfig): Promise<R>;
 
         /**
-         * @property {function} put - The alias of the HTTP 'PATCH' request
+         * @property {function} patch - The alias of the HTTP 'PATCH' request
          * @param {...any} arg - The request arguments
          * @returns {PromiseLike} - The `AxiosPromise`
          */
         patch<T = any, R = AxiosResponse<T>>(data?: any, config?: AxiosRequestConfig): Promise<R>;
 
         /**
-         * @property {function} put - The alias of the HTTP 'DELETE' request
+         * @property {function} delete - The alias of the HTTP 'DELETE' request
          * @param {...any} arg - The request arguments
          * @returns {PromiseLike} - The `AxiosPromise`
          */
@@ -285,6 +436,8 @@ export class Formatter extends WechatpayAxiosPlugin.Formatter{}
 export class Aes extends WechatpayAxiosPlugin.Aes{}
 
 export class Rsa extends WechatpayAxiosPlugin.Rsa{}
+
+export class Decorator extends WechatpayAxiosPlugin.Decorator{}
 
 export class Wechatpay extends WechatpayAxiosPlugin.Wechatpay {}
 
