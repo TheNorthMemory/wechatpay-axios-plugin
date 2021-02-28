@@ -1,6 +1,6 @@
 # 微信支付 OpenAPI SDK
 
-The WeChatPay OpenAPI v2&v3' Smart Develop Kit
+The WeChatPay OpenAPI v2&v3' Smart Development Kit
 
 [![GitHub version](https://badgen.net/github/release/TheNorthMemory/wechatpay-axios-plugin)](https://github.com/TheNorthMemory/wechatpay-axios-plugin)
 [![GitHub issues](https://badgen.net/github/open-issues/TheNorthMemory/wechatpay-axios-plugin)](https://github.com/TheNorthMemory/wechatpay-axios-plugin)
@@ -24,13 +24,13 @@ The WeChatPay OpenAPI v2&v3' Smart Develop Kit
 - [x] 支持微信支付APIv2版的 `AES-256-ECB/PKCS7PADDING` 通知消息加/解密
 - [x] APIv2 & APIv3 与微信交互的各种数据签名用法示例
 
-## 安装
-
-`$ npm install wechatpay-axios-plugin`
-
 ## 系统要求
 
 NodeJS的原生`crypto`模块，自v12.9.0在 `publicEncrypt` 及 `privateDecrypt` 增加了 `oaepHash` 入参选项，本类库在 `Rsa.encrypt` 及 `Rsa.decrypt` 显式声明了此入参，NodeJS10.15.0上可正常工作，这应该是内置了此参数的默认值；虽然在v10.15上可用，不过仍旧推荐使用 NodeJS >= v12.9.0。
+
+## 安装
+
+`$ npm install wechatpay-axios-plugin`
 
 ## 万里长征第一步
 
@@ -219,14 +219,6 @@ wxpay.v3.pay.transactions.outTradeNo['1217752501201407033233368018']
   .catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
 ```
 
-### 创建商家券API
-```js
-wxpay.v3.marketing.busifavor.stocks
-  .post({/*商家券创建条件*/})
-  .then(({data}) => console.info(data))
-  .catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
-```
-
 ### 合单支付API
 
 ```js
@@ -259,6 +251,14 @@ wxpay.v3.bill.tradebill.get({
 })
 ```
 
+### 创建商家券API
+```js
+wxpay.v3.marketing.busifavor.stocks
+  .post({/*商家券创建条件*/})
+  .then(({data}) => console.info(data))
+  .catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
+```
+
 ### 查询用户单张券详情API
 
 ```js
@@ -272,6 +272,31 @@ wxpay.v3.bill.tradebill.get({
     console.error(status, statusText, data)
   }
 }
+```
+
+### 服务商模式Native下单
+
+```js
+;(async () => {
+  try {
+    const res = await wxpay.v3.pay.partner.transactions.native({
+      sp_appid,
+      sp_mchid,
+      sub_mchid,
+      description,
+      out_trade_no,
+      time_expire: new Date( (+new Date) + 33*60*1000 ), //after 33 minutes
+      attach,
+      notify_url,
+      amount: {
+        total: 1,
+      }
+    })
+    console.info(res.data.code_url)
+  } catch (error) {
+    console.error(error)
+  }
+})()
 ```
 
 ### 支付即服务API
@@ -332,31 +357,6 @@ imageData.append('file', createReadStream('./hellowechatpay.png'))
       headers: imageData.getHeaders()
     })
     console.info(res.data.media_url)
-  } catch (error) {
-    console.error(error)
-  }
-})()
-```
-
-### 服务商模式Native下单
-
-```js
-;(async () => {
-  try {
-    const res = await wxpay.v3.pay.partner.transactions.native({
-      sp_appid,
-      sp_mchid,
-      sub_mchid,
-      description,
-      out_trade_no,
-      time_expire: new Date( (+new Date) + 33*60*1000 ), //after 33 minutes
-      attach,
-      notify_url,
-      amount: {
-        total: 1,
-      }
-    })
-    console.info(res.data.code_url)
   } catch (error) {
     console.error(error)
   }
@@ -455,7 +455,7 @@ videoData.append('file', createReadStream('./hellowechatpay.mp4'))
 })()
 ```
 
-### 压缩模式下载账单
+### GZIP下载资金账单
 
 ```js
 const {unzipSync} = require('zlib')
@@ -464,10 +464,10 @@ const {Hash: {sha1}} = require('wechatpay-axios-plugin')
 
 ;(async () => {
   try {
-    const {data: {download_url, hash_value}} = await wxpay.v3.bill.tradebill.GET({
+    const {data: {download_url, hash_value}} = await wxpay.v3.bill.fundflowbill.GET({
       params: {
         bill_date: '2020-02-12',
-        bill_type: 'ALL',
+        bill_type: 'BASIC',
         tar_type: 'GZIP',
       }
     })
@@ -597,7 +597,7 @@ const params = {
   signType: 'RSA',
 }
 params.paySign = Rsa.sign(Formatter.joinedByLineFeed(
-  jsapi.appId, jsapi.timeStamp, jsapi.nonceStr, jsapi.package
+  params.appId, params.timeStamp, params.nonceStr, params.package
 ), privateKey)
 
 console.info(params)
@@ -724,7 +724,10 @@ console.info(params)
     combineTransactions: [Function: /v3/combine-transactions] {
       jsapi: [Function: /v3/combine-transactions/jsapi]
     },
-    bill: [Function: /v3/bill] { tradebill: [Function: /v3/bill/tradebill] },
+    bill: [Function: /v3/bill] {
+      tradebill: [Function: /v3/bill/tradebill],
+      fundflowbill: [Function: /v3/bill/fundflowbill]
+    },
     billdownload: [Function: /v3/billdownload] {
       file: [Function: /v3/billdownload/file]
     },
