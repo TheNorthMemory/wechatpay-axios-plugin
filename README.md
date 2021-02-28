@@ -57,7 +57,7 @@ Options:
 </details>
 
 <details>
-  <summary>$ <b>./bin/certificateDownloader.js</b> -m NUMERICAL -s HEXADECIAL -f apiclient_key.pem -k YOURAPIV3SECRETKEY -o .</summary>
+  <summary>$ <b>./bin/certificateDownloader.js</b> -m N -s S -f F.pem -k K -o .</summary>
 
 ```
 Wechatpay Public Certificate#0
