@@ -91,7 +91,7 @@ You should verify the above infos again even if this library already did(by rsa.
 ### 初始化
 
 ```js
-const {Wechatpay, Formatter: fmt} = require('wechatpay-axios-plugin')
+const {Wechatpay, Formatter} = require('wechatpay-axios-plugin')
 const wxpay = new Wechatpay({
   mchid: 'your_merchant_id',
   serial: 'serial_number_of_your_merchant_public_cert',
@@ -114,13 +114,15 @@ const wxpay = new Wechatpay({
 
 **注：** 0.4.0版本做了重构及优化，APIv2&v3以及Axios初始参数，均融合在一个型参上。
 
+## APIv2
+
 ### 付款码(刷卡)支付
 
 ```js
 wxpay.v2.pay.micropay({
   appid: 'wx8888888888888888',
   mch_id: '1900000109',
-  nonce_str: fmt.nonce(),
+  nonce_str: Formatter.nonce(),
   sign_type: 'HMAC-SHA256',
   body: 'image形象店-深圳腾大-QQ公仔',
   out_trade_no: '1217752501201407033233368018',
@@ -144,7 +146,7 @@ wxpay.v2.secapi.pay.refund.post({
   total_fee: 100,
   refund_fee: 100,
   refund_fee_type: 'CNY',
-  nonce_str: fmt.nonce(),
+  nonce_str: Formatter.nonce(),
 })
 .then(res => console.info(res.data))
 .catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
@@ -154,7 +156,7 @@ wxpay.v2.secapi.pay.refund.post({
 
 ```js
 wxpay.v2.mmpaymkttransfers.sendredpack.POST({
-  nonce_str: fmt.nonce(),
+  nonce_str: Formatter.nonce(),
   mch_billno: '10000098201411111234567890',
   mch_id: '10000098',
   wxappid: 'wx8888888888888888',
@@ -185,11 +187,13 @@ wxpay.v2.mmpaymkttransfers.promotion.transfers({
   amount: 10099,
   desc: '理赔',
   spbill_create_ip: '192.168.0.1',
-  nonce_str: fmt.nonce(),
+  nonce_str: Formatter.nonce(),
 })
 .then(res => console.info(res.data))
 .catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
 ```
+
+## APIv3
 
 ### Native下单API
 ```js
@@ -240,15 +244,16 @@ const {Hash: {sha1}} = require('wechatpay-axios-plugin')
 
 wxpay.v3.bill.tradebill.get({
   params: {
-    bill_date: '2020-06-01',
+    bill_date: '2021-02-12',
     bill_type: 'ALL',
   }
-}).then(({data: {download_url, hash_value}}) => Wechatpay.client.v3.get(download_url, {
-    signed: hash_value,
-    responseType: 'arraybuffer',
+}).then(({data: {download_url, hash_value}}) => wxpay.v3.billdownload.file.get({
+  params: (new URL(download_url)).searchParams,
+  signed: hash_value,
+  responseType: 'arraybuffer',
 })).then(res => {
   assert(sha1(res.data.toString()) === res.config.signed, 'verify the SHA1 digest failed.')
-  console.info(fmt.castCsvBill(res.data))
+  console.info(Formatter.castCsvBill(res.data))
 }).catch(error => {
   console.error(error)
 })
@@ -270,8 +275,6 @@ wxpay.v3.bill.tradebill.get({
 ```
 
 ### 支付即服务API
-
-HTTP 响应为`204`状态码的情形
 
 ```js
 ;(async () => {
@@ -335,7 +338,7 @@ imageData.append('file', createReadStream('./hellowechatpay.png'))
 })()
 ```
 
-#### 服务商模式Native下单
+### 服务商模式Native下单
 
 ```js
 ;(async () => {
@@ -360,7 +363,7 @@ imageData.append('file', createReadStream('./hellowechatpay.png'))
 })()
 ```
 
-#### 查询优惠券详情
+### 查询优惠券详情
 
 ```js
 ;(async () => {
@@ -378,7 +381,7 @@ imageData.append('file', createReadStream('./hellowechatpay.png'))
 })()
 ```
 
-#### 优惠券委托营销
+### 优惠券委托营销
 
 ```js
 (async () => {
@@ -404,7 +407,25 @@ imageData.append('file', createReadStream('./hellowechatpay.png'))
 })()
 ```
 
-#### 视频文件上传
+### 优惠券核销记录下载
+
+```js
+(async () => {
+  try {
+    let res = await wxpay.v3.marketing.favor.stocks.$stock_id$.useFlow.get({stock_id})
+    res = await wxpay.v3.billdownload.file.get({
+      params: (new URL(res.data.url)).searchParams,
+      responseType: 'arraybuffer'
+    })
+    // 备注：此接口下载的文件格式与商户平台下载的不完全一致，Formatter.castCsvBill解析有差异
+    console.info(res.data.toString())
+  } catch (error) {
+    console.error(error)
+  }
+})()
+```
+
+### 视频文件上传
 
 ```js
 const FormData = require('form-data')
@@ -434,7 +455,7 @@ videoData.append('file', createReadStream('./hellowechatpay.mp4'))
 })()
 ```
 
-#### 压缩模式下载账单
+### 压缩模式下载账单
 
 ```js
 const {unzipSync} = require('zlib')
@@ -445,31 +466,34 @@ const {Hash: {sha1}} = require('wechatpay-axios-plugin')
   try {
     const {data: {download_url, hash_value}} = await wxpay.v3.bill.tradebill.GET({
       params: {
-        bill_date: '2020-06-01',
+        bill_date: '2020-02-12',
         bill_type: 'ALL',
         tar_type: 'GZIP',
       }
     })
-    const {data} = await Wechatpay.client.v3.get(download_url, {responseType: 'arraybuffer'})
+    const {data} = await wxpay.v3.billdownload.file.GET({
+      params: (new URL(download_url)).searchParams,
+      responseType: 'arraybuffer'
+    })
     // note here: previous `hash_value` was about the source `csv`, not the `gzip` data
     //            so it needs unziped first, then to compare the `SHA1` degest
     const bill = unzipSync(data)
     assert.ok(hash_value === sha1(bill.toString()), 'SHA1 verification failed')
-    console.info(fmt.castCsvBill(bill))
+    console.info(Formatter.castCsvBill(bill))
   } catch (error) {
     console.error(error)
   }
 })()
 ```
 
-### 自定义打印日志
+## 自定义打印日志
 
 ```js
 Wechatpay.client.v2.defaults.transformRequest.push(data => (console.log(data), data))
 Wechatpay.client.v2.defaults.transformResponse.unshift(data => (console.log(data), data))
 ```
 
-### 获取RSA公钥
+## 获取RSA公钥
 
 非标准接口地址，这样支持调用
 
@@ -483,7 +507,7 @@ Wechatpay.client.v2.post('https://fraud.mch.weixin.qq.com/risk/getpublickey', {
 .catch(({response}) => console.error(response))
 ```
 
-### XML形式通知应答
+## XML形式通知应答
 
 ```js
 const {Transformer} = require('wechatpay-axios-plugin')
@@ -688,7 +712,9 @@ console.info(params)
           imageUpload: [Function: /v3/marketing/favor/media/image-upload]
         },
         stocks: [Function: /v3/marketing/favor/stocks] {
-          '$stock_id$': [Function: /v3/marketing/favor/stocks/{stock_id}]
+          '$stock_id$': [Function: /v3/marketing/favor/stocks/{stock_id}] {
+            useFlow: [Function: /v3/marketing/favor/stocks/{stock_id}/use-flow]
+          }
         }
       },
       partnerships: [Function: /v3/marketing/partnerships] {
@@ -699,6 +725,9 @@ console.info(params)
       jsapi: [Function: /v3/combine-transactions/jsapi]
     },
     bill: [Function: /v3/bill] { tradebill: [Function: /v3/bill/tradebill] },
+    billdownload: [Function: /v3/billdownload] {
+      file: [Function: /v3/billdownload/file]
+    },
     smartguide: [Function: /v3/smartguide] {
       guides: [Function: /v3/smartguide/guides] {
         '$guide_id$': [Function: /v3/smartguide/guides/{guide_id}] {
