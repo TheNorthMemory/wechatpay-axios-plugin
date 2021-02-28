@@ -5,9 +5,33 @@ import { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
  */
 export namespace WechatpayAxiosPlugin {
     /**
-     * Aes encrypt/decrypt using `aes-256-gcm` algorithm with `AAD`.
+     * Aes - Advanced Encryption Standard
      */
     class Aes {
+        /**
+         * @property {string} hex - Alias of `hex` string
+         */
+        static get hex(): string;
+        /**
+         * @property {string} utf8 - Alias of `utf8` string
+         */
+        static get utf8(): string;
+        /**
+         * @property {string} base64 - Alias of `base64` string
+         */
+        static get base64(): string;
+        /**
+         * @property {integer} BLOCK_SIZE - The `aes` block size
+         */
+        static get BLOCK_SIZE(): number;
+        /**
+         * @property {string} ALGO_AES_256_GCM - The `aes-256-gcm` algorithm
+         */
+        static get ALGO_AES_256_GCM(): string;
+        /**
+         * @property {string} ALGO_AES_256_ECB - The `aes-256-ecb` algorithm
+         */
+        static get ALGO_AES_256_ECB(): string;
         /**
          * Encrypts plaintext.
          *
@@ -30,6 +54,188 @@ export namespace WechatpayAxiosPlugin {
          * @returns {string} Utf-8 plaintext.
          */
         static decrypt(iv: string, key: string, ciphertext: string, aad?: string): string;
+        /**
+         * @property {object} pkcs7 - The PKCS7 padding/unpadding container
+         */
+        static get pkcs7(): {
+            /**
+             * padding, 32 bytes/256 bits `secret key` may optional need the last block.
+             * @see https://tools.ietf.org/html/rfc2315#section-10.3
+             * <quote>
+             * The padding can be removed unambiguously since all input is
+             *     padded and no padding string is a suffix of another. This
+             *     padding method is well-defined if and only if k < 256;
+             *     methods for larger k are an open issue for further study.
+             * </quote>
+             *
+             * @param {string|Buffer} thing - The input
+             * @param {boolean} [optional = true] - The flag for the last padding
+             *
+             * @return {Buffer} - The PADDING tailed payload
+             */
+            padding: (thing: string | any, optional?: boolean | undefined) => any;
+            /**
+             * unpadding
+             *
+             * @param  {string|Buffer} thing - The input
+             * @return {Buffer} - The PADDING wiped payload
+             */
+            unpadding: (thing: string | any) => any;
+        };
+    }
+
+    /**
+     * Aes - Advanced Encryption Standard
+     */
+    namespace Aes {
+        /**
+         * Aes encrypt/decrypt using `aes-256-gcm` algorithm with `AAD`.
+         */
+        class AesGcm extends Aes {
+            /**
+             * Encrypts plaintext.
+             *
+             * @param {string} iv - The initialization vector, 16 bytes string.
+             * @param {string} key - The secret key, 32 bytes string.
+             * @param {string} plaintext - Text to encode.
+             * @param {string} aad - The additional authenticated data, maybe empty string.
+             *
+             * @returns {string} Base64-encoded ciphertext.
+             */
+            static encrypt(iv: string, key: string, plaintext: string, aad?: string): string;
+            /**
+             * Decrypts ciphertext.
+             *
+             * @param {string} iv - The initialization vector, 16 bytes string.
+             * @param {string} key - The secret key, 32 bytes string.
+             * @param {string} ciphertext - Base64-encoded ciphertext.
+             * @param {string} aad - The additional authenticated data, maybe empty string.
+             *
+             * @returns {string} Utf-8 plaintext.
+             */
+            static decrypt(iv: string, key: string, ciphertext: string, aad?: string): string;
+        }
+
+        /**
+         * Aes encrypt/decrypt using `aes-256-ecb` algorithm with pkcs7padding.
+         */
+        class AesEcb extends Aes {
+            /**
+             * Encrypts plaintext.
+             *
+             * @param {string} plaintext - Text to encode.
+             * @param {string} key - The secret key, 32 bytes string.
+             *
+             * @returns {string} Base64-encoded ciphertext.
+             */
+            static encrypt(plaintext: string, key: string): string;
+            /**
+             * Decrypts ciphertext.
+             * Notes here: While turns the `setAutoPadding(true)`, it works well.
+             *             Beause the `pkcs5padding` is a subset of `pkcs7padding`.
+             *             Let's `unpadding` self.
+             *
+             * @param {string} ciphertext - Base64-encoded ciphertext.
+             * @param {string} key - The secret key, 32 bytes string.
+             *
+             * @returns {string} Utf-8 plaintext.
+             */
+            static decrypt(ciphertext: string, key: string): string;
+        }
+    }
+
+    /**
+     * Crypto hash functions utils.
+     * Specification @link https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3
+     */
+    class Hash {
+        /**
+         * Calculate the input string with an optional secret `key` in MD5,
+         * when the `key` is Falsey, this method works as normal `MD5`.
+         *
+         * @param {string|buffer} thing - The input string.
+         * @param {string} [key] - The secret key string.
+         * @return {string} - data signature
+         */
+        static md5(thing: string | any, key?: string | undefined): string;
+        /**
+         * Calculate the input string with a secret `key` in HMAC-SHA256
+         * @param {string|buffer} thing - The input string.
+         * @param {string} key - The secret key string.
+         * @return {string} - data signature
+         */
+        static hmacSha256(thing: string | any, key: string): string;
+        /**
+         * Calculate the input in SHA1.
+         * @param {string|buffer} thing - The input.
+         * @return {string} - data signature
+         */
+        static sha1(thing: string | any): string;
+        /**
+         * Calculate the input in SHA256.
+         * @param {string|buffer} thing - The input.
+         * @return {string} - data signature
+         */
+        static sha256(thing: string | any): string;
+        /**
+         * Utils of the data signature calculation.
+         * @param {string} type - The sign type, one of the MD5 or HMAC-SHA256.
+         * @param {object} data - The input data.
+         * @param {string} key - The secret key string.
+         * @return {object} - With data signature
+         */
+        static sign(type: string, data: object, key: string): object;
+    }
+
+    /**
+     * An Axios customizaton transform.
+     */
+    class Transformer {
+        static set mchid(arg: any);
+        /**
+         * @property {string} mchid - The merchant ID
+         */
+        static get mchid(): any;
+        static set secret(arg: any);
+        /**
+         * @property {string} secret - The merchant secret key string
+         */
+        static get secret(): any;
+        /**
+         * Compose the pre-request data signature
+         *
+         * Note here: While the [MCHID] is set, then checking the input data matching with it.
+         *
+         * @param {object} data - The API request parameters
+         * @return {object} - With data signature
+         */
+        static signer(data: object): object;
+        /**
+         * Translation the javascript's object to the XML string
+         * @param {object} data - The API request parameters
+         * @return {string} - XML string
+         */
+        static toXml(data: object): string;
+        /**
+         * @property {array} request - @see {import('axios').AxiosTransformer}
+         */
+        static get request(): (typeof Transformer.signer | typeof Transformer.toXml)[];
+        /**
+         * Translation the XML string to the javascript's object.
+         * @param {object} xml - The API request parameters
+         * @return {string} - XML string
+         */
+        static toObject(xml: object): string;
+        /**
+         * Validation the response data with the `sign` string.
+         * @param {object} data - The API response data
+         * @return {object} - The API response data
+         */
+        static verifier(data: object): object;
+        /**
+         * @property {array} response - @see {import('axios').AxiosTransformer}
+         */
+        static get response(): (typeof Transformer.toObject | typeof Transformer.verifier)[];
     }
 
     /**
@@ -123,7 +329,10 @@ export namespace WechatpayAxiosPlugin {
 
     /**
      * @typedef {Object} merchantCertificate - The merchant certification for APIv2
-     * @prop {string} key - The serial number of the wechatpay certificate
+     * @prop {string|Buffer} key - The merchant private key certificate as PEM format
+     * @prop {string|Buffer} cert - The merchant certificate as PEM format
+     * @prop {string|Buffer} pfx - The merchant private key and certificates as PKCS12 format
+     * @prop {string} passphase - The merchant PKCS12 certificates' passphase
      */
     type merchantCertificate = {
         key?: string | Buffer,
@@ -284,8 +493,8 @@ export namespace WechatpayAxiosPlugin {
         *
         * @param {string} [pathname] - The pathname string.
         * @param {string} [method] - The method string.
-        * @param {object|Buffer} [data] - The data.
-        * @param {object} [config] - The config.
+        * @param {any} [data] - The data.
+        * @param {any} [config] - The config.
         *
         * @returns {PromiseLike} - The `AxiosPromise`
         */
@@ -359,70 +568,77 @@ export namespace WechatpayAxiosPlugin {
 
         /**
          * @property {function} GET - The alias of the HTTP `GET` request
-         * @param {...any} arg - The request arguments
+         * @param {any} config - The request configuration
          * @returns {PromiseLike} - The `AxiosPromise`
          */
         GET<T = any, R = AxiosResponse<T>>(config?: AxiosRequestConfig): Promise<R>;
 
         /**
          * @property {function} POST - The alias of the HTTP `POST` request
-         * @param {...any} arg - The request arguments
+         * @param {any} data - The request post body
+         * @param {any} config - The request configuration
          * @returns {PromiseLike} - The `AxiosPromise`
          */
         POST<T = any, R = AxiosResponse<T>>(data?: any, config?: AxiosRequestConfig): Promise<R>;
 
         /**
          * @property {function} PUT - The alias of the HTTP 'PUT' request
-         * @param {...any} arg - The request arguments
+         * @param {any} data - The request post body
+         * @param {any} config - The request configuration
          * @returns {PromiseLike} - The `AxiosPromise`
          */
         PUT<T = any, R = AxiosResponse<T>>(data?: any, config?: AxiosRequestConfig): Promise<R>;
 
         /**
          * @property {function} PATCH - The alias of the HTTP 'PATCH' request
-         * @param {...any} arg - The request arguments
+         * @param {any} data - The request post body
+         * @param {any} config - The request configuration
          * @returns {PromiseLike} - The `AxiosPromise`
          */
         PATCH<T = any, R = AxiosResponse<T>>(data?: any, config?: AxiosRequestConfig): Promise<R>;
 
         /**
          * @property {function} DELETE - The alias of the HTTP 'DELETE' request
-         * @param {...any} arg - The request arguments
+         * @param {any} config - The request configuration
          * @returns {PromiseLike} - The `AxiosPromise`
          */
         DELETE<T = any, R = AxiosResponse<T>>(config?: AxiosRequestConfig): Promise<R>;
 
         /**
          * @property {function} get - The alias of the HTTP `GET` request
-         * @param {...any} arg - The request arguments
+         * @param {any} data - The request post body
+         * @param {any} config - The request configuration
          * @returns {PromiseLike} - The `AxiosPromise`
          */
         get<T = any, R = AxiosResponse<T>>(config?: AxiosRequestConfig): Promise<R>;
 
         /**
          * @property {function} post - The alias of the HTTP `POST` request
-         * @param {...any} arg - The request arguments
+         * @param {any} data - The request post body
+         * @param {any} config - The request configuration
          * @returns {PromiseLike} - The `AxiosPromise`
          */
         post<T = any, R = AxiosResponse<T>>(data?: any, config?: AxiosRequestConfig): Promise<R>;
 
         /**
          * @property {function} put - The alias of the HTTP 'PUT' request
-         * @param {...any} arg - The request arguments
+         * @param {any} data - The request post body
+         * @param {any} config - The request configuration
          * @returns {PromiseLike} - The `AxiosPromise`
          */
         put<T = any, R = AxiosResponse<T>>(data?: any, config?: AxiosRequestConfig): Promise<R>;
 
         /**
          * @property {function} patch - The alias of the HTTP 'PATCH' request
-         * @param {...any} arg - The request arguments
+         * @param {any} data - The request post body
+         * @param {any} config - The request configuration
          * @returns {PromiseLike} - The `AxiosPromise`
          */
         patch<T = any, R = AxiosResponse<T>>(data?: any, config?: AxiosRequestConfig): Promise<R>;
 
         /**
          * @property {function} delete - The alias of the HTTP 'DELETE' request
-         * @param {...any} arg - The request arguments
+         * @param {any} config - The request configuration
          * @returns {PromiseLike} - The `AxiosPromise`
          */
         delete<T = any, R = AxiosResponse<T>>(config?: AxiosRequestConfig): Promise<R>;
@@ -430,6 +646,10 @@ export namespace WechatpayAxiosPlugin {
         [key: string]: this
     }
 }
+
+export class Hash extends WechatpayAxiosPlugin.Hash{}
+
+export class Transformer extends WechatpayAxiosPlugin.Transformer{}
 
 export class Formatter extends WechatpayAxiosPlugin.Formatter{}
 

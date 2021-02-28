@@ -725,6 +725,7 @@ console.info(params)
   - 重构 `Wechatpay` 类，同时支持 APIv2&v3's 链式调用
   - 废弃 `withEntities` 方法，其在链式多次调用时，有可能达不到预期，详情见 #10
   - README 文档中文化
+  - 完善补缺 `tsd` 声明
 
 - v0.3.4
   - Typed and tips on `Wechatpay` class(#9), thanks @ipoa
