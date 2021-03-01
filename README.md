@@ -174,7 +174,7 @@ wxpay.v2.mmpaymkttransfers.sendredpack.POST({
 .catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
 ```
 
-### 企业付款
+### 企业付款到零钱
 
 ```js
 wxpay.v2.mmpaymkttransfers.promotion.transfers({
@@ -188,6 +188,20 @@ wxpay.v2.mmpaymkttransfers.promotion.transfers({
   desc: '理赔',
   spbill_create_ip: '192.168.0.1',
   nonce_str: Formatter.nonce(),
+})
+.then(res => console.info(res.data))
+.catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
+```
+
+## 企业付款到银行卡-获取RSA公钥
+
+```js
+wxpay.v2.risk.getpublickey({
+  mch_id: '1900000109',
+  sign_type: 'MD5',
+  nonce_str: Formatter.nonce(),
+}, {
+  baseURL: 'https://fraud.mch.weixin.qq.com'
 })
 .then(res => console.info(res.data))
 .catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
@@ -495,7 +509,7 @@ Wechatpay.client.v2.defaults.transformResponse.unshift(data => (console.log(data
 
 ## 获取RSA公钥
 
-非标准接口地址，这样支持调用
+非标准接口地址，也可以这样调用
 
 ```js
 Wechatpay.client.v2.post('https://fraud.mch.weixin.qq.com/risk/getpublickey', {
@@ -662,6 +676,9 @@ console.info(params)
 ```js
 [Function (anonymous)] {
   v2: [Function: /v2] {
+    risk: [Function: /v2/risk] {
+      getpublickey: [Function: /v2/risk/getpublickey]
+    },
     pay: [Function: /v2/pay] { micropay: [Function: /v2/pay/micropay] },
     secapi: [Function: /v2/secapi] {
       pay: [Function: /v2/secapi/pay] {
@@ -755,7 +772,8 @@ console.info(params)
 
 - v0.4.0
   - 重构 `Wechatpay` 类，同时支持 APIv2&v3's 链式调用
-  - 废弃 `withEntities` 方法，其在链式多次调用时，有可能达不到预期，详情见 #10
+  - 改变 `Wechatpay.client` 返回值为`Wechatpay.client.v3`，`Wechatpay.client.v2` 为 `xmlBased` 接口客户端
+  - 废弃 `withEntities` 方法，其在链式多次调用时，有可能达不到预期，详情见 #10，感谢 @ali-pay 报告此问题
   - README 文档中文化
   - 完善补缺 `tsd` 声明
 
