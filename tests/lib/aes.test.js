@@ -108,8 +108,6 @@ describe('lib/aes', () => {
         aes.encrypt()
       }).throw(TypeError, {
         code: 'ERR_INVALID_ARG_TYPE',
-        message: 'The "key" argument must be of type string or an instance of Buffer, TypedArray, DataView, or KeyObject. Received undefined',
-        stack: /at prepareSecretKey \(internal\/crypto\/keys\.js/,
       })
     })
 
@@ -118,8 +116,6 @@ describe('lib/aes', () => {
         aes.encrypt(undefined, '')
       }).throw(TypeError, {
         code: 'ERR_INVALID_ARG_TYPE',
-        message: 'The "iv" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received undefined',
-        stack: /at Cipheriv\.createCipherWithIV/,
       })
     })
 
@@ -127,8 +123,6 @@ describe('lib/aes', () => {
       should(() => {
         aes.encrypt('', '')
       }).throw(Error, {
-        message: 'Invalid IV length',
-        stack: /at Cipheriv\.createCipherBase/,
       })
     })
 
@@ -149,8 +143,6 @@ describe('lib/aes', () => {
         aes.encrypt(mockupIv, mockupKey)
       }).throw(TypeError, {
         code: 'ERR_INVALID_ARG_TYPE',
-        message: 'The "data" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received undefined',
-        stack: /at Cipheriv\.update/,
       })
     })
 
@@ -161,8 +153,6 @@ describe('lib/aes', () => {
         aes.encrypt(mockupIv, mockupKey, '', 1)
       }).throw(TypeError, {
         code: 'ERR_INVALID_ARG_TYPE',
-        message: 'The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type number (1)',
-        stack: /at Function\.from \(buffer\.js/,
       })
     })
 
@@ -194,8 +184,6 @@ describe('lib/aes', () => {
         aes.decrypt()
       }).throw(TypeError, {
         code: 'ERR_INVALID_ARG_TYPE',
-        message: 'The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received undefined',
-        stack: /at Function\.from \(buffer\.js/,
       })
     })
 
@@ -204,8 +192,6 @@ describe('lib/aes', () => {
         aes.decrypt(undefined, undefined, '')
       }).throw(TypeError, {
         code: 'ERR_INVALID_ARG_TYPE',
-        message: 'The "key" argument must be of type string or an instance of Buffer, TypedArray, DataView, or KeyObject. Received undefined',
-        stack: /at prepareSecretKey \(internal\/crypto\/keys\.js/,
       })
     })
 
@@ -214,8 +200,6 @@ describe('lib/aes', () => {
         aes.decrypt(undefined, '', '')
       }).throw(TypeError, {
         code: 'ERR_INVALID_ARG_TYPE',
-        message: 'The "iv" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received undefined',
-        stack: /at Decipheriv\.createCipherWithIV/,
       })
     })
 
@@ -223,8 +207,6 @@ describe('lib/aes', () => {
       should(() => {
         aes.decrypt('', '', '')
       }).throw(Error, {
-        message: 'Invalid IV length',
-        stack: /at Decipheriv\.createCipherBase/,
       })
     })
 
@@ -262,8 +244,6 @@ describe('lib/aes', () => {
         aes.decrypt(mockupIv, mockupKey, 'GvpmmdtYwexXIPhySs9Tlg==', 1)
       }).throw(TypeError, {
         code: 'ERR_INVALID_ARG_TYPE',
-        message: 'The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type number (1)',
-        stack: /at Function\.from \(buffer\.js/,
       })
     })
 

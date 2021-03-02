@@ -35,10 +35,7 @@ describe('lib/rsa', () => {
       should(() => {
         rsa.encrypt('', '')
       }).throw(Error, {
-        code: 'ERR_OSSL_BIO_NULL_PARAMETER',
-        function: 'BIO_new_mem_buf',
-        message: 'error:2007E073:BIO routines:BIO_new_mem_buf:null parameter',
-        stack: /at Object\.publicEncrypt \(internal\/crypto\/cipher\.js/
+        code: /ERR_OSSL_BIO_NULL_PARAMETER|ERR_OSSL_PEM_NO_START_LINE/,
       })
     })
 
@@ -83,10 +80,7 @@ describe('lib/rsa', () => {
       should(() => {
         rsa.decrypt('', '')
       }).throw(Error, {
-        code: 'ERR_OSSL_BIO_NULL_PARAMETER',
-        function: 'BIO_new_mem_buf',
-        message: 'error:2007E073:BIO routines:BIO_new_mem_buf:null parameter',
-        stack: /at Object\.privateDecrypt \(internal\/crypto\/cipher\.js/
+        code: /ERR_OSSL_BIO_NULL_PARAMETER|ERR_OSSL_PEM_NO_START_LINE/,
       })
     })
 
@@ -99,8 +93,6 @@ describe('lib/rsa', () => {
         rsa.decrypt('', privateKey)
       }).throw(Error, {
         code: 'ERR_OSSL_RSA_OAEP_DECODING_ERROR',
-        function: 'RSA_padding_check_PKCS1_OAEP_mgf1',
-        message: 'error:04099079:rsa routines:RSA_padding_check_PKCS1_OAEP_mgf1:oaep decoding error',
       })
     })
 
@@ -146,8 +138,6 @@ describe('lib/rsa', () => {
         rsa.sign()
       }).throw(TypeError, {
         code: 'ERR_INVALID_ARG_TYPE',
-        message: 'The "data" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received undefined',
-        stack: /at Sign\.update \(internal\/crypto\/sig\.js/
       })
     })
 
@@ -195,8 +185,6 @@ describe('lib/rsa', () => {
         rsa.verify()
       }).throw(TypeError, {
         code: 'ERR_INVALID_ARG_TYPE',
-        message: 'The "data" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received undefined',
-        stack: /at Verify\.update \(internal\/crypto\/sig\.js/
       })
     })
 
@@ -205,7 +193,6 @@ describe('lib/rsa', () => {
         rsa.verify('')
       }).throw(TypeError, {
         code: 'ERR_INVALID_ARG_TYPE',
-        message: 'The "key" argument must be of type string or an instance of Buffer, TypedArray, DataView, or KeyObject. Received undefined',
       })
     })
 
@@ -214,7 +201,6 @@ describe('lib/rsa', () => {
         rsa.verify('', '')
       }).throw(TypeError, {
         code: 'ERR_INVALID_ARG_TYPE',
-        message: 'The "key" argument must be of type string or an instance of Buffer, TypedArray, DataView, or KeyObject. Received undefined',
       })
     })
 
@@ -226,7 +212,6 @@ describe('lib/rsa', () => {
         rsa.verify('', undefined, cert)
       }).throw(TypeError, {
         code: 'ERR_INVALID_ARG_TYPE',
-        message: 'The "signature" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received undefined',
       })
     })
 

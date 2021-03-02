@@ -21,8 +21,6 @@ describe('lib/formatter', () => {
         fmt.castCsvBill()
       }).throw(TypeError, {
         code: 'ERR_INVALID_ARG_TYPE',
-        message: 'The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received undefined',
-        stack: /at Function\.from \(buffer\.js/
       })
     })
 
