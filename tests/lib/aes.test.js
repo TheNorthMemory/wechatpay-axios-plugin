@@ -226,8 +226,8 @@ describe('lib/aes', () => {
       should(() => {
         aes.decrypt(mockupIv, mockupKey, '')
       }).throw(Error, {
+        code: 'ERR_CRYPTO_INVALID_AUTH_TAG',
         message: 'Invalid authentication tag length: 0',
-        stack: /at Decipheriv\.setAuthTag/,
       })
     })
 
