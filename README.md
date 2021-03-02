@@ -770,6 +770,9 @@ console.info(params)
 
 ## 变更历史
 
+- v0.4.1
+  - 解决了一个`AES-GCM`在`Node10`上的解密兼容性问题，程序在`Node10`上有可能崩溃，建议`Node10`用户升级至此版本
+
 - v0.4.0
   - 重构 `Wechatpay` 类，同时支持 APIv2&v3's 链式调用
   - 改变 `Wechatpay.client` 返回值为`Wechatpay.client.v3`，`Wechatpay.client.v2` 为 `xmlBased` 接口客户端
