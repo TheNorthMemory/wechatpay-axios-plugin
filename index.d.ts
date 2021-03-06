@@ -153,11 +153,15 @@ export namespace WechatpayAxiosPlugin {
          * Calculate the input string with an optional secret `key` in MD5,
          * when the `key` is Falsey, this method works as normal `MD5`.
          *
+         * - [agency] is available since v0.4.3, spec @link https://work.weixin.qq.com/api/doc/90000/90135/90281
+         *
          * @param {string|buffer} thing - The input string.
          * @param {string} [key] - The secret key string.
+         * @param {boolean|number|string} [agency = false] - The secret **key** is from wework, placed with `true` or better of the `AgentId` value.
+         *
          * @return {string} - data signature
          */
-        static md5(thing: string | any, key?: string | undefined): string;
+        static md5(thing: string | any, key?: string | undefined, agency?: boolean | number | string | undefined): string;
         /**
          * Calculate the input string with a secret `key` in HMAC-SHA256
          * @param {string|buffer} thing - The input string.

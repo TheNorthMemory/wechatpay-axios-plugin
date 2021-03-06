@@ -23,6 +23,7 @@ The WeChatPay OpenAPI v2&v3' Smart Development Kit
 - [x] 支持微信支付XML风格的接口(通常所说v2)调用，依赖 [node-xml2js](https://github.com/Leonidas-from-XIV/node-xml2js), 示例代码如下
 - [x] 支持微信支付APIv2版的 `AES-256-ECB/PKCS7PADDING` 通知消息加/解密
 - [x] APIv2 & APIv3 与微信交互的各种数据签名用法示例
+- [x] 支持 企业微信-企业支付-企业红包/向员工付款 功能，示例用法及代码如下
 
 ## 系统要求
 
