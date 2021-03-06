@@ -207,6 +207,96 @@ wxpay.v2.risk.getpublickey({
 .catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
 ```
 
+## 企业微信
+
+企业微信的企业支付，数据请求包需要额外的签名，仅需做如下简单扩张适配，即可支持，所需的两个参数来自企业微信工作台，以下为事例值。
+
+```js
+const agentId = 1001001
+const agentSecret = 'from_wework_agent_special_string'
+```
+
+### 企业红包-注入签名规则
+
+```js
+const {Hash} = require('wechatpay-axios-plugin')
+Wechatpay.client.v2.defaults.transformRequest.unshift(function workwxredpack(data, headers) {
+  const {act_name, mch_billno, mch_id, nonce_str, re_openid, total_amount, wxappid} = data
+
+  if (!(act_name && mch_billno && mch_id && nonce_str && re_openid && total_amount && wxappid)) {
+    return data
+  }
+
+  const params = {act_name, mch_billno, mch_id, nonce_str, re_openid, total_amount, wxappid}
+
+  data.workwx_sign = Hash.md5(Formatter.queryStringLike(Formatter.ksort(params)), agentSecret, agentId).toUpperCase()
+
+  return data
+})
+```
+
+### 发放企业红包
+
+```js
+wxpay.v2.mmpaymkttransfers.sendworkwxredpack({
+  mch_billno: '123456',
+  wxappid: 'wx8888888888888888',
+  sender_name: 'XX活动',
+  sender_header_media_id: '1G6nrLmr5EC3MMb_-zK1dDdzmd0p7cNliYu9V5w7o8K0',
+  re_openid: 'oxTWIuGaIt6gTKsQRLau2M0yL16E',
+  total_amount: 1000,
+  wishing: '感谢您参加猜灯谜活动，祝您元宵节快乐！',
+  act_name: '猜灯谜抢红包活动',
+  remark: '猜越多得越多，快来抢！',
+  mch_id: '1900000109',
+  nonce_str: Formatter.nonce(),
+})
+.then(res => console.info(res.data))
+.catch(console.error)
+```
+
+### 向员工付款-注入签名规则
+
+```js
+const {Hash} = require('wechatpay-axios-plugin')
+Wechatpay.client.v2.defaults.transformRequest.unshift(function wwsptrans2pocket(data, headers) {
+  const {amount, appid, desc, mch_id, nonce_str, openid, partner_trade_no, ww_msg_type} = data
+
+  if (!(amount && appid && desc && mch_id && nonce_str && openid && partner_trade_no && ww_msg_type)) {
+    return data
+  }
+
+  const params = {amount, appid, desc, mch_id, nonce_str, openid, partner_trade_no, ww_msg_type}
+
+  data.workwx_sign = Hash.md5(Formatter.queryStringLike(Formatter.ksort(params)), agentSecret, agentId).toUpperCase()
+
+  return data
+})
+```
+
+### 向员工付款
+
+```js
+wxpay.v2.mmpaymkttransfers.promotion.paywwsptrans2pocket({
+  appid: 'wxe062425f740c8888',
+  device_info: '013467007045764',
+  partner_trade_no: '100000982017072019616',
+  openid: 'ohO4Gt7wVPxIT1A9GjFaMYMiZY1s',
+  check_name: 'NO_CHECK',
+  re_user_name: '张三',
+  amount: '100',
+  desc: '六月出差报销费用',
+  spbill_create_ip: '10.2.3.10',
+  workwx_sign: '99BCDAFF065A4B95628E3DB468A874A8',
+  ww_msg_type: 'NORMAL_MSG',
+  act_name: '示例项目',
+  mch_id: '1900000109',
+  nonce_str: Formatter.nonce(),
+})
+.then(res => console.info(res.data))
+.catch(console.error)
+```
+
 ## APIv3
 
 ### Native下单API
@@ -503,8 +593,12 @@ const {Hash: {sha1}} = require('wechatpay-axios-plugin')
 ## 自定义打印日志
 
 ```js
+// APIv2 日志
 Wechatpay.client.v2.defaults.transformRequest.push(data => (console.log(data), data))
 Wechatpay.client.v2.defaults.transformResponse.unshift(data => (console.log(data), data))
+// APIv3 日志
+Wechatpay.client.v3.defaults.transformRequest.push((data, headers) => (console.log(data, headers), data))
+Wechatpay.client.v3.defaults.transformResponse.unshift((data, headers) => (console.log(data, headers), data))
 ```
 
 ## 获取RSA公钥
@@ -688,8 +782,10 @@ console.info(params)
     mmpaymkttransfers: [Function: /v2/mmpaymkttransfers] {
       sendredpack: [Function: /v2/mmpaymkttransfers/sendredpack],
       promotion: [Function: /v2/mmpaymkttransfers/promotion] {
-        transfers: [Function: /v2/mmpaymkttransfers/promotion/transfers]
-      }
+        transfers: [Function: /v2/mmpaymkttransfers/promotion/transfers],
+        paywwsptrans2pocket: [Function: /v2/mmpaymkttransfers/promotion/paywwsptrans2pocket]
+      },
+      sendworkwxredpack: [Function: /v2/mmpaymkttransfers/sendworkwxredpack]
     }
   },
   v3: [Function: /v3] {
@@ -769,6 +865,9 @@ console.info(params)
 </details>
 
 ## 变更历史
+
+- v0.4.3
+  - 支持 *企业微信-企业支付* 链式调用，需要额外注入签名规则，见上述文档用法示例
 
 - v0.4.2
   - 文件名大小写问题 #11 感谢 @LiuXiaoZhuang 报告此问题
