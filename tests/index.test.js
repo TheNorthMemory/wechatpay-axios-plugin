@@ -31,4 +31,8 @@ describe('index', () => {
   it('should have `Transformer` property and be a Class', () => {
     should(wxpay.Transformer).is.a.Function().and.have.property('name', 'Transformer')
   })
+
+  it('should have `Decorator` property and be a Class', () => {
+    should(wxpay.Decorator).is.a.Function().and.have.property('name', 'Decorator')
+  })
 })
