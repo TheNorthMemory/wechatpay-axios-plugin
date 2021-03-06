@@ -194,7 +194,7 @@ wxpay.v2.mmpaymkttransfers.promotion.transfers({
 .catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
 ```
 
-## 企业付款到银行卡-获取RSA公钥
+### 企业付款到银行卡-获取RSA公钥
 
 ```js
 wxpay.v2.risk.getpublickey({
@@ -210,17 +210,17 @@ wxpay.v2.risk.getpublickey({
 
 ## 企业微信
 
-企业微信的企业支付，数据请求包需要额外的签名，仅需做如下简单扩张适配，即可支持，所需的两个参数来自企业微信工作台，以下为事例值。
+企业微信的企业支付，数据请求包需要额外的签名，仅需做如下简单扩展适配，即可支持；以下签名注入函数所需的两个参数`agentId` `agentSecret`来自企业微信工作台，以下为示例值。
 
 ```js
 const agentId = 1001001
 const agentSecret = 'from_wework_agent_special_string'
+const {Hash} = require('wechatpay-axios-plugin')
 ```
 
 ### 企业红包-注入签名规则
 
 ```js
-const {Hash} = require('wechatpay-axios-plugin')
 Wechatpay.client.v2.defaults.transformRequest.unshift(function workwxredpack(data, headers) {
   const {act_name, mch_billno, mch_id, nonce_str, re_openid, total_amount, wxappid} = data
 
@@ -228,9 +228,11 @@ Wechatpay.client.v2.defaults.transformRequest.unshift(function workwxredpack(dat
     return data
   }
 
-  const params = {act_name, mch_billno, mch_id, nonce_str, re_openid, total_amount, wxappid}
-
-  data.workwx_sign = Hash.md5(Formatter.queryStringLike(Formatter.ksort(params)), agentSecret, agentId).toUpperCase()
+  data.workwx_sign = Hash.md5(
+    Formatter.queryStringLike(Formatter.ksort({
+      act_name, mch_billno, mch_id, nonce_str, re_openid, total_amount, wxappid
+    })), agentSecret, agentId
+  ).toUpperCase()
 
   return data
 })
@@ -259,7 +261,6 @@ wxpay.v2.mmpaymkttransfers.sendworkwxredpack({
 ### 向员工付款-注入签名规则
 
 ```js
-const {Hash} = require('wechatpay-axios-plugin')
 Wechatpay.client.v2.defaults.transformRequest.unshift(function wwsptrans2pocket(data, headers) {
   const {amount, appid, desc, mch_id, nonce_str, openid, partner_trade_no, ww_msg_type} = data
 
@@ -267,9 +268,11 @@ Wechatpay.client.v2.defaults.transformRequest.unshift(function wwsptrans2pocket(
     return data
   }
 
-  const params = {amount, appid, desc, mch_id, nonce_str, openid, partner_trade_no, ww_msg_type}
-
-  data.workwx_sign = Hash.md5(Formatter.queryStringLike(Formatter.ksort(params)), agentSecret, agentId).toUpperCase()
+  data.workwx_sign = Hash.md5(
+    Formatter.queryStringLike(Formatter.ksort({
+      amount, appid, desc, mch_id, nonce_str, openid, partner_trade_no, ww_msg_type
+    })), agentSecret, agentId
+  ).toUpperCase()
 
   return data
 })
@@ -288,7 +291,6 @@ wxpay.v2.mmpaymkttransfers.promotion.paywwsptrans2pocket({
   amount: '100',
   desc: '六月出差报销费用',
   spbill_create_ip: '10.2.3.10',
-  workwx_sign: '99BCDAFF065A4B95628E3DB468A874A8',
   ww_msg_type: 'NORMAL_MSG',
   act_name: '示例项目',
   mch_id: '1900000109',
