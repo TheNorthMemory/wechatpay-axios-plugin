@@ -87,7 +87,7 @@ You should verify the above infos again even if this library already did(by rsa.
 6. SDK内置的 `/v2` 对象，其特殊标识为APIv2级联对象，之后串接切分后的`pathname`，如 `/v2/pay/micropay` 即以XML形式请求远端接口；
 7. 每个级联对象默认为HTTP`POST`函数，其同时隐式内置`GET/POST/PUT/PATCH/DELETE` 操作方法链，支持全大写及全小写(未来有可能会删除)两种编码方式，说明见`变更历史`;
 
-以下事例用法，均以`Promise`或`Async/Await`结合此种编码模式展开，级联对象操作符的调试信息见文档末。
+以下示例用法，均以`Promise`或`Async/Await`结合此种编码模式展开，级联对象操作符的调试信息见文档末。
 
 ### 初始化
 
@@ -114,191 +114,6 @@ const wxpay = new Wechatpay({
 ```
 
 **注：** 0.4.0版本做了重构及优化，APIv2&v3以及Axios初始参数，均融合在一个型参上。
-
-## APIv2
-
-### 付款码(刷卡)支付
-
-```js
-wxpay.v2.pay.micropay({
-  appid: 'wx8888888888888888',
-  mch_id: '1900000109',
-  nonce_str: Formatter.nonce(),
-  sign_type: 'HMAC-SHA256',
-  body: 'image形象店-深圳腾大-QQ公仔',
-  out_trade_no: '1217752501201407033233368018',
-  total_fee: 888,
-  fee_type: 'CNY',
-  spbill_create_ip: '8.8.8.8',
-  auth_code: '120061098828009406',
-})
-.then(res => console.info(res.data))
-.catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
-```
-
-### 申请退款
-
-```js
-wxpay.v2.secapi.pay.refund.post({
-  appid: 'wx8888888888888888',
-  mch_id: '1900000109',
-  out_trade_no: '1217752501201407033233368018',
-  out_refund_no: '1217752501201407033233368018',
-  total_fee: 100,
-  refund_fee: 100,
-  refund_fee_type: 'CNY',
-  nonce_str: Formatter.nonce(),
-})
-.then(res => console.info(res.data))
-.catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
-```
-
-### 现金红包
-
-```js
-wxpay.v2.mmpaymkttransfers.sendredpack.POST({
-  nonce_str: Formatter.nonce(),
-  mch_billno: '10000098201411111234567890',
-  mch_id: '10000098',
-  wxappid: 'wx8888888888888888',
-  send_name: '鹅企支付',
-  re_openid: 'oxTWIuGaIt6gTKsQRLau2M0yL16E',
-  total_amount: 1000,
-  total_num: 1,
-  wishing: 'HAPPY BIRTHDAY',
-  client_ip: '192.168.0.1',
-  act_name: '回馈活动',
-  remark: '会员回馈活动',
-  scene_id: 'PRODUCT_4',
-})
-.then(res => console.info(res.data))
-.catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
-```
-
-### 企业付款到零钱
-
-```js
-wxpay.v2.mmpaymkttransfers.promotion.transfers({
-  appid: 'wx8888888888888888',
-  mch_id: '1900000109',
-  partner_trade_no: '10000098201411111234567890',
-  openid: 'oxTWIuGaIt6gTKsQRLau2M0yL16E',
-  check_name: 'FORCE_CHECK',
-  re_user_name: '王小王',
-  amount: 10099,
-  desc: '理赔',
-  spbill_create_ip: '192.168.0.1',
-  nonce_str: Formatter.nonce(),
-})
-.then(res => console.info(res.data))
-.catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
-```
-
-### 企业付款到银行卡-获取RSA公钥
-
-```js
-wxpay.v2.risk.getpublickey({
-  mch_id: '1900000109',
-  sign_type: 'MD5',
-  nonce_str: Formatter.nonce(),
-}, {
-  baseURL: 'https://fraud.mch.weixin.qq.com'
-})
-.then(res => console.info(res.data))
-.catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
-```
-
-## 企业微信
-
-企业微信的企业支付，数据请求包需要额外的签名，仅需做如下简单扩展适配，即可支持；以下签名注入函数所需的两个参数`agentId` `agentSecret`来自企业微信工作台，以下为示例值。
-
-```js
-const agentId = 1001001
-const agentSecret = 'from_wework_agent_special_string'
-const {Hash} = require('wechatpay-axios-plugin')
-```
-
-### 企业红包-注入签名规则
-
-```js
-Wechatpay.client.v2.defaults.transformRequest.unshift(function workwxredpack(data, headers) {
-  const {act_name, mch_billno, mch_id, nonce_str, re_openid, total_amount, wxappid} = data
-
-  if (!(act_name && mch_billno && mch_id && nonce_str && re_openid && total_amount && wxappid)) {
-    return data
-  }
-
-  data.workwx_sign = Hash.md5(
-    Formatter.queryStringLike(Formatter.ksort({
-      act_name, mch_billno, mch_id, nonce_str, re_openid, total_amount, wxappid
-    })), agentSecret, agentId
-  ).toUpperCase()
-
-  return data
-})
-```
-
-### 发放企业红包
-
-```js
-wxpay.v2.mmpaymkttransfers.sendworkwxredpack({
-  mch_billno: '123456',
-  wxappid: 'wx8888888888888888',
-  sender_name: 'XX活动',
-  sender_header_media_id: '1G6nrLmr5EC3MMb_-zK1dDdzmd0p7cNliYu9V5w7o8K0',
-  re_openid: 'oxTWIuGaIt6gTKsQRLau2M0yL16E',
-  total_amount: 1000,
-  wishing: '感谢您参加猜灯谜活动，祝您元宵节快乐！',
-  act_name: '猜灯谜抢红包活动',
-  remark: '猜越多得越多，快来抢！',
-  mch_id: '1900000109',
-  nonce_str: Formatter.nonce(),
-})
-.then(res => console.info(res.data))
-.catch(console.error)
-```
-
-### 向员工付款-注入签名规则
-
-```js
-Wechatpay.client.v2.defaults.transformRequest.unshift(function wwsptrans2pocket(data, headers) {
-  const {amount, appid, desc, mch_id, nonce_str, openid, partner_trade_no, ww_msg_type} = data
-
-  if (!(amount && appid && desc && mch_id && nonce_str && openid && partner_trade_no && ww_msg_type)) {
-    return data
-  }
-
-  data.workwx_sign = Hash.md5(
-    Formatter.queryStringLike(Formatter.ksort({
-      amount, appid, desc, mch_id, nonce_str, openid, partner_trade_no, ww_msg_type
-    })), agentSecret, agentId
-  ).toUpperCase()
-
-  return data
-})
-```
-
-### 向员工付款
-
-```js
-wxpay.v2.mmpaymkttransfers.promotion.paywwsptrans2pocket({
-  appid: 'wxe062425f740c8888',
-  device_info: '013467007045764',
-  partner_trade_no: '100000982017072019616',
-  openid: 'ohO4Gt7wVPxIT1A9GjFaMYMiZY1s',
-  check_name: 'NO_CHECK',
-  re_user_name: '张三',
-  amount: '100',
-  desc: '六月出差报销费用',
-  spbill_create_ip: '10.2.3.10',
-  ww_msg_type: 'NORMAL_MSG',
-  act_name: '示例项目',
-  mch_id: '1900000109',
-  nonce_str: Formatter.nonce(),
-})
-.then(res => console.info(res.data))
-.catch(console.error)
-```
 
 ## APIv3
 
@@ -593,6 +408,191 @@ const {Hash: {sha1}} = require('wechatpay-axios-plugin')
 })()
 ```
 
+## APIv2
+
+### 付款码(刷卡)支付
+
+```js
+wxpay.v2.pay.micropay({
+  appid: 'wx8888888888888888',
+  mch_id: '1900000109',
+  nonce_str: Formatter.nonce(),
+  sign_type: 'HMAC-SHA256',
+  body: 'image形象店-深圳腾大-QQ公仔',
+  out_trade_no: '1217752501201407033233368018',
+  total_fee: 888,
+  fee_type: 'CNY',
+  spbill_create_ip: '8.8.8.8',
+  auth_code: '120061098828009406',
+})
+.then(res => console.info(res.data))
+.catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
+```
+
+### 申请退款
+
+```js
+wxpay.v2.secapi.pay.refund.post({
+  appid: 'wx8888888888888888',
+  mch_id: '1900000109',
+  out_trade_no: '1217752501201407033233368018',
+  out_refund_no: '1217752501201407033233368018',
+  total_fee: 100,
+  refund_fee: 100,
+  refund_fee_type: 'CNY',
+  nonce_str: Formatter.nonce(),
+})
+.then(res => console.info(res.data))
+.catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
+```
+
+### 现金红包
+
+```js
+wxpay.v2.mmpaymkttransfers.sendredpack.POST({
+  nonce_str: Formatter.nonce(),
+  mch_billno: '10000098201411111234567890',
+  mch_id: '10000098',
+  wxappid: 'wx8888888888888888',
+  send_name: '鹅企支付',
+  re_openid: 'oxTWIuGaIt6gTKsQRLau2M0yL16E',
+  total_amount: 1000,
+  total_num: 1,
+  wishing: 'HAPPY BIRTHDAY',
+  client_ip: '192.168.0.1',
+  act_name: '回馈活动',
+  remark: '会员回馈活动',
+  scene_id: 'PRODUCT_4',
+})
+.then(res => console.info(res.data))
+.catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
+```
+
+### 企业付款到零钱
+
+```js
+wxpay.v2.mmpaymkttransfers.promotion.transfers({
+  appid: 'wx8888888888888888',
+  mch_id: '1900000109',
+  partner_trade_no: '10000098201411111234567890',
+  openid: 'oxTWIuGaIt6gTKsQRLau2M0yL16E',
+  check_name: 'FORCE_CHECK',
+  re_user_name: '王小王',
+  amount: 10099,
+  desc: '理赔',
+  spbill_create_ip: '192.168.0.1',
+  nonce_str: Formatter.nonce(),
+})
+.then(res => console.info(res.data))
+.catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
+```
+
+### 企业付款到银行卡-获取RSA公钥
+
+```js
+wxpay.v2.risk.getpublickey({
+  mch_id: '1900000109',
+  sign_type: 'MD5',
+  nonce_str: Formatter.nonce(),
+}, {
+  baseURL: 'https://fraud.mch.weixin.qq.com'
+})
+.then(res => console.info(res.data))
+.catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
+```
+
+## 企业微信
+
+企业微信的企业支付，数据请求包需要额外的签名，仅需做如下简单扩展适配，即可支持；以下签名注入函数所需的两个参数`agentId` `agentSecret`来自企业微信工作台，以下为示例值。
+
+```js
+const agentId = 1001001
+const agentSecret = 'from_wework_agent_special_string'
+const {Hash} = require('wechatpay-axios-plugin')
+```
+
+### 企业红包-注入签名规则
+
+```js
+Wechatpay.client.v2.defaults.transformRequest.unshift(function workwxredpack(data, headers) {
+  const {act_name, mch_billno, mch_id, nonce_str, re_openid, total_amount, wxappid} = data
+
+  if (!(act_name && mch_billno && mch_id && nonce_str && re_openid && total_amount && wxappid)) {
+    return data
+  }
+
+  data.workwx_sign = Hash.md5(
+    Formatter.queryStringLike(Formatter.ksort({
+      act_name, mch_billno, mch_id, nonce_str, re_openid, total_amount, wxappid
+    })), agentSecret, agentId
+  ).toUpperCase()
+
+  return data
+})
+```
+
+### 发放企业红包
+
+```js
+wxpay.v2.mmpaymkttransfers.sendworkwxredpack({
+  mch_billno: '123456',
+  wxappid: 'wx8888888888888888',
+  sender_name: 'XX活动',
+  sender_header_media_id: '1G6nrLmr5EC3MMb_-zK1dDdzmd0p7cNliYu9V5w7o8K0',
+  re_openid: 'oxTWIuGaIt6gTKsQRLau2M0yL16E',
+  total_amount: 1000,
+  wishing: '感谢您参加猜灯谜活动，祝您元宵节快乐！',
+  act_name: '猜灯谜抢红包活动',
+  remark: '猜越多得越多，快来抢！',
+  mch_id: '1900000109',
+  nonce_str: Formatter.nonce(),
+})
+.then(res => console.info(res.data))
+.catch(console.error)
+```
+
+### 向员工付款-注入签名规则
+
+```js
+Wechatpay.client.v2.defaults.transformRequest.unshift(function wwsptrans2pocket(data, headers) {
+  const {amount, appid, desc, mch_id, nonce_str, openid, partner_trade_no, ww_msg_type} = data
+
+  if (!(amount && appid && desc && mch_id && nonce_str && openid && partner_trade_no && ww_msg_type)) {
+    return data
+  }
+
+  data.workwx_sign = Hash.md5(
+    Formatter.queryStringLike(Formatter.ksort({
+      amount, appid, desc, mch_id, nonce_str, openid, partner_trade_no, ww_msg_type
+    })), agentSecret, agentId
+  ).toUpperCase()
+
+  return data
+})
+```
+
+### 向员工付款
+
+```js
+wxpay.v2.mmpaymkttransfers.promotion.paywwsptrans2pocket({
+  appid: 'wxe062425f740c8888',
+  device_info: '013467007045764',
+  partner_trade_no: '100000982017072019616',
+  openid: 'ohO4Gt7wVPxIT1A9GjFaMYMiZY1s',
+  check_name: 'NO_CHECK',
+  re_user_name: '张三',
+  amount: '100',
+  desc: '六月出差报销费用',
+  spbill_create_ip: '10.2.3.10',
+  ww_msg_type: 'NORMAL_MSG',
+  act_name: '示例项目',
+  mch_id: '1900000109',
+  nonce_str: Formatter.nonce(),
+})
+.then(res => console.info(res.data))
+.catch(console.error)
+```
+
 ## 自定义打印日志
 
 ```js
@@ -765,7 +765,7 @@ console.info(params)
 
 `npm install && npm test`
 
-## 文末打印一波事例方法链
+## 文末打印一波示例方法链
 
 <details>
   <summary>console.info(wxpay)</summary>
@@ -892,8 +892,8 @@ console.info(params)
   - Upgrade Axios for the CVE-2020-28168
 
 - v0.3.2
-  - Optim: Strict `Aes.pkcs7.padding` following of the `rfc2315` spec
-  - Optim: Better of `Hash.md5` and `Hash.hmacSha256`
+  - Optim: Let `Aes.pkcs7.padding` strictly following the `rfc2315` spec
+  - Optim: Better of the `Hash.md5` and `Hash.hmacSha256`
   - Coding comments and README
 
 - v0.3.1
