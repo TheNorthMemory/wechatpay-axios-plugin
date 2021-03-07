@@ -869,6 +869,9 @@ console.info(params)
 
 ## 变更历史
 
+- v0.4.4
+  - 优化`Wechatpay`在多次实例化时赋值`Symbol(CLIENT)`异常问题，增加`wechatpay.test.js`测试用例覆盖
+
 - v0.4.3
   - 支持 *企业微信-企业支付* 链式调用，需要额外注入签名规则，见上述文档用法示例
 
