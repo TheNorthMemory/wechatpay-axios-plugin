@@ -113,6 +113,18 @@ const wxpay = new Wechatpay({
 })
 ```
 
+初始化字典说明如下：
+
+- `your_merchant_id` 为你的商户号，一般是10字节纯数字
+- `serial` 为你的商户证书序列号，一般是40字节字符串
+- `privateKey` 为你的商户私钥证书，一般是通过官方证书生成工具生成的文件名是`apiclient_key.pem`文件，支持纯字符串或者文件流`buffer`格式
+- `secret` 为APIv2版的`密钥`，商户平台上设置的32字节字符串
+- `certs{[serial_number]:string}` 为通过下载工具下载的平台证书`key/value`键值对，键为平台证书序列号，值为平台证书pem格式的纯字符串或者文件流`buffer`格式
+- `merchant.cert` 为你的商户证书,一般是文件名为`apiclient_cert.pem`文件，支持纯字符串或者文件流`buffer`格式
+- `merchant.key` 为你的商户私钥证书，一般是通过官方证书生成工具生成的文件名是`apiclient_key.pem`文件，支持纯字符串或者文件流`buffer`格式
+- `merchant.passphrase` 一般为你的商户号
+- `merchant.pfx` 为你的商户`PKCS12`格式的证书，文件名一般为`apiclient_cert.p12`
+
 **注：** 0.4.0版本做了重构及优化，APIv2&v3以及Axios初始参数，均融合在一个型参上。
 
 ## APIv3
