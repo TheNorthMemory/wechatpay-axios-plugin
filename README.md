@@ -2,7 +2,7 @@
 
 The WeChatPay OpenAPI v2&v3' Smart Development Kit
 
-[![GitHub version](https://badgen.net/github/release/TheNorthMemory/wechatpay-axios-plugin)](https://github.com/TheNorthMemory/wechatpay-axios-plugin)
+[![GitHub actions](https://github.com/TheNorthMemory/wechatpay-axios-plugin/workflows/npm%20test/badge.svg)](https://github.com/TheNorthMemory/wechatpay-axios-plugin)
 [![GitHub issues](https://badgen.net/github/open-issues/TheNorthMemory/wechatpay-axios-plugin)](https://github.com/TheNorthMemory/wechatpay-axios-plugin)
 [![nodejs version](https://badgen.net/npm/node/wechatpay-axios-plugin)](https://github.com/TheNorthMemory/wechatpay-axios-plugin)
 [![types](https://badgen.net/npm/types/wechatpay-axios-plugin)](https://www.npmjs.com/package/wechatpay-axios-plugin)
