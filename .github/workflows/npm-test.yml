@@ -4,13 +4,13 @@ on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: [windows-latest, ubuntu-latest, macos-latest]
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [10.15.x, 10.x, 12.x, 14.x, 15.x]
     steps:
       - uses: actions/checkout@v2
-      - name: ${{ runner.OS }}-node-${{ matrix.node-version }}
+      - name: Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
