@@ -226,8 +226,8 @@ export namespace WechatpayAxiosPlugin {
         static get request(): (typeof Transformer.signer | typeof Transformer.toXml)[];
         /**
          * Translation the XML string to the javascript's object.
-         * @param {object} xml - The API request parameters
-         * @return {string} - XML string
+         * @param {string} xml - XML string
+         * @return {object} - Parsed as object
          */
         static toObject(xml: object): string;
         /**
