@@ -129,11 +129,11 @@ describe('lib/aes', () => {
         })
       })
 
-      it('method `unpadding` should thrown a `RangeError` with `code:ERR_INDEX_OUT_OF_RANGE` while an empty string passed in', () => {
+      it('method `unpadding` should thrown a `RangeError` with Node10(`code:ERR_INDEX_OUT_OF_RANGE`) or above(`code:ERR_OUT_OF_RANGE`) while an empty string passed in', () => {
         should(() => {
           Aes.pkcs7.unpadding('')
         }).throw(RangeError, {
-          code: 'ERR_INDEX_OUT_OF_RANGE',
+          code: /ERR_INDEX_OUT_OF_RANGE|ERR_OUT_OF_RANGE/,
         })
       })
 
@@ -547,11 +547,11 @@ describe('lib/aes', () => {
         })
       })
 
-      it('method `decrypt` should thrown a RangeError with `code:ERR_INDEX_OUT_OF_RANGE` while empty string and a valid `key` passed in', () => {
+      it('method `decrypt` should thrown a RangeError with Node10(`code:ERR_INDEX_OUT_OF_RANGE`) or above(`code:ERR_OUT_OF_RANGE`) while empty string and a valid `key` passed in', () => {
         should(() => {
           Aes.AesEcb.decrypt('', mockupKey)
         }).throw(RangeError, {
-          code: 'ERR_INDEX_OUT_OF_RANGE',
+          code: /ERR_INDEX_OUT_OF_RANGE|ERR_OUT_OF_RANGE/,
         })
       })
     })
