@@ -2,9 +2,9 @@
 
 The WeChatPay OpenAPI v2&v3' Smart Development Kit
 
-[![GitHub actions](https://github.com/TheNorthMemory/wechatpay-axios-plugin/workflows/npm%20test/badge.svg)](https://github.com/TheNorthMemory/wechatpay-axios-plugin)
-[![GitHub issues](https://badgen.net/github/open-issues/TheNorthMemory/wechatpay-axios-plugin)](https://github.com/TheNorthMemory/wechatpay-axios-plugin)
-[![nodejs version](https://badgen.net/npm/node/wechatpay-axios-plugin)](https://github.com/TheNorthMemory/wechatpay-axios-plugin)
+[![GitHub actions](https://github.com/TheNorthMemory/wechatpay-axios-plugin/workflows/npm%20test/badge.svg)](https://github.com/TheNorthMemory/wechatpay-axios-plugin/actions)
+[![GitHub issues](https://badgen.net/github/open-issues/TheNorthMemory/wechatpay-axios-plugin)](https://github.com/TheNorthMemory/wechatpay-axios-plugin/issues)
+[![nodejs version](https://badgen.net/npm/node/wechatpay-axios-plugin)](https://github.com/TheNorthMemory/wechatpay-axios-plugin/releases)
 [![types](https://badgen.net/npm/types/wechatpay-axios-plugin)](https://www.npmjs.com/package/wechatpay-axios-plugin)
 [![NPM module version](https://badgen.net/npm/v/wechatpay-axios-plugin)](https://www.npmjs.com/package/wechatpay-axios-plugin)
 [![NPM module downloads per month](https://badgen.net/npm/dm/wechatpay-axios-plugin)](https://www.npmjs.com/package/wechatpay-axios-plugin)
@@ -12,8 +12,8 @@ The WeChatPay OpenAPI v2&v3' Smart Development Kit
 
 ## 主要功能
 
-- [x] 使用Node原生代码实现微信支付APIv3的AES加/解密功能(`aes-256-gcm` with `aad`)
-- [x] 使用Node原生代码实现微信支付APIv3的RSA加/解密、签名、验签功能(`sha256WithRSAEncryption` with `RSA_PKCS1_OAEP_PADDING`)
+- [x] 使用Node原生`crypto`实现微信支付APIv3的AES加/解密功能(`aes-256-gcm` with `aad`)
+- [x] 使用Node原生`crypto`实现微信支付APIv3的RSA加/解密、签名、验签功能(`sha256WithRSAEncryption` with `RSA_PKCS1_OAEP_PADDING`)
 - [x] 大部分微信支付APIv3的HTTP GET/POST/PUT/PATCH/DELETE应该能够正常工作，依赖 [Axios](https://github.com/axios/axios), 示例代码如下
 - [x] 支持微信支付APIv3的媒体文件上传(图片/视频)功能，可选依赖 [form-data](https://github.com/form-data/form-data), 示例代码如下
 - [x] 支持微信支付APIv3的应答证书下载功能，可选依赖 [commander](https://github.com/tj/commander.js), 使用手册如下
@@ -27,7 +27,7 @@ The WeChatPay OpenAPI v2&v3' Smart Development Kit
 
 ## 系统要求
 
-NodeJS的原生`crypto`模块，自v12.9.0在 `publicEncrypt` 及 `privateDecrypt` 增加了 `oaepHash` 入参选项，本类库在 `Rsa.encrypt` 及 `Rsa.decrypt` 显式声明了此入参，NodeJS10.15.0上可正常工作，这应该是内置了此参数的默认值；虽然在v10.15上可用，不过仍旧推荐使用 NodeJS >= v12.9.0。
+NodeJS原生`crypto`模块，自v12.9.0在 `publicEncrypt` 及 `privateDecrypt` 增加了 `oaepHash` 入参选项，本类库封装的 `Rsa.encrypt` 及 `Rsa.decrypt` 显式声明了此入参，测试下来在NodeJS10.15.0上可正常工作；虽然在v10.15上可用，不过仍旧推荐使用 NodeJS >= v12.9.0。
 
 ## 安装
 
@@ -35,7 +35,7 @@ NodeJS的原生`crypto`模块，自v12.9.0在 `publicEncrypt` 及 `privateDecryp
 
 ## 万里长征第一步
 
-微信支付APIv3使用 (RESTful API with JSON over HTTP）接口设计，数据交换采用非对称（RSA）加/解密方案。API上行所需的`商户RSA私钥证书`，可以由商户`超级管理员`使用专用证书生成工具生成并获取到，然而，API下行所需的`平台RSA证书`只能从`/v3/certificates`接口获取（应答证书还经过了AES对称加密，须采用`APIv3密钥`才能解密）。本项目也提供了命令行下载工具，使用手册如下：
+微信支付APIv3使用 (RESTful API with JSON over HTTP）接口设计，数据交换采用非对称（RSA-OAEP）加/解密方案。API上行所需的`商户RSA私钥证书`，可以由商户`超级管理员`使用专用证书生成工具生成并获取到，然而，API下行所需的`平台RSA证书`只能从`/v3/certificates`接口获取（应答证书还经过了对称(AES-GCM)加密，须采用`APIv3密钥`才能解密）。本项目也提供了命令行下载工具，使用手册如下：
 
 <details>
   <summary>$ <b>./bin/certificateDownloader.js -h</b> (点击显示)</summary>
@@ -115,7 +115,7 @@ const wxpay = new Wechatpay({
 
 初始化字典说明如下：
 
-- `your_merchant_id` 为你的商户号，一般是10字节纯数字
+- `mchid` 为你的商户号，一般是10字节纯数字
 - `serial` 为你的商户证书序列号，一般是40字节字符串
 - `privateKey` 为你的商户私钥证书，一般是通过官方证书生成工具生成的文件名是`apiclient_key.pem`文件，支持纯字符串或者文件流`buffer`格式
 - `secret` 为APIv2版的`密钥`，商户平台上设置的32字节字符串
@@ -123,7 +123,7 @@ const wxpay = new Wechatpay({
 - `merchant.cert` 为你的商户证书,一般是文件名为`apiclient_cert.pem`文件，支持纯字符串或者文件流`buffer`格式
 - `merchant.key` 为你的商户私钥证书，一般是通过官方证书生成工具生成的文件名是`apiclient_key.pem`文件，支持纯字符串或者文件流`buffer`格式
 - `merchant.passphrase` 一般为你的商户号
-- `merchant.pfx` 为你的商户`PKCS12`格式的证书，文件名一般为`apiclient_cert.p12`
+- `merchant.pfx` 为你的商户`PKCS12`格式的证书，文件名一般为`apiclient_cert.p12`，支持二进制文件流`buffer`格式
 
 **注：** 0.4.0版本做了重构及优化，APIv2&v3以及Axios初始参数，均融合在一个型参上。
 
