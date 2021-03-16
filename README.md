@@ -881,6 +881,7 @@ console.info(params)
 ## 变更历史
 
 - v0.4.5
+  - 支持APIv2版的俩账单下载，调用方法与APIv3类同；
   - 增加测试用例覆盖，初始化参数`secret`(for APIv2)如未设置，`HMAC-SHA256`数据签名时，可能引发 #14
 
 - v0.4.4
