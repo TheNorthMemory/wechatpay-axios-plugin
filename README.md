@@ -3,12 +3,11 @@
 The WeChatPay OpenAPI v2&v3' Smart Development Kit
 
 [![GitHub actions](https://github.com/TheNorthMemory/wechatpay-axios-plugin/workflows/npm%20test/badge.svg)](https://github.com/TheNorthMemory/wechatpay-axios-plugin/actions)
-[![GitHub issues](https://badgen.net/github/open-issues/TheNorthMemory/wechatpay-axios-plugin)](https://github.com/TheNorthMemory/wechatpay-axios-plugin/issues)
-[![nodejs version](https://badgen.net/npm/node/wechatpay-axios-plugin)](https://github.com/TheNorthMemory/wechatpay-axios-plugin/releases)
+[![GitHub release](https://badgen.net/npm/v/wechatpay-axios-plugin)](https://github.com/TheNorthMemory/wechatpay-axios-plugin/releases)
 [![types](https://badgen.net/npm/types/wechatpay-axios-plugin)](https://www.npmjs.com/package/wechatpay-axios-plugin)
-[![NPM module version](https://badgen.net/npm/v/wechatpay-axios-plugin)](https://www.npmjs.com/package/wechatpay-axios-plugin)
-[![NPM module downloads per month](https://badgen.net/npm/dm/wechatpay-axios-plugin)](https://www.npmjs.com/package/wechatpay-axios-plugin)
-[![NPM module license](https://badgen.net/npm/license/wechatpay-axios-plugin)](https://www.npmjs.com/package/wechatpay-axios-plugin)
+[![NPM version](https://badgen.net/npm/node/wechatpay-axios-plugin)](https://www.npmjs.com/package/wechatpay-axios-plugin)
+[![NPM downloads per month](https://badgen.net/npm/dm/wechatpay-axios-plugin)](https://www.npmjs.com/package/wechatpay-axios-plugin)
+[![NPM license](https://badgen.net/npm/license/wechatpay-axios-plugin)](https://www.npmjs.com/package/wechatpay-axios-plugin)
 
 ## 主要功能
 
@@ -880,6 +879,9 @@ console.info(params)
 </details>
 
 ## 变更历史
+
+- v0.4.5
+  - 增加测试用例覆盖，初始化参数`secret`(for APIv2)如未设置，`HMAC-SHA256`数据签名时，可能引发 #14
 
 - v0.4.4
   - 优化`Wechatpay`在多次实例化时赋值`Symbol(CLIENT)`异常问题，增加`wechatpay.test.js`测试用例覆盖
