@@ -77,6 +77,7 @@ describe('lib/transformer', () => {
       // mock doesn't setting
       Transformer.secret = undefined
       should(() => {
+        /*eslint-disable-next-line camelcase*/
         Transformer.signer({sign_type: 'HMAC-SHA256'})
       }).throw(TypeError)
     })
@@ -84,6 +85,7 @@ describe('lib/transformer', () => {
     it('method `signer` should returns the `{sign}` is length(64) string while the input object has `sign_type:HMAC-SHA256` annotation', () => {
       // mock setting up
       Transformer.secret = ''
+      /*eslint-disable-next-line camelcase*/
       const target = Transformer.signer({sign_type: 'HMAC-SHA256'})
       Transformer.secret = undefined
       target.should.be.Object().have.property('sign')
@@ -129,6 +131,7 @@ describe('lib/transformer', () => {
     })
 
     it('method `toXml` should returns a string and equal to `<xml><mch_id>1900000109</mch_id><sign>mock</sign></xml>` while the `{mch_id: \'1900000109\', sign: \'mock\'}` object passed in', () => {
+      /*eslint-disable-next-line camelcase*/
       Transformer.toXml({mch_id: '1900000109', sign: 'mock'}).should.be.String().and.equal('<xml><mch_id>1900000109</mch_id><sign>mock</sign></xml>')
     })
   })
@@ -172,6 +175,7 @@ describe('lib/transformer', () => {
     })
 
     it('method `toObject` should returns `{mch_id: \'10000100\'}` while a `<xml><mch_id>10000100</mch_id></xml>` string passed in', () => {
+      /*eslint-disable-next-line camelcase*/
       should(Transformer.toObject(`<xml><mch_id>10000100</mch_id></xml>`)).be.eql({mch_id: '10000100'})
     })
 
