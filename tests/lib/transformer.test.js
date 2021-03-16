@@ -47,6 +47,47 @@ describe('lib/transformer', () => {
       should(Transformer.signer).be.a.Function()
       should((new Transformer).signer).is.Undefined()
     })
+
+    it('method `signer` should thrown a TypeError while none argument passed in', () => {
+      should(() => {
+        Transformer.signer()
+      }).throw(TypeError)
+    })
+
+    it('method `signer` should returns the origin inputs while those are one of the number, string or symbol', () => {
+      Transformer.signer(1).should.be.equal(1)
+      Transformer.signer('').should.be.equal('')
+      /*eslint-disable-next-line*/
+      const symbol = Symbol('test')
+      Transformer.signer(symbol).should.be.equal(symbol)
+    })
+
+    it('method `signer` should returns the object which contains `sign` property while the input is object', () => {
+      Transformer.signer({}).should.be.Object().have.property('sign')
+    })
+
+    it('method `signer` should returns the `{sign}` which is string and have length(32)', () => {
+      const target = Transformer.signer({})
+      target.should.be.Object().have.property('sign')
+      target.sign.should.be.String().and.have.length(32)
+    })
+
+    it('method `signer` should throw a `TypeError` while the input object has `sign_type:HMAC-SHA256` annotation and `Transformer.secret` wasn\'t setting', () => {
+      // mock doesn't setting
+      Transformer.secret = undefined
+      should(() => {
+        Transformer.signer({sign_type: 'HMAC-SHA256'})
+      }).throw(TypeError)
+    })
+
+    it('method `signer` should returns the `{sign}` is length(64) string while the input object has `sign_type:HMAC-SHA256` annotation', () => {
+      // mock setting up
+      Transformer.secret = ''
+      const target = Transformer.signer({sign_type: 'HMAC-SHA256'})
+      Transformer.secret = undefined
+      target.should.be.Object().have.property('sign')
+      target.sign.should.be.String().and.have.length(64)
+    })
   })
 
   describe('Transformer::toXml', () => {
