@@ -9,7 +9,6 @@ describe('lib/transformer', () => {
 
   describe('Transformer::mchid', () => {
     it('method `mchid` should be static and descriped as `get`, `set`, `enumerable` and `configurable` properties', () => {
-      should(Transformer.mchid).be.Undefined()
       should((new Transformer).mchid).is.Undefined()
       const describe = Object.getOwnPropertyDescriptor(Transformer, 'mchid')
       should(describe).have.properties('get', 'set', 'enumerable', 'configurable')
