@@ -109,6 +109,10 @@ const wxpay = new Wechatpay({
     // passphrase: 'your_merchant_id',
     // pfx: fs.readFileSync('/your/merchant/cert/apiclient_cert.p12'),
   },
+  // APIv2沙箱环境地址
+  // baseURL: 'https://api.mch.weixin.qq.com/sandboxnew',
+  // 建议初始化设置此参数，详细说明见Axios官方README
+  // maxRedirects: 0,
 })
 ```
 
