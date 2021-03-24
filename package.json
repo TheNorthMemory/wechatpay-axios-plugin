@@ -46,7 +46,7 @@
   "author": "James ZHANG",
   "license": "MIT",
   "dependencies": {
-    "axios": ">=0.21.1",
+    "axios": "^0.21.1",
     "xml2js": "^0.4.23"
   },
   "optionalDependencies": {
@@ -54,10 +54,11 @@
     "form-data": "^3.0.0"
   },
   "devDependencies": {
-    "babel-eslint": "^10.1.0",
-    "eslint": "^7.2.0",
-    "mocha": "^8.0.1",
-    "should": "^13.2.3",
-    "eslint-plugin-mocha": "^7.0.1"
+    "@babel/eslint-parser": "^7.13.10",
+    "eslint": "^7.22.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-mocha": "^8.1.0",
+    "mocha": "^8.3.2",
+    "should": "^13.2.3"
   }
 }

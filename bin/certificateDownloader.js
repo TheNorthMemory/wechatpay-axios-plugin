@@ -5,15 +5,16 @@
  *
  * @link https://wechatpay-api.gitbook.io/wechatpay-api-v3/qian-ming-zhi-nan-1/zheng-shu-he-hui-tiao-bao-wen-jie-mi
  */
-const {tmpdir} = require('os')
-const {readFileSync, writeFileSync} = require('fs')
-const {join} = require('path')
+const { tmpdir } = require('os');
+const { readFileSync, writeFileSync } = require('fs');
+const { join } = require('path');
 
-const {program} = require('commander')
-const axios = require('axios')
-const wxp = require('../')
-const pkg = require('../package.json')
-const aes = require('../lib/aes')
+/* eslint-disable-next-line import/no-extraneous-dependencies */
+const { program } = require('commander');
+const axios = require('axios');
+const interceptor = require('../lib/interceptor');
+const pkg = require('../package.json');
+const aes = require('../lib/aes');
 
 program
   .version(`The Wechatpay APIv3 Certificate Downloader \t\x1B[1;32mv${pkg.version}\x1B[0m`)
@@ -22,13 +23,15 @@ program
   .requiredOption('-f, --privatekey <string>', 'The path of the merchant\'s private key certificate aka \x1B[1;32mprivatekey\x1B[0m.')
   .requiredOption('-k, --key <string>', 'The secret key string of the merchant\'s APIv3 aka \x1B[1;32mkey\x1B[0m.')
   .option('-o, --output [string]', 'Path to output the downloaded wechatpay\'s public certificate(s)', `${tmpdir()}`)
-  .parse(process.argv)
+  .parse(process.argv);
 
 // de-construct the CLI parameters
-const {mchid, serialno: serial, privatekey, key: secret, output} = program
+const {
+  mchid, serialno: serial, privatekey, key: secret, output,
+} = program;
 
 // loading the merchant's private key certificaiton
-const privateKey = readFileSync(privatekey)
+const privateKey = readFileSync(privatekey);
 
 // Thought here: It's a trick,
 // not only lets the `client` pass the init,
@@ -36,45 +39,51 @@ const privateKey = readFileSync(privatekey)
 // The looping sequences in `Axios/lib/core/transformData` should be
 // #0(fn=downloader) -> #1(fn=anonymous).
 // These `global` certs will be passed in #1 to verify the response' `signature`.
-var certs = {'any': undefined}
+let certs = { any: undefined };
 
-const instance = axios.create()
+const instance = axios.create();
 
 // registry a named function `downloader` before this library does
-instance.interceptors.response.use(function downloader(response) {
+instance.interceptors.response.use((response) => {
   (response.data.data || []).map(({
     effective_time: notBefore,
     expire_time: notAfter,
-    serial_no: serialNo, encrypt_certificate: {nonce, associated_data: aad, ciphertext}
+    serial_no: serialNo, encrypt_certificate: { nonce, associated_data: aad, ciphertext },
   }, index) => {
     // @see {aes.decrypt} decrypt the ciphertext which is the `Wechatpay Public Certificate`
-    const cert = aes.decrypt(nonce, secret, ciphertext, aad)
+    const cert = aes.decrypt(nonce, secret, ciphertext, aad);
 
     // injection onto the global `certs` Object, using in the next `${interceptor.response}`
-    certs = Object.assign(certs, {[serialNo]: cert})
+    certs = Object.assign(certs, { [serialNo]: cert });
 
     // scope a file path based on given `--output` dir
-    const savedTo = join(output, `wechatpay_${serialNo}.pem`)
+    const savedTo = join(output, `wechatpay_${serialNo}.pem`);
 
     // write the PEM to file ...
-    writeFileSync(savedTo, cert)
+    writeFileSync(savedTo, cert);
 
-    console.group(`Wechatpay Public Certificate\x1B[1;31m#${index}\x1B[0m`)
-    console.info(`serial=\x1B[1;32m${serialNo}\x1B[0m`)
-    console.info(`notBefore=${(new Date(notBefore)).toUTCString()}`)
-    console.info(`notAfter=${(new Date(notAfter)).toUTCString()}`)
-    console.info(`Saved to: \x1B[1;32m${savedTo}\x1B[0m`)
-    console.groupEnd()
-    console.info(`You should verify the above infos again even if this library already did(by rsa.verify):`)
-    console.info(`\t\x1B[1;32mopenssl x509 -in ${savedTo} -noout -serial -dates\x1B[0m`)
-    console.info()
-  })
+    /* eslint-disable no-console */
+    console.group(`Wechatpay Public Certificate\x1B[1;31m#${index}\x1B[0m`);
+    console.info(`serial=\x1B[1;32m${serialNo}\x1B[0m`);
+    console.info(`notBefore=${(new Date(notBefore)).toUTCString()}`);
+    console.info(`notAfter=${(new Date(notAfter)).toUTCString()}`);
+    console.info(`Saved to: \x1B[1;32m${savedTo}\x1B[0m`);
+    console.groupEnd();
+    console.info('You should verify the above infos again even if this library already did(by rsa.verify):');
+    console.info(`\t\x1B[1;32mopenssl x509 -in ${savedTo} -noout -serial -dates\x1B[0m`);
+    console.info();
+    /* eslint-enable no-console */
 
-  return response
-})
+    return { notBefore, notAfter, serialNo };
+  });
+
+  return response;
+});
 
 // Standard Usage
-const client = wxp(instance, {mchid, serial, privateKey, certs})
+const client = interceptor(instance, {
+  mchid, serial, privateKey, certs,
+});
 
 // Execute a HTTPs request
-;(async () => await client.get('https://api.mch.weixin.qq.com/v3/certificates'))()
+(async () => { await client.get('https://api.mch.weixin.qq.com/v3/certificates'); })();

@@ -1,20 +1,12 @@
-parser: babel-eslint
+parser: "@babel/eslint-parser"
+parserOptions:
+  requireConfigFile: false
 env:
   node: true
 extends:
-  - eslint:recommended
+  - airbnb-base
 rules:
-  semi: [2, never]
-  strict: 0
-  quotes: [2, single, { allowTemplateLiterals: true }]
-  no-unused-vars: 2
-  no-multi-spaces: 1
-  camelcase: 1
-  no-use-before-define: [2, nofunc]
-  no-underscore-dangle: 0
-  no-unused-expressions: 1
-  comma-dangle: 0
-  mocha/no-exclusive-tests: 2
+  max-len: [2, 180]
   valid-jsdoc: 1
 overrides:
     - env:
