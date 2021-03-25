@@ -17,7 +17,7 @@
   },
   "scripts": {
     "test": "mocha --check-leaks ./tests/*.test.js ./tests/**/*.test.js",
-    "lint": "eslint --ext \".js\" lib tests bin"
+    "lint": "eslint --ext \".js\" index.js lib tests bin"
   },
   "bugs": {
     "url": "https://github.com/TheNorthMemory/wechatpay-axios-plugin/issues"

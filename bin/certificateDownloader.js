@@ -87,4 +87,6 @@ const client = interceptor(instance, {
 });
 
 // Execute a HTTPs request
-(async () => { await client.get('https://api.mch.weixin.qq.com/v3/certificates'); })();
+(async () => {
+  await client.get('https://api.mch.weixin.qq.com/v3/certificates');
+})();
