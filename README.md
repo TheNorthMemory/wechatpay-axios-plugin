@@ -95,16 +95,16 @@ const {Wechatpay, Formatter} = require('wechatpay-axios-plugin')
 const wxpay = new Wechatpay({
   mchid: 'your_merchant_id',
   serial: 'serial_number_of_your_merchant_public_cert',
-  privateKey: '-----BEGIN PRIVATE KEY-----' + '...' + '-----END PRIVATE KEY-----',
+  privateKey: '-----BEGIN PRIVATE KEY-----\n' + '...' + '\n-----END PRIVATE KEY-----',
   certs: {
-    'serial_number': '-----BEGIN CERTIFICATE-----' + '...' + '-----END CERTIFICATE-----',
+    'serial_number': '-----BEGIN CERTIFICATE-----\n' + '...' + '\n-----END CERTIFICATE-----',
   },
   // APIv2参数 >= 0.4.0 开始支持
   secret: 'your_merchant_secret_key_string',
   // 注： 如果不涉及资金变动，如仅收款，merchant参数可选，仅需 `secret` 一个参数，注意其为v2版的。
   merchant: {
-    cert: '-----BEGIN CERTIFICATE-----' + '...' + '-----END CERTIFICATE-----',
-    key: '-----BEGIN PRIVATE KEY-----' + '...' + '-----END PRIVATE KEY-----',
+    cert: '-----BEGIN CERTIFICATE-----\n' + '...' + '\n-----END CERTIFICATE-----',
+    key: '-----BEGIN PRIVATE KEY-----\n' + '...' + '\n-----END PRIVATE KEY-----',
     // or
     // passphrase: 'your_merchant_id',
     // pfx: fs.readFileSync('/your/merchant/cert/apiclient_cert.p12'),
@@ -775,6 +775,23 @@ params.sign = Hash.sign('HMAC-SHA256', params, v2Secret)
 
 console.info(params)
 ```
+
+## 常见问题
+
+Q: 敏感信息或者幂等操作要求额外头信息上送时，应该如何构建请求参数？
+
+> `DELETE`/`GET`请求的第一个参数，`POST`/`PUT`/`PATCH`请求的第二个参数，是 [AxiosRequestConfig](https://github.com/axios/axios) 对象，可以按需上送额外头参数，例如：
+> ```js
+> wxapi.v3.applyment4sub.applyment.$noop$(
+>   {},
+>   { noop: '', headers: { 'Wechatpay-Serial': '123456' } },
+> ).then(console.info).catch(console.error);
+> ```
+> 可参考 [#17](https://github.com/TheNorthMemory/wechatpay-axios-plugin/issues/17)
+
+Q: 接口地址为slash(`/`)结尾的，应该如何构建请求参数？
+
+> 动态参数`uri_template`或者属性`property`方式构建，可参考 [#16](https://github.com/TheNorthMemory/wechatpay-axios-plugin/issues/16)
 
 ## 单元测试
 
