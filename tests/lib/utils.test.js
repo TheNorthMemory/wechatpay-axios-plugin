@@ -27,6 +27,11 @@ describe('lib/utils', () => {
     should(utils.isObject).be.a.Function();
   });
 
+  it('should have `merge` property and be a function', () => {
+    utils.should.have.property('merge');
+    should(utils.merge).be.a.Function();
+  });
+
   it('should have `extend` property and be a function', () => {
     utils.should.have.property('extend');
     should(utils.extend).be.a.Function();
