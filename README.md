@@ -32,7 +32,7 @@ NodeJS原生`crypto`模块，自v12.9.0在 `publicEncrypt` 及 `privateDecrypt` 
 
 `$ npm install wechatpay-axios-plugin`
 
-## 万里长征第一步
+## 起步
 
 微信支付APIv3使用 (RESTful API with JSON over HTTP）接口设计，数据交换采用非对称（RSA-OAEP）加/解密方案。API上行所需的`商户RSA私钥证书`，可以由商户`超级管理员`使用专用证书生成工具生成并获取到，然而，API下行所需的`平台RSA证书`只能从`/v3/certificates`接口获取（应答证书还经过了对称(AES-GCM)加密，须采用`APIv3密钥`才能解密）。本项目也提供了命令行下载工具，使用手册如下：
 
@@ -45,10 +45,10 @@ Usage: certificateDownloader [options]
 Options:
   -V, --version              output the version number
   -m, --mchid <string>       The merchant's ID, aka mchid.
-  -s, --serialno <string>    The serial number of the merchant's public certificate aka serialno.
+  -s, --serialno <string>    The serial number of the merchant's certificate aka serialno.
   -f, --privatekey <string>  The path of the merchant's private key certificate aka privatekey.
   -k, --key <string>         The secret key string of the merchant's APIv3 aka key.
-  -o, --output [string]      Path to output the downloaded wechatpay's public certificate(s) (default: "/tmp")
+  -o, --output [string]      Path to output the downloaded WeChatPays platform certificate(s) (default: "/tmp")
   -h, --help                 display help for command
 ```
 
@@ -60,12 +60,12 @@ Options:
   <summary>$ <b>./bin/certificateDownloader.js</b> -m N -s S -f F.pem -k K -o .</summary>
 
 ```
-Wechatpay Public Certificate#0
+The WeChatPay Platform Certificate#0
   serial=HEXADECIAL
   notBefore=Wed, 22 Apr 2020 01:43:19 GMT
   notAfter=Mon, 21 Apr 2025 01:43:19 GMT
   Saved to: wechatpay_HEXADECIAL.pem
-You should verify the above infos again even if this library already did(by rsa.verify):
+You may confirm the above infos again even if this library already did(by Rsa.verify):
     openssl x509 -in wechatpay_HEXADECIAL.pem -noout -serial -dates
 
 ```
@@ -76,15 +76,15 @@ You should verify the above infos again even if this library already did(by rsa.
 
 ## 面向对象模式
 
-本类库自`0.2.0`开始，按照 `URL.pathname` 以`/`做切分，映射成对象属性，`0.4`版开始，支持APIv2的`pathname`映射，编码书写方式有如下约定：
+本类库自`0.2`开始，按照 `URL.pathname` 以`/`做切分，映射成对象属性，`0.4`版开始，支持APIv2的`pathname`映射，编码书写方式有如下约定：
 
-1. 请求 `URI` 作为级联对象，可以轻松构建请求对象，例如 `/v3/pay/transactions/native` 即自然翻译成 `v3.pay.transactions.native`;
-2. 每个 `URI` 所支持的 `HTTP METHOD`，即作为 请求对象的末尾执行方法，例如: `v3.pay.transactions.native.post({})`;
-3. 每个 `URI` 有中线(dash)分隔符的，可以使用驼峰`camelCase`风格书写，例如: `merchant-service`可写成 `merchantService`，或者属性风格，例如 `v3['merchant-service']`;
-4. 每个 `URI`.pathname 中，若有动态参数，例如 `business_code/{business_code}` 可写成 `business_code.$business_code$` 或者属性风格书写，例如 `business_code['{business_code}']`，抑或直接按属性风格，直接写参数值也可以，例如 `business_code['2000001234567890']`;
-5. 建议 `URI` 按照 `PascalCase` 风格书写, `TS Definition` 已在路上(还有若干问题没解决)，将是这种风格，代码提示将会很自然;
+1. 请求 `pathname` 作为级联对象，可以轻松构建请求对象，例如 `/v3/pay/transactions/native` 即自然翻译成 `v3.pay.transactions.native`;
+2. 每个 `pathname` 所支持的 `HTTP METHOD`，即作为 请求对象的末尾执行方法，例如: `v3.pay.transactions.native.post({})`;
+3. 每个 `pathname` 级联对象默认为HTTP`POST`函数，其同时隐式内置`GET/POST/PUT/PATCH/DELETE` 操作方法链，支持全大写及全小写(未来有可能会删除)两种编码方式，说明见`变更历史`;
+4. 每个 `pathname` 有中线(dash)分隔符的，可以使用驼峰`camelCase`风格书写，例如: `merchant-service`可写成 `merchantService`，或者属性风格，例如 `v3['merchant-service']`;
+5. 每个 `pathname` 中，若有动态参数，例如 `business_code/{business_code}` 可写成 `business_code.$business_code$` 或者属性风格书写，例如 `business_code['{business_code}']`，抑或按属性风格，直接写值也可以，例如 `business_code['2000001234567890']`;
 6. SDK内置的 `/v2` 对象，其特殊标识为APIv2级联对象，之后串接切分后的`pathname`，如 `/v2/pay/micropay` 即以XML形式请求远端接口；
-7. 每个级联对象默认为HTTP`POST`函数，其同时隐式内置`GET/POST/PUT/PATCH/DELETE` 操作方法链，支持全大写及全小写(未来有可能会删除)两种编码方式，说明见`变更历史`;
+7. 建议 `pathname` 按照 `PascalCase` 风格书写, `TS Definition` 已在路上(还有若干问题没解决)，将是这种风格，代码提示将会很自然;
 
 以下示例用法，均以`Promise`或`Async/Await`结合此种编码模式展开，级联对象操作符的调试信息见文档末。
 
@@ -121,14 +121,14 @@ const wxpay = new Wechatpay({
 - `mchid` 为你的商户号，一般是10字节纯数字
 - `serial` 为你的商户证书序列号，一般是40字节字符串
 - `privateKey` 为你的商户私钥证书，一般是通过官方证书生成工具生成的文件名是`apiclient_key.pem`文件，支持纯字符串或者文件流`buffer`格式
-- `secret` 为APIv2版的`密钥`，商户平台上设置的32字节字符串
 - `certs{[serial_number]:string}` 为通过下载工具下载的平台证书`key/value`键值对，键为平台证书序列号，值为平台证书pem格式的纯字符串或者文件流`buffer`格式
+- `secret` 为APIv2版的`密钥`，商户平台上设置的32字节字符串
 - `merchant.cert` 为你的商户证书,一般是文件名为`apiclient_cert.pem`文件，支持纯字符串或者文件流`buffer`格式
 - `merchant.key` 为你的商户私钥证书，一般是通过官方证书生成工具生成的文件名是`apiclient_key.pem`文件，支持纯字符串或者文件流`buffer`格式
 - `merchant.passphrase` 一般为你的商户号
 - `merchant.pfx` 为你的商户`PKCS12`格式的证书，文件名一般为`apiclient_cert.p12`，支持二进制文件流`buffer`格式
 
-**注：** 0.4.0版本做了重构及优化，APIv2&v3以及Axios初始参数，均融合在一个型参上。
+**注：** 0.4版本做了重构及优化，APIv2&v3以及Axios初始参数，均融合在一个型参上。
 
 ## APIv3
 
@@ -883,6 +883,10 @@ console.info(params)
 </details>
 
 ## 变更历史
+
+- v0.4.6
+  - 使用最新版`eslint`及`eslint-config-airbnb-base`
+  - 增加`utils.merge`依赖函数测试校验
 
 - v0.4.5
   - 支持APIv2版的俩账单下载，调用方法与APIv3类同；
