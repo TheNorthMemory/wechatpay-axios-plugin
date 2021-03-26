@@ -11,7 +11,8 @@ const axios = require('axios');
 const { default: interceptor, Aes } = require('../..');
 
 module.exports = {
-  command: ['cert', 'certificateDownloader'],
+  command: 'crt',
+  aliases: ['cert', 'certificateDownloader', 'downloader'],
   description: "The WeChatPay APIv3's Certificate Downloader",
   builder: {
     mchid: {
