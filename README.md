@@ -37,7 +37,7 @@ NodeJS原生`crypto`模块，自v12.9.0在 `publicEncrypt` 及 `privateDecrypt` 
 微信支付APIv3使用 (RESTful API with JSON over HTTP）接口设计，数据交换采用非对称（RSA-OAEP）加/解密方案。API上行所需的`商户RSA私钥证书`，可以由商户`超级管理员`使用专用证书生成工具生成并获取到，然而，API下行所需的`平台RSA证书`只能从`/v3/certificates`接口获取（应答证书还经过了对称(AES-GCM)加密，须采用`APIv3密钥`才能解密）。本项目也提供了命令行下载工具，使用手册如下：
 
 <details>
-  <summary>$ <b>./bin/certificateDownloader.js -h</b> (点击显示)</summary>
+  <summary>$ <b>./node_modules/.bin/certificateDownloader -h</b> (点击显示)</summary>
 
 ```
 Usage: certificateDownloader [options]
@@ -57,7 +57,7 @@ Options:
 </details>
 
 <details>
-  <summary>$ <b>./bin/certificateDownloader.js</b> -m N -s S -f F.pem -k K -o .</summary>
+  <summary>$ <b>./node_modules/.bin/certificateDownloader</b> -m N -s S -f F.pem -k K -o .</summary>
 
 ```
 The WeChatPay Platform Certificate#0
@@ -782,7 +782,7 @@ Q: 敏感信息或者幂等操作要求额外头信息上送时，应该如何�
 
 > `DELETE`/`GET`请求的第一个参数，`POST`/`PUT`/`PATCH`请求的第二个参数，是 [AxiosRequestConfig](https://github.com/axios/axios) 对象，可以按需上送额外头参数，例如：
 > ```js
-> wxapi.v3.applyment4sub.applyment.$noop$(
+> wxpay.v3.applyment4sub.applyment.$noop$(
 >   {},
 >   { noop: '', headers: { 'Wechatpay-Serial': '123456' } },
 > ).then(console.info).catch(console.error);
