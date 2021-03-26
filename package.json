@@ -1,6 +1,6 @@
 {
   "name": "wechatpay-axios-plugin",
-  "version": "0.4.6",
+  "version": "0.5.0",
   "description": "微信支付APIv2及v3 NodeJS SDK，支持v3证书下载，v2付款码支付、企业付款、退款，企业微信-企业支付-企业红包/向员工付款，v2&v3 Native支付、扫码支付、H5支付、JSAPI/小程序支付、合单支付...",
   "main": "index.js",
   "typings": "index.d.ts",
