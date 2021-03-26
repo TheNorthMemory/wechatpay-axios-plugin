@@ -13,7 +13,7 @@
     "LICENSE"
   ],
   "bin": {
-    "certificateDownloader": "./bin/certificateDownloader.js"
+    "certificateDownloader": "./bin/cli.js cert"
   },
   "scripts": {
     "test": "mocha --check-leaks ./tests/*.test.js ./tests/**/*.test.js",
@@ -50,9 +50,9 @@
     "axios": "^0.21.1",
     "xml2js": "^0.4.23"
   },
-  "optionalDependencies": {
-    "commander": "^5.1.0",
-    "form-data": "^3.0.0"
+  "peerDependencies": {
+    "form-data": "^3.0.0 || ^4.0.0",
+    "yargs": "^16.2.0"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.13.10",
