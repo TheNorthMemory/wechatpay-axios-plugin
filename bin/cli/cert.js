@@ -53,14 +53,14 @@ module.exports = {
   },
   async handler(argv) {
     const {
-      mchid, serialno: serial, privatekey, key: secret, output,
+      baseURL, mchid, serialno: serial, privatekey, key: secret, output,
     } = argv;
 
     const privateKey = readFileSync(privatekey);
 
     let certs = { any: undefined };
 
-    const instance = axios.create();
+    const instance = axios.create({ baseURL });
 
     // registry a named function `downloader` before this library does
     /* eslint-disable-next-line prefer-arrow-callback */
@@ -104,6 +104,6 @@ module.exports = {
       mchid, serial, privateKey, certs,
     });
 
-    await client.get('https://api.mch.weixin.qq.com/v3/certificates');
+    await client.get('v3/certificates');
   },
 };

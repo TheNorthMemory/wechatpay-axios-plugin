@@ -13,7 +13,7 @@
     "LICENSE"
   ],
   "bin": {
-    "certificateDownloader": "./bin/cli.js cert"
+    "wxpay": "./bin/cli.js"
   },
   "scripts": {
     "test": "mocha --check-leaks ./tests/*.test.js ./tests/**/*.test.js",

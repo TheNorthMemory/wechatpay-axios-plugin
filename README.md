@@ -34,30 +34,37 @@ NodeJS原生`crypto`模块，自v12.9.0在 `publicEncrypt` 及 `privateDecrypt` 
 
 ## 起步
 
+### v3平台证书
+
 微信支付APIv3使用 (RESTful API with JSON over HTTP）接口设计，数据交换采用非对称（RSA-OAEP）加/解密方案。API上行所需的`商户RSA私钥证书`，可以由商户`超级管理员`使用专用证书生成工具生成并获取到，然而，API下行所需的`平台RSA证书`只能从`/v3/certificates`接口获取（应答证书还经过了对称(AES-GCM)加密，须采用`APIv3密钥`才能解密）。本项目也提供了命令行下载工具，使用手册如下：
 
 <details>
-  <summary>$ <b>./node_modules/.bin/certificateDownloader -h</b> (点击显示)</summary>
+  <summary>$ <b>./node_modules/.bin/wxpay certificateDownloader --help</b> (点击显示)</summary>
 
 ```
-Usage: certificateDownloader [options]
+wxpay crt
+
+The WeChatPay APIv3's Certificate Downloader
+
+cert
+  -m, --mchid       The merchant's ID, aka mchid.  [string] [required]
+  -s, --serialno    The serial number of the merchant's certificate aka serialno.  [string] [required]
+  -f, --privatekey  The path of the merchant's private key certificate aka privatekey.  [string] [required]
+  -k, --key         The secret key string of the merchant's APIv3 aka key.  [string] [required]
+  -o, --output      Path to output the downloaded WeChatPay's platform certificate(s)  [string] [default: "/tmp"]
 
 Options:
-  -V, --version              output the version number
-  -m, --mchid <string>       The merchant's ID, aka mchid.
-  -s, --serialno <string>    The serial number of the merchant's certificate aka serialno.
-  -f, --privatekey <string>  The path of the merchant's private key certificate aka privatekey.
-  -k, --key <string>         The secret key string of the merchant's APIv3 aka key.
-  -o, --output [string]      Path to output the downloaded WeChatPays platform certificate(s) (default: "/tmp")
-  -h, --help                 display help for command
+      --version  Show version number  [boolean]
+      --help     Show help  [boolean]
+  -u, --baseURL  The baseURL  [string] [default: "https://api.mch.weixin.qq.com/"]
 ```
 
-**注：** 像其他通用命令行工具一样，`-h` `--help` 均会打印出帮助手册，说明档里的`<string>`指 必选参数，类型是字符串； `[string]`指 可选字符串参数，默认值是 `/temp`（系统默认临时目录）
+**注：** 像其他通用命令行工具一样，`--help` 均会打印出帮助手册，说明档里的`[required]`指 必选参数； `[string]`指 字符串类型，`[default]`指默认值
 
 </details>
 
 <details>
-  <summary>$ <b>./node_modules/.bin/certificateDownloader</b> -m N -s S -f F.pem -k K -o .</summary>
+  <summary>$ <b>./node_modules/.bin/wxpay certificateDownloader</b> -m N -s S -f F.pem -k K -o .</summary>
 
 ```
 The WeChatPay Platform Certificate#0
@@ -72,7 +79,97 @@ You may confirm the above infos again even if this library already did(by Rsa.ve
 **注：** 提供必选参数且运行后，屏幕即打印出如上信息，提示`证书序列号`及`起、止格林威治(GMT)时间`及证书下载保存位置。
 </details>
 
-以下文档及示例都是基本用法，没啥花活儿，祝开心。 :smile:
+### 命令行请求
+
+v0.5版，命令行工具做了加强，增加了基础请求方法，可以用来做快速接入体验，用法如下:
+
+#### 帮助信息
+
+<details>
+  <summary>$ <b>./node_modules/.bin/wxpay req --help</b></summary>
+
+```
+wxpay req <uri>
+
+Play the WeChatPay OpenAPI requests over command line
+
+request <uri>
+  -c, --config   The configuration  [required]
+  -b, --binary   Point out the response as `arraybuffer`  [boolean]
+  -m, --method   The request HTTP verb  [default: "POST"]
+  -h, --headers  Special request HTTP header(s)
+  -d, --data     The request HTTP body
+  -p, --params   The request HTTP query parameter(s)
+
+Options:
+      --version  Show version number  [boolean]
+      --help     Show help  [boolean]
+  -u, --baseURL  The baseURL  [string] [default: "https://api.mch.weixin.qq.com/"]
+```
+</details>
+
+#### v3版Native付
+<details>
+  <summary>$ <b>./node_modules/.bin/wxpay req v3/pay/transactions/native</b></summary>
+
+```
+./node_modules/.bin/wxpay req v3/pay/transactions/native \
+  -c.mchid 1230000109 \
+  -c.serial HEXADECIAL \
+  -c.privateKey /path/your/merchant/mchid.key \
+  -c.certs.HEXADECIAL /path/the/platform/certificates/HEXADECIAL.pem \
+  -d.appid wxd678efh567hg6787 \
+  -d.mchid 1230000109 \
+  -d.description 'Image形象店-深圳腾大-QQ公仔' \
+  -d.out_trade_no '1217752501201407033233368018' \
+  -d.notify_url 'https://www.weixin.qq.com/wxpay/pay.php' \
+  -d.amount.total 100 \
+  -d.amount.currency CNY
+```
+
+#### v2版付款码付
+
+<details>
+  <summary>$ <b>./node_modules/.bin/wxpay req v2/pay/micropay</b></summary>
+
+```
+./node_modules/.bin/wxpay req v2/pay/micropay \
+  -c.mchid 1230000109 \
+  -c.serial any \
+  -c.privateKey any \
+  -c.certs.any \
+  -c.secret your_merchant_secret_key_string \
+  -d.appid wxd678efh567hg6787 \
+  -d.mch_id 1230000109 \
+  -d.device_info 013467007045764 \
+  -d.nonce_str 5K8264ILTKCH16CQ2502SI8ZNMTM67VS \
+  -d.detail 'Image形象店-深圳腾大-QQ公仔' \
+  -d.spbill_create_ip 8.8.8.8 \
+  -d.out_trade_no '1217752501201407033233368018' \
+  -d.total_fee 100 \
+  -d.fee_type CNY \
+  -d.auth_code 120061098828009406
+```
+</details>
+
+#### v2版付款码查询openid
+
+<details>
+  <summary>$ <b>./node_modules/.bin/wxpay req v2/tools/authcodetoopenid</b></summary>
+
+```
+./node_modules/.bin/wxpay req v2/tools/authcodetoopenid \
+  -c.mchid 1230000109 \
+  -c.serial any \
+  -c.privateKey any \
+  -c.certs.any \
+  -c.secret your_merchant_secret_key_string \
+  -d.appid wxd678efh567hg6787 \
+  -d.mch_id 1230000109 \
+  -d.nonce_str 5K8264ILTKCH16CQ2502SI8ZNMTM67VS \
+  -d.auth_code 120061098828009406
+```
+</details>
 
 ## 面向对象模式
 
@@ -88,7 +185,7 @@ You may confirm the above infos again even if this library already did(by Rsa.ve
 
 以下示例用法，均以`Promise`或`Async/Await`结合此种编码模式展开，级联对象操作符的调试信息见文档末。
 
-### 初始化
+## 初始化
 
 ```js
 const {Wechatpay, Formatter} = require('wechatpay-axios-plugin')

@@ -1,8 +1,6 @@
 /**
  * Play the WeChatPay OpenAPI requests over command line
  */
-const { readFileSync } = require('fs');
-
 const { Wechatpay } = require('../..');
 
 module.exports = {
@@ -30,7 +28,7 @@ module.exports = {
     },
     headers: {
       alias: 'h',
-      describe: 'Special request HTTP headers',
+      describe: 'Special request HTTP header(s)',
       group: 'request <uri>',
     },
     data: {
@@ -40,29 +38,20 @@ module.exports = {
     },
     params: {
       alias: 'p',
-      describe: 'The request HTTP query parameters',
+      describe: 'The request HTTP query parameter(s)',
       group: 'request <uri>',
     },
   },
   handler(argv) {
     const {
-      uri, config, method, data, params, headers,
+      baseURL, uri, config, method, data, params, headers,
     } = argv;
     const responseType = argv.binary ? 'arraybuffer' : undefined;
     const structure = [{ params, headers, responseType }];
 
-    if (data) {
-      structure.unshift(data);
-    }
-    if (config.privateKey) {
-      config.privateKey = readFileSync(config.privateKey);
-    }
-    if (config.certs) {
-      /* eslint-disable-next-line no-return-assign, no-param-reassign, no-sequences */
-      config.certs = Object.entries(config.certs).reduce((o, [k, v]) => (o[k] = readFileSync(v), o), {});
-    }
+    if (data) { structure.unshift(data); }
 
-    (new Wechatpay(config))[uri][method](...structure)
+    (new Wechatpay({ baseURL, ...config }))[uri][method](...structure)
       /* eslint-disable-next-line no-console */
       .then(console.info).catch(console.error);
   },
