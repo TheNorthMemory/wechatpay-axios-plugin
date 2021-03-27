@@ -126,6 +126,7 @@ Options:
   -d.amount.total 100 \
   -d.amount.currency CNY
 ```
+</details>
 
 #### v2版付款码付
 
