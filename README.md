@@ -39,7 +39,7 @@ NodeJS原生`crypto`模块，自v12.9.0在 `publicEncrypt` 及 `privateDecrypt` 
 微信支付APIv3使用 (RESTful API with JSON over HTTP）接口设计，数据交换采用非对称（RSA-OAEP）加/解密方案。API上行所需的`商户RSA私钥证书`，可以由商户`超级管理员`使用专用证书生成工具生成并获取到，然而，API下行所需的`平台RSA证书`只能从`/v3/certificates`接口获取（应答证书还经过了对称(AES-GCM)加密，须采用`APIv3密钥`才能解密）。本项目也提供了命令行下载工具，使用手册如下：
 
 <details>
-  <summary>$ <b>./node_modules/.bin/wxpay certificateDownloader --help</b> (点击显示)</summary>
+  <summary>$ <b>./node_modules/.bin/wxpay crt --help</b> (点击显示)</summary>
 
 ```
 wxpay crt
@@ -64,7 +64,7 @@ Options:
 </details>
 
 <details>
-  <summary>$ <b>./node_modules/.bin/wxpay certificateDownloader</b> -m N -s S -f F.pem -k K -o .</summary>
+  <summary>$ <b>./node_modules/.bin/wxpay crt</b> -m N -s S -f F.pem -k K -o .</summary>
 
 ```
 The WeChatPay Platform Certificate#0
@@ -110,10 +110,10 @@ Options:
 
 #### v3版Native付
 <details>
-  <summary>$ <b>./node_modules/.bin/wxpay req v3/pay/transactions/native</b></summary>
+  <summary>$ <b>./node_modules/.bin/wxpay v3/pay/transactions/native</b></summary>
 
 ```
-./node_modules/.bin/wxpay req v3/pay/transactions/native \
+./node_modules/.bin/wxpay v3/pay/transactions/native \
   -c.mchid 1230000109 \
   -c.serial HEXADECIAL \
   -c.privateKey /path/your/merchant/mchid.key \
@@ -131,10 +131,10 @@ Options:
 #### v2版付款码付
 
 <details>
-  <summary>$ <b>./node_modules/.bin/wxpay req v2/pay/micropay</b></summary>
+  <summary>$ <b>./node_modules/.bin/wxpay v2/pay/micropay</b></summary>
 
 ```
-./node_modules/.bin/wxpay req v2/pay/micropay \
+./node_modules/.bin/wxpay v2/pay/micropay \
   -c.mchid 1230000109 \
   -c.serial any \
   -c.privateKey any \
@@ -156,10 +156,10 @@ Options:
 #### v2版付款码查询openid
 
 <details>
-  <summary>$ <b>./node_modules/.bin/wxpay req v2/tools/authcodetoopenid</b></summary>
+  <summary>$ <b>./node_modules/.bin/wxpay v2/tools/authcodetoopenid</b></summary>
 
 ```
-./node_modules/.bin/wxpay req v2/tools/authcodetoopenid \
+./node_modules/.bin/wxpay v2/tools/authcodetoopenid \
   -c.mchid 1230000109 \
   -c.serial any \
   -c.privateKey any \
@@ -230,7 +230,7 @@ const wxpay = new Wechatpay({
 
 ## APIv3
 
-### Native下单API
+### Native下单
 ```js
 wxpay.v3.pay.transactions.native
   .post({/*文档参数放这里就好*/})
@@ -238,7 +238,7 @@ wxpay.v3.pay.transactions.native
   .catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
 ```
 
-### 查询订单API
+### 查询订单
 ```js
 wxpay.v3.pay.transactions.id['{transaction_id}']
   .get({params: {mchid: '1230000109'}, transaction_id: '1217752501201407033233368018'})
@@ -246,7 +246,7 @@ wxpay.v3.pay.transactions.id['{transaction_id}']
   .catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
 ```
 
-### 关单API
+### 关闭订单
 ```js
 wxpay.v3.pay.transactions.outTradeNo['1217752501201407033233368018']
   .post({mchid: '1230000109'})
@@ -254,13 +254,21 @@ wxpay.v3.pay.transactions.outTradeNo['1217752501201407033233368018']
   .catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
 ```
 
-### 合单支付API
+### 合单支付下单
 
 ```js
 wxpay.v3.combineTransactions.jsapi
   .post({/*文档参数放这里就好*/})
   .then(res => console.info(res.data))
   .catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
+```
+
+### H5下单
+```js
+wxpay.v3.pay.transactions.h5
+  .post({/*文档参数放这里就好*/})
+  .then(({data: {code_url}}) => console.info(code_url))
+  .catch(console.error)
 ```
 
 ### 对账单下载及解析
@@ -286,7 +294,7 @@ wxpay.v3.bill.tradebill.get({
 })
 ```
 
-### 创建商家券API
+### 创建商家券
 ```js
 wxpay.v3.marketing.busifavor.stocks
   .post({/*商家券创建条件*/})
@@ -294,7 +302,7 @@ wxpay.v3.marketing.busifavor.stocks
   .catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
 ```
 
-### 查询用户单张券详情API
+### 查询用户单张券详情
 
 ```js
 ;(async () => {
@@ -334,7 +342,7 @@ wxpay.v3.marketing.busifavor.stocks
 })()
 ```
 
-### 支付即服务API
+### 支付即服务
 
 ```js
 ;(async () => {
@@ -348,7 +356,7 @@ wxpay.v3.marketing.busifavor.stocks
 }
 ```
 
-### 商业投诉查询API
+### 商业投诉查询
 
 ```js
 ;(async () => {
@@ -540,6 +548,31 @@ wxpay.v2.pay.micropay({
 })
 .then(res => console.info(res.data))
 .catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
+```
+
+### H5支付
+
+```js
+wxpay.v2.pay.unifiedorder({
+  appid: 'wx2421b1c4370ec43b',
+  attach: '支付测试',
+  body: 'H5支付测试',
+  mch_id: '10000100',
+  nonce_str: Formatter.nonce(),
+  notify_url: 'http://wxpay.wxutil.com/pub_v2/pay/notify.v2.php',
+  openid: 'oUpF8uMuAJO_M2pxb1Q9zNjWeS6o',
+  out_trade_no: '1415659990',
+  spbill_create_ip: '14.23.150.211',
+  total_fee: 1,
+  trade_type: 'MWEB',
+  scene_info: JSON.stringify({
+    h5_info: {
+      type:"IOS",
+      app_name: "王者荣耀",
+      package_name: "com.tencent.tmgp.sgame"
+    }
+  }),
+}).then(console.info).catch(console.error);
 ```
 
 ### 申请退款
