@@ -5,7 +5,7 @@ const { Wechatpay } = require('../..');
 
 module.exports = {
   command: 'req <uri>',
-  aliases: ['request', 'remote'],
+  aliases: ['*', 'request', 'remote'],
   description: 'Play the WeChatPay OpenAPI requests over command line',
   builder: {
     config: {
