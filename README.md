@@ -191,18 +191,24 @@ Options:
 ```js
 const {Wechatpay, Formatter} = require('wechatpay-axios-plugin')
 const wxpay = new Wechatpay({
+  // 商户号
   mchid: 'your_merchant_id',
+  // 商户证书序列号
   serial: 'serial_number_of_your_merchant_public_cert',
-  privateKey: '-----BEGIN PRIVATE KEY-----\n' + '...' + '\n-----END PRIVATE KEY-----',
+  // 商户私钥证书 PEM格式的文本字符串或者文件buffer
+  privateKey: '-----BEGIN PRIVATE KEY-----\n-FULL-OF-THE-FILE-CONTENT-\n-----END PRIVATE KEY-----',
   certs: {
-    'serial_number': '-----BEGIN CERTIFICATE-----\n' + '...' + '\n-----END CERTIFICATE-----',
+    // CLI `wxpay crt -m {商户号} -s {商户证书序列号} -f {商户私钥证书路径} -k {APIv3密钥(32字节)} -o {保存地址}` 生成
+    'serial_number': '-----BEGIN CERTIFICATE-----\n-FULL-OF-THE-FILE-CONTENT-\n-----END CERTIFICATE-----',
   },
-  // APIv2参数 >= 0.4.0 开始支持
+  // APIv2密钥(32字节) v0.4 开始支持
   secret: 'your_merchant_secret_key_string',
-  // 注： 如果不涉及资金变动，如仅收款，merchant参数可选，仅需 `secret` 一个参数，注意其为v2版的。
+  // 接口不要求证书情形，例如仅收款merchant对象参数可选
   merchant: {
-    cert: '-----BEGIN CERTIFICATE-----\n' + '...' + '\n-----END CERTIFICATE-----',
-    key: '-----BEGIN PRIVATE KEY-----\n' + '...' + '\n-----END PRIVATE KEY-----',
+    // 商户证书 PEM格式的文本字符串或者文件buffer
+    cert: '-----BEGIN CERTIFICATE-----\n-FULL-OF-THE-FILE-CONTENT-\n-----END CERTIFICATE-----',
+    // 商户私钥证书 PEM格式的文本字符串或者文件buffer
+    key: '-----BEGIN PRIVATE KEY-----\n-FULL-OF-THE-FILE-CONTENT-\n-----END PRIVATE KEY-----',
     // or
     // passphrase: 'your_merchant_id',
     // pfx: fs.readFileSync('/your/merchant/cert/apiclient_cert.p12'),
