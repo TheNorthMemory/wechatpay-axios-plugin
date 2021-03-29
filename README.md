@@ -267,7 +267,7 @@ wxpay.v3.combineTransactions.jsapi
 ```js
 wxpay.v3.pay.transactions.h5
   .post({/*文档参数放这里就好*/})
-  .then(({data: {code_url}}) => console.info(code_url))
+  .then(({data: {h5_url}}) => console.info(h5_url))
   .catch(console.error)
 ```
 
@@ -572,7 +572,7 @@ wxpay.v2.pay.unifiedorder({
       package_name: "com.tencent.tmgp.sgame"
     }
   }),
-}).then(console.info).catch(console.error);
+}).then(({data: {mweb_url}}) => console.info(mweb_url)).catch(console.error);
 ```
 
 ### 申请退款
