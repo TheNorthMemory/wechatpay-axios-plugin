@@ -4,42 +4,43 @@
 const { Wechatpay } = require('../..');
 
 module.exports = {
-  command: 'req <uri>',
-  aliases: ['*', 'request', 'remote'],
+  command: '* <uri>',
+  aliases: ['req', 'request', 'remote'],
   description: 'Play the WeChatPay OpenAPI requests over command line',
   builder: {
     config: {
       alias: 'c',
       describe: 'The configuration',
-      group: 'request <uri>',
+      group: '<uri>',
       demandOption: true,
     },
     binary: {
       alias: 'b',
       describe: 'Point out the response as `arraybuffer`',
       type: 'boolean',
-      group: 'request <uri>',
+      group: '<uri>',
     },
     method: {
       alias: 'm',
       describe: 'The request HTTP verb',
+      choices: ['DELETE', 'GET', 'POST', 'PUT', 'PATCH', 'delete', 'get', 'post', 'put', 'patch'],
       default: 'POST',
-      group: 'request <uri>',
+      group: '<uri>',
     },
     headers: {
       alias: 'h',
       describe: 'Special request HTTP header(s)',
-      group: 'request <uri>',
+      group: '<uri>',
     },
     data: {
       alias: 'd',
       describe: 'The request HTTP body',
-      group: 'request <uri>',
+      group: '<uri>',
     },
     params: {
       alias: 'p',
       describe: 'The request HTTP query parameter(s)',
-      group: 'request <uri>',
+      group: '<uri>',
     },
   },
   handler(argv) {
