@@ -93,10 +93,10 @@ wxpay req <uri>
 
 Play the WeChatPay OpenAPI requests over command line
 
-request <uri>
+<uri>
   -c, --config   The configuration  [required]
   -b, --binary   Point out the response as `arraybuffer`  [boolean]
-  -m, --method   The request HTTP verb  [default: "POST"]
+  -m, --method   The request HTTP verb  [choices: "DELETE", "GET", "POST", "PUT", "PATCH", "delete", "get", "post", "put", "patch"] [default: "POST"]
   -h, --headers  Special request HTTP header(s)
   -d, --data     The request HTTP body
   -p, --params   The request HTTP query parameter(s)
@@ -1031,6 +1031,10 @@ Q: 接口地址为slash(`/`)结尾的，应该如何构建请求参数？
 </details>
 
 ## 变更历史
+
+- v0.5.1
+  - 优化CLI，可以直接 `wxpay v3/pay/transactions/native` 请求了
+  - 优化`README`文档，适配最新CLI用法
 
 - v0.5.0
   - 新增命令行方式与微信支付接口交互工具
