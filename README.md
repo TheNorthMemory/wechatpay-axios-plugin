@@ -181,7 +181,7 @@ Options:
 3. 每个 `pathname` 级联对象默认为HTTP`POST`函数，其同时隐式内置`GET/POST/PUT/PATCH/DELETE` 操作方法链，支持全大写及全小写两种编码方式，说明见`变更历史`;
 4. 每个 `pathname` 有中线(dash)分隔符的，可以使用驼峰`camelCase`风格书写，例如: `merchant-service`可写成 `merchantService`，或者属性风格，例如 `v3['merchant-service']`;
 5. 每个 `pathname` 中，若有动态参数，例如 `business_code/{business_code}` 可写成 `business_code.$business_code$` 或者属性风格书写，例如 `business_code['{business_code}']`，抑或按属性风格，直接写值也可以，例如 `business_code['2000001234567890']`;
-6. SDK内置的 `/v2` 对象，其特殊标识为APIv2级联对象，之后串接切分后的`pathname`，如 `/v2/pay/micropay` 即以XML形式请求远端接口；
+6. SDK内置的 `/v2` 对象，其特殊标识为APIv2级联对象，之后串接切分后的`pathname`，如源 `/pay/micropay` 翻译成 `v2.pay.micropay` 即以XML形式请求远端接口；
 7. 建议 `pathname` 按照 `PascalCase` 风格书写, `TS Definition` 已在路上(还有若干问题没解决)，将是这种风格，代码提示将会很自然;
 
 以下示例用法，均以`Promise`或`Async/Await`结合此种编码模式展开，级联对象操作符的调试信息见文档末。
@@ -1052,7 +1052,7 @@ QQ群: **684379275**
 ## 变更历史
 
 - v0.5.1
-  - 优化CLI，可以直接 `wxpay v3/pay/transactions/native` 请求了
+  - 优化CLI，可以直接 `wxpay <uri>` 发起请求
   - 优化`README`文档，适配最新CLI用法
 
 - v0.5.0
