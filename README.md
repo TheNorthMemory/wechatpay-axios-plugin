@@ -178,7 +178,7 @@ Options:
 
 1. 请求 `pathname` 作为级联对象，可以轻松构建请求对象，例如 `/v3/pay/transactions/native` 即自然翻译成 `v3.pay.transactions.native`;
 2. 每个 `pathname` 所支持的 `HTTP METHOD`，即作为 请求对象的末尾执行方法，例如: `v3.pay.transactions.native.post({})`;
-3. 每个 `pathname` 级联对象默认为HTTP`POST`函数，其同时隐式内置`GET/POST/PUT/PATCH/DELETE` 操作方法链，支持全大写及全小写(未来有可能会删除)两种编码方式，说明见`变更历史`;
+3. 每个 `pathname` 级联对象默认为HTTP`POST`函数，其同时隐式内置`GET/POST/PUT/PATCH/DELETE` 操作方法链，支持全大写及全小写两种编码方式，说明见`变更历史`;
 4. 每个 `pathname` 有中线(dash)分隔符的，可以使用驼峰`camelCase`风格书写，例如: `merchant-service`可写成 `merchantService`，或者属性风格，例如 `v3['merchant-service']`;
 5. 每个 `pathname` 中，若有动态参数，例如 `business_code/{business_code}` 可写成 `business_code.$business_code$` 或者属性风格书写，例如 `business_code['{business_code}']`，抑或按属性风格，直接写值也可以，例如 `business_code['2000001234567890']`;
 6. SDK内置的 `/v2` 对象，其特殊标识为APIv2级联对象，之后串接切分后的`pathname`，如 `/v2/pay/micropay` 即以XML形式请求远端接口；
@@ -914,6 +914,13 @@ console.info(params)
 ```
 
 ## 常见问题
+
+Q: APIv3消息通知，`AesGCM`加密字段，应该如何解密？
+
+> 官方文档有介绍，APIv3平台证书及消息通知关键信息均使用`AesGcm`加解密，依赖`APIv3密钥`，商户侧解密可参考`bin/cli/cert.js`证书下载工具，例如：
+> ```js
+> Aes.decrypt(nonce, secret, ciphertext, aad);
+> ```
 
 Q: 敏感信息或者幂等操作要求额外头信息上送时，应该如何构建请求参数？
 
