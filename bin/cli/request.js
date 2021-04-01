@@ -52,8 +52,8 @@ module.exports = {
 
     if (data) { structure.unshift(data); }
 
-    (new Wechatpay({ baseURL, ...config }))[uri][method](...structure)
-      /* eslint-disable-next-line no-console */
+    uri.split(/\/|\./).filter((i) => i).reduce((f, i) => f[i], new Wechatpay({ baseURL, ...config }))[method](...structure)
+      /* eslint-disable-next-line no-console, newline-per-chained-call */
       .then(console.info).catch(console.error);
   },
 };
