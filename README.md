@@ -110,10 +110,10 @@ Options:
 
 #### v3版Native付
 <details>
-  <summary>$ <b>./node_modules/.bin/wxpay v3/pay/transactions/native</b></summary>
+  <summary>$ <b>./node_modules/.bin/wxpay v3.pay.transactions.native</b></summary>
 
 ```
-./node_modules/.bin/wxpay v3/pay/transactions/native \
+./node_modules/.bin/wxpay v3.pay.transactions.native \
   -c.mchid 1230000109 \
   -c.serial HEXADECIAL \
   -c.privateKey /path/your/merchant/mchid.key \
@@ -131,10 +131,10 @@ Options:
 #### v2版付款码付
 
 <details>
-  <summary>$ <b>./node_modules/.bin/wxpay v2/pay/micropay</b></summary>
+  <summary>$ <b>./node_modules/.bin/wxpay v2.pay.micropay</b></summary>
 
 ```
-./node_modules/.bin/wxpay v2/pay/micropay \
+./node_modules/.bin/wxpay v2.pay.micropay \
   -c.mchid 1230000109 \
   -c.serial any \
   -c.privateKey any \
@@ -1050,6 +1050,10 @@ QQ群: **684379275**
 </details>
 
 ## 变更历史
+
+- v0.5.2
+  - 优化CLI，`wxpay <uri>` 现在支持型如 `v2.pay.micropay`, `v3.pay.transactions.native` 调用
+  - 优化`README`文档，适配最新CLI用法；增加APIv3消息通知QA章节；增加技术交流QQ群说明
 
 - v0.5.1
   - 优化CLI，可以直接 `wxpay <uri>` 发起请求
