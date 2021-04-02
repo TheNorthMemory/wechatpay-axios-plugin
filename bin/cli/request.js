@@ -52,7 +52,7 @@ module.exports = {
 
     if (data) { structure.unshift(data); }
 
-    uri.split(/\/|\./).filter((i) => i).reduce((f, i) => f[i], new Wechatpay({ baseURL, ...config }))[method](...structure)
+    uri.split(/\./).filter((i) => i).reduce((f, i) => f[i], new Wechatpay({ baseURL, ...config }))[method](...structure)
       /* eslint-disable-next-line no-console, newline-per-chained-call */
       .then(console.info).catch(console.error);
   },
