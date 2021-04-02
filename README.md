@@ -1052,7 +1052,7 @@ QQ群: **684379275**
 ## 变更历史
 
 - v0.5.3
-  - 优化CLI，`wxpay <uri>` 向前减弱以支持slash(/)结尾的请求，形如 `v3/applyment4sub/applyment/`
+  - 优化CLI，`wxpay <uri>` 向前兼容以支持slash(/)结尾的请求，形如 `v3/applyment4sub/applyment/`
 
 - v0.5.2
   - 优化CLI，`wxpay <uri>` 现在支持型如 `v2.pay.micropay`, `v3.pay.transactions.native` 调用
