@@ -51,36 +51,40 @@ module.exports = {
       group: 'cert',
     },
   },
-  async handler(argv) {
+  handler(argv) {
     const {
       baseURL, mchid, serialno: serial, privatekey, key: secret, output,
     } = argv;
 
     const privateKey = readFileSync(privatekey);
 
-    let certs = { any: undefined };
+    const certs = { any: undefined };
 
     const instance = axios.create({ baseURL });
 
-    // registry a named function `downloader` before this library does
-    /* eslint-disable-next-line prefer-arrow-callback */
-    instance.interceptors.response.use(function downloader(response) {
-      (response.data.data || []).map(({
+    instance.interceptors.response.use((response) => {
+      (response.data.data || []).forEach(({
+        serial_no: serialNo, encrypt_certificate: { nonce, associated_data: aad, ciphertext },
+      }) => {
+        Object.assign(certs, { [serialNo]: Aes.decrypt(nonce, secret, ciphertext, aad) });
+      });
+
+      return response;
+    });
+
+    interceptor(instance, {
+      mchid, serial, privateKey, certs,
+    }).get('v3/certificates').then(({ data: { data = [] } }) => {
+      data.forEach(({
         effective_time: notBefore,
         expire_time: notAfter,
-        serial_no: serialNo, encrypt_certificate: { nonce, associated_data: aad, ciphertext },
+        serial_no: serialNo,
       }, index) => {
-        // @see {Aes.decrypt} decrypt the ciphertext which is the `WeChatPay Platform Certificate`
-        const cert = Aes.decrypt(nonce, secret, ciphertext, aad);
-
-        // injection onto the global `certs` Object, using in the next `${interceptor.response}`
-        certs = Object.assign(certs, { [serialNo]: cert });
-
         // scope a file path based on given `--output` dir
         const savedTo = join(output, `wechatpay_${serialNo}.pem`);
 
         // write the PEM to file ...
-        writeFileSync(savedTo, cert);
+        writeFileSync(savedTo, certs[serialNo]);
 
         /* eslint-disable no-console */
         console.group(`The WeChatPay Platform Certificate\x1B[1;31m#${index}\x1B[0m`);
@@ -93,17 +97,7 @@ module.exports = {
         console.info(`\t\x1B[1;32mopenssl x509 -in ${savedTo} -noout -serial -dates\x1B[0m`);
         console.info();
         /* eslint-enable no-console */
-
-        return { notBefore, notAfter, serialNo };
       });
-
-      return response;
     });
-
-    const client = interceptor(instance, {
-      mchid, serial, privateKey, certs,
-    });
-
-    await client.get('v3/certificates');
   },
 };
