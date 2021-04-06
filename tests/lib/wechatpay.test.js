@@ -81,16 +81,20 @@ describe('lib/wechatpay', () => {
       Wechatpay.compose('', '').should.instanceof(Function).and.have.property('name', '');
     });
 
-    it('Wechatpay.compose(\'v2\') should returns a Function which\'s named as `v2/`', () => {
-      Wechatpay.compose('v2').should.instanceof(Function).and.have.property('name', 'v2/');
+    it('Wechatpay.compose(\'v2\') should returns a Function which\'s named as empty', () => {
+      Wechatpay.compose('v2').should.instanceof(Function).and.have.property('name', '');
     });
 
-    it('Wechatpay.compose(\'\', \'v2\') should returns a Function which\'s named as `/v2`', () => {
-      Wechatpay.compose('', 'v2').should.instanceof(Function).and.have.property('name', '/v2');
+    it('Wechatpay.compose(\'\', \'v2\') should returns a Function which\'s named as `v2`', () => {
+      Wechatpay.compose('', 'v2').should.instanceof(Function).and.have.property('name', 'v2');
     });
 
-    it('Wechatpay.compose(\'\', \'v3\') should returns a Function which\'s named as `/v3`', () => {
-      Wechatpay.compose('', 'v3').should.instanceof(Function).and.have.property('name', '/v3');
+    it('Wechatpay.compose(\'\', \'v3\') should returns a Function which\'s named as `v3`', () => {
+      Wechatpay.compose('', 'v3').should.instanceof(Function).and.have.property('name', 'v3');
+    });
+
+    it('Wechatpay.compose(\'\', \'payscore\') should returns a Function which\'s named as `payscore`', () => {
+      Wechatpay.compose('', 'payscore').should.instanceof(Function).and.have.property('name', 'payscore');
     });
   });
 
