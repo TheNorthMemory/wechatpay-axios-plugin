@@ -10,6 +10,7 @@ yargs(hideBin(process.argv))
   .demandCommand()
   .help('help')
   .wrap(null)
+  .parserConfiguration({ 'camel-case-expansion': false })
   .option('baseURL', {
     type: 'string',
     alias: 'u',
