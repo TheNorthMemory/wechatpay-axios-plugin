@@ -176,12 +176,12 @@ Options:
 
 本类库自`0.2`开始，按照 `URL.pathname` 以`/`做切分，映射成对象属性，`0.4`版开始，支持APIv2的`pathname`映射，编码书写方式有如下约定：
 
-1. 请求 `pathname` 作为级联对象，可以轻松构建请求对象，例如 `/v3/pay/transactions/native` 即自然翻译成 `v3.pay.transactions.native`;
+1. 请求 `pathname` 作为级联对象，可以轻松构建请求对象，例如 `v3/pay/transactions/native` 即自然翻译成 `v3.pay.transactions.native`;
 2. 每个 `pathname` 所支持的 `HTTP METHOD`，即作为 请求对象的末尾执行方法，例如: `v3.pay.transactions.native.post({})`;
 3. 每个 `pathname` 级联对象默认为HTTP`POST`函数，其同时隐式内置`GET/POST/PUT/PATCH/DELETE` 操作方法链，支持全大写及全小写两种编码方式，说明见`变更历史`;
 4. 每个 `pathname` 有中线(dash)分隔符的，可以使用驼峰`camelCase`风格书写，例如: `merchant-service`可写成 `merchantService`，或者属性风格，例如 `v3['merchant-service']`;
 5. 每个 `pathname` 中，若有动态参数，例如 `business_code/{business_code}` 可写成 `business_code.$business_code$` 或者属性风格书写，例如 `business_code['{business_code}']`，抑或按属性风格，直接写值也可以，例如 `business_code['2000001234567890']`;
-6. SDK内置的 `/v2` 对象，其特殊标识为APIv2级联对象，之后串接切分后的`pathname`，如源 `/pay/micropay` 翻译成 `v2.pay.micropay` 即以XML形式请求远端接口；
+6. SDK内置的 `v2/` 对象，其特殊标识为APIv2级联对象，之后串接切分后的`pathname`，如源 `pay/micropay` 翻译成 `v2.pay.micropay` 即以XML形式请求远端接口；
 7. 建议 `pathname` 按照 `PascalCase` 风格书写, `TS Definition` 已在路上(还有若干问题没解决)，将是这种风格，代码提示将会很自然;
 
 以下示例用法，均以`Promise`或`Async/Await`结合此种编码模式展开，级联对象操作符的调试信息见文档末。
