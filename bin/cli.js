@@ -25,8 +25,7 @@ yargs(hideBin(process.argv))
       argv.config.privateKey = readFileSync(argv.c.privateKey);
     }
     if (argv.c && argv.c.certs && Object.keys(argv.c.certs)[0] !== 'any') {
-      /* eslint-disable-next-line no-return-assign, no-param-reassign, no-sequences */
-      argv.config.certs = Object.entries(argv.config.certs).reduce((o, [k, v]) => (o[k] = readFileSync(v), o), {});
+      Object.entries(argv.c.certs).reduce((o, [k, v]) => Object.assign(o, { [k]: readFileSync(v) }), argv.config.certs);
     }
     if (argv.c && argv.c.merchant) {
       if (argv.c.merchant.cert && argv.c.merchant.cert !== 'any') {
