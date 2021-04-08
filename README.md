@@ -915,11 +915,11 @@ console.info(params)
 
 ## 常见问题
 
-Q: APIv3消息通知，`AesGCM`加密字段，应该如何解密？
+Q: APIv3消息通知，`AES-256-GCM`加密字段，应该如何解密？
 
 > 官方文档有介绍，APIv3平台证书及消息通知关键信息均使用`AesGcm`加解密，依赖`APIv3密钥`，商户侧解密可参考`bin/cli/cert.js`证书下载工具，例如：
 > ```js
-> Aes.decrypt(nonce, secret, ciphertext, aad);
+> AesGcm.decrypt(nonce, secret, ciphertext, aad);
 > ```
 
 Q: 敏感信息或者幂等操作要求额外头信息上送时，应该如何构建请求参数？

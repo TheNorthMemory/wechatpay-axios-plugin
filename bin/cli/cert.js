@@ -8,7 +8,7 @@ const { readFileSync, writeFileSync } = require('fs');
 const { join } = require('path');
 
 const axios = require('axios');
-const { default: interceptor, Aes } = require('../..');
+const { default: interceptor, Aes: { AesGcm } } = require('../..');
 
 module.exports = {
   command: 'crt',
@@ -66,7 +66,7 @@ module.exports = {
       (response.data.data || []).forEach(({
         serial_no: serialNo, encrypt_certificate: { nonce, associated_data: aad, ciphertext },
       }) => {
-        Object.assign(certs, { [serialNo]: Aes.decrypt(nonce, secret, ciphertext, aad) });
+        Object.assign(certs, { [serialNo]: AesGcm.decrypt(nonce, secret, ciphertext, aad) });
       });
 
       return response;
