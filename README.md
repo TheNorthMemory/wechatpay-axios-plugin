@@ -1055,7 +1055,7 @@ QQ群: **684379275**
   - 优化CLI，`wxpay crt` 下载平台证书仅在成功验签完成后写入文件
   - 优化文档，`AesGcm` 解密示例
   - 优化内部`chain`逻辑，遵循 `RFC3986` 规范，`baseURL`支持带部分路径的海外接入点
-  - 优化代码`SonarQue`检测结果`3A+0.5%`
+  - 优化代码`SonarQube`检测结果`3A+0.5%`
 
 - v0.5.3
   - 优化CLI，`wxpay <uri>` 向前兼容以支持slash(/)结尾的请求，形如 `v3/applyment4sub/applyment/`
