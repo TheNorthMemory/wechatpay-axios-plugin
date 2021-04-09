@@ -36,7 +36,7 @@ NodeJS原生`crypto`模块，自v12.9.0在 `publicEncrypt` 及 `privateDecrypt` 
 
 ### v3平台证书
 
-微信支付APIv3使用 (RESTful API with JSON over HTTP）接口设计，数据交换采用非对称（RSA-OAEP）加/解密方案。API上行所需的`商户RSA私钥证书`，可以由商户`超级管理员`使用专用证书生成工具生成并获取到，然而，API下行所需的`平台RSA证书`只能从`/v3/certificates`接口获取（应答证书还经过了对称(AES-GCM)加密，须采用`APIv3密钥`才能解密）。本项目也提供了命令行下载工具，使用手册如下：
+微信支付APIv3使用 (RESTful API with JSON over HTTP）接口设计，数据交换采用非对称（RSA-OAEP）加/解密方案。API上行所需的`商户RSA私钥证书`，可以由商户`超级管理员`使用专用证书生成工具生成并获取到，然而，API下行所需的`平台RSA证书`只能从`v3/certificates`接口获取（应答证书还经过了对称(AES-GCM)加密，须采用`APIv3密钥`才能解密）。本项目也提供了命令行下载工具，使用手册如下：
 
 <details>
   <summary>$ <b>./node_modules/.bin/wxpay crt --help</b> (点击显示)</summary>
@@ -954,94 +954,94 @@ QQ群: **684379275**
 
 ```js
 [Function (anonymous)] {
-  v2: [Function: /v2] {
-    risk: [Function: /v2/risk] {
-      getpublickey: [Function: /v2/risk/getpublickey]
+  v2: [Function: v2] {
+    risk: [Function: v2/risk] {
+      getpublickey: [Function: v2/risk/getpublickey]
     },
-    pay: [Function: /v2/pay] { micropay: [Function: /v2/pay/micropay] },
-    secapi: [Function: /v2/secapi] {
-      pay: [Function: /v2/secapi/pay] {
-        refund: [Function: /v2/secapi/pay/refund]
+    pay: [Function: v2/pay] { micropay: [Function: v2/pay/micropay] },
+    secapi: [Function: v2/secapi] {
+      pay: [Function: v2/secapi/pay] {
+        refund: [Function: v2/secapi/pay/refund]
       }
     },
-    mmpaymkttransfers: [Function: /v2/mmpaymkttransfers] {
-      sendredpack: [Function: /v2/mmpaymkttransfers/sendredpack],
-      promotion: [Function: /v2/mmpaymkttransfers/promotion] {
-        transfers: [Function: /v2/mmpaymkttransfers/promotion/transfers],
-        paywwsptrans2pocket: [Function: /v2/mmpaymkttransfers/promotion/paywwsptrans2pocket]
+    mmpaymkttransfers: [Function: v2/mmpaymkttransfers] {
+      sendredpack: [Function: v2/mmpaymkttransfers/sendredpack],
+      promotion: [Function: v2/mmpaymkttransfers/promotion] {
+        transfers: [Function: v2/mmpaymkttransfers/promotion/transfers],
+        paywwsptrans2pocket: [Function: v2/mmpaymkttransfers/promotion/paywwsptrans2pocket]
       },
-      sendworkwxredpack: [Function: /v2/mmpaymkttransfers/sendworkwxredpack]
+      sendworkwxredpack: [Function: v2/mmpaymkttransfers/sendworkwxredpack]
     }
   },
-  v3: [Function: /v3] {
-    pay: [Function: /v3/pay] {
-      transactions: [Function: /v3/pay/transactions] {
-        native: [Function: /v3/pay/transactions/native],
-        id: [Function: /v3/pay/transactions/id] {
-          '{transaction_id}': [Function: /v3/pay/transactions/id/{transaction_id}]
+  v3: [Function: v3] {
+    pay: [Function: v3/pay] {
+      transactions: [Function: v3/pay/transactions] {
+        native: [Function: v3/pay/transactions/native],
+        id: [Function: v3/pay/transactions/id] {
+          '{transaction_id}': [Function: v3/pay/transactions/id/{transaction_id}]
         },
-        outTradeNo: [Function: /v3/pay/transactions/out-trade-no] {
-          '1217752501201407033233368018': [Function: /v3/pay/transactions/out-trade-no/1217752501201407033233368018]
+        outTradeNo: [Function: v3/pay/transactions/out-trade-no] {
+          '1217752501201407033233368018': [Function: v3/pay/transactions/out-trade-no/1217752501201407033233368018]
         }
       },
-      partner: [Function: /v3/pay/partner] {
-        transactions: [Function: /v3/pay/partner/transactions] {
-          native: [Function: /v3/pay/partner/transactions/native]
+      partner: [Function: v3/pay/partner] {
+        transactions: [Function: v3/pay/partner/transactions] {
+          native: [Function: v3/pay/partner/transactions/native]
         }
       }
     },
-    marketing: [Function: /v3/marketing] {
-      busifavor: [Function: /v3/marketing/busifavor] {
-        stocks: [Function: /v3/marketing/busifavor/stocks],
-        users: [Function: /v3/marketing/busifavor/users] {
-          '$openid$': [Function: /v3/marketing/busifavor/users/{openid}] {
-            coupons: [Function: /v3/marketing/busifavor/users/{openid}/coupons] {
-              '{coupon_code}': [Function: /v3/marketing/busifavor/users/{openid}/coupons/{coupon_code}] {
-                appids: [Function: /v3/marketing/busifavor/users/{openid}/coupons/{coupon_code}/appids] {
-                  wx233544546545989: [Function: /v3/marketing/busifavor/users/{openid}/coupons/{coupon_code}/appids/wx233544546545989]
+    marketing: [Function: v3/marketing] {
+      busifavor: [Function: v3/marketing/busifavor] {
+        stocks: [Function: v3/marketing/busifavor/stocks],
+        users: [Function: v3/marketing/busifavor/users] {
+          '$openid$': [Function: v3/marketing/busifavor/users/{openid}] {
+            coupons: [Function: v3/marketing/busifavor/users/{openid}/coupons] {
+              '{coupon_code}': [Function: v3/marketing/busifavor/users/{openid}/coupons/{coupon_code}] {
+                appids: [Function: v3/marketing/busifavor/users/{openid}/coupons/{coupon_code}/appids] {
+                  wx233544546545989: [Function: v3/marketing/busifavor/users/{openid}/coupons/{coupon_code}/appids/wx233544546545989]
                 }
               }
             }
           }
         }
       },
-      favor: [Function: /v3/marketing/favor] {
-        media: [Function: /v3/marketing/favor/media] {
-          imageUpload: [Function: /v3/marketing/favor/media/image-upload]
+      favor: [Function: v3/marketing/favor] {
+        media: [Function: v3/marketing/favor/media] {
+          imageUpload: [Function: v3/marketing/favor/media/image-upload]
         },
-        stocks: [Function: /v3/marketing/favor/stocks] {
-          '$stock_id$': [Function: /v3/marketing/favor/stocks/{stock_id}] {
-            useFlow: [Function: /v3/marketing/favor/stocks/{stock_id}/use-flow]
+        stocks: [Function: v3/marketing/favor/stocks] {
+          '$stock_id$': [Function: v3/marketing/favor/stocks/{stock_id}] {
+            useFlow: [Function: v3/marketing/favor/stocks/{stock_id}/use-flow]
           }
         }
       },
-      partnerships: [Function: /v3/marketing/partnerships] {
-        build: [Function: /v3/marketing/partnerships/build]
+      partnerships: [Function: v3/marketing/partnerships] {
+        build: [Function: v3/marketing/partnerships/build]
       }
     },
-    combineTransactions: [Function: /v3/combine-transactions] {
-      jsapi: [Function: /v3/combine-transactions/jsapi]
+    combineTransactions: [Function: v3/combine-transactions] {
+      jsapi: [Function: v3/combine-transactions/jsapi]
     },
-    bill: [Function: /v3/bill] {
-      tradebill: [Function: /v3/bill/tradebill],
-      fundflowbill: [Function: /v3/bill/fundflowbill]
+    bill: [Function: v3/bill] {
+      tradebill: [Function: v3/bill/tradebill],
+      fundflowbill: [Function: v3/bill/fundflowbill]
     },
-    billdownload: [Function: /v3/billdownload] {
-      file: [Function: /v3/billdownload/file]
+    billdownload: [Function: v3/billdownload] {
+      file: [Function: v3/billdownload/file]
     },
-    smartguide: [Function: /v3/smartguide] {
-      guides: [Function: /v3/smartguide/guides] {
-        '$guide_id$': [Function: /v3/smartguide/guides/{guide_id}] {
-          assign: [Function: /v3/smartguide/guides/{guide_id}/assign]
+    smartguide: [Function: v3/smartguide] {
+      guides: [Function: v3/smartguide/guides] {
+        '$guide_id$': [Function: v3/smartguide/guides/{guide_id}] {
+          assign: [Function: v3/smartguide/guides/{guide_id}/assign]
         }
       }
     },
-    merchantService: [Function: /v3/merchant-service] {
-      complaints: [Function: /v3/merchant-service/complaints]
+    merchantService: [Function: v3/merchant-service] {
+      complaints: [Function: v3/merchant-service/complaints]
     },
-    merchant: [Function: /v3/merchant] {
-      media: [Function: /v3/merchant/media] {
-        video_upload: [Function: /v3/merchant/media/video_upload]
+    merchant: [Function: v3/merchant] {
+      media: [Function: v3/merchant/media] {
+        video_upload: [Function: v3/merchant/media/video_upload]
       }
     }
   }
