@@ -26,6 +26,37 @@ describe('lib/hash', () => {
     });
   });
 
+  describe('Hash::hmac', () => {
+    it('method `hmac` should be static', () => {
+      should(Hash.hmac).be.a.Function();
+      should((new Hash()).hmac).is.Undefined();
+    });
+
+    it('method `hmac` should thrown TypeError while none-arguments passed', () => {
+      should(() => {
+        Hash.hmac();
+      }).throw(TypeError, {
+        code: 'ERR_INVALID_ARG_TYPE',
+      });
+    });
+
+    it('method `hmac(1, 2)` should returns a 64 length string', () => {
+      Hash.hmac('1', '2').should.be.String().and.have.length(64);
+    });
+
+    it('method `hmac(1, 2, SHA384)` should returns a 96 length string', () => {
+      Hash.hmac('1', '2', 'SHA384').should.be.String().and.have.length(96);
+    });
+
+    it('method `hmac(1, 2, SHA1)` should returns a 40 length string', () => {
+      Hash.hmac('1', '2', 'SHA1').should.be.String().and.have.length(40);
+    });
+
+    it('method `hmac(1, 2, MD5)` should returns a 32 length string', () => {
+      Hash.hmac('1', '2', 'MD5').should.be.String().and.have.length(32);
+    });
+  });
+
   describe('Hash::hmacSha256', () => {
     it('method `hmacSha256` should be static', () => {
       should(Hash.hmacSha256).be.a.Function();
