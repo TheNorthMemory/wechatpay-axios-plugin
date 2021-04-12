@@ -36,7 +36,10 @@ NodeJS原生`crypto`模块，自v12.9.0在 `publicEncrypt` 及 `privateDecrypt` 
 
 ### v3平台证书
 
-微信支付APIv3使用 (RESTful API with JSON over HTTP）接口设计，数据交换采用非对称（RSA-OAEP）加/解密方案。API上行所需的`商户RSA私钥证书`，可以由商户`超级管理员`使用专用证书生成工具生成并获取到，然而，API下行所需的`平台RSA证书`只能从`v3/certificates`接口获取（应答证书还经过了对称(AES-GCM)加密，须采用`APIv3密钥`才能解密）。本项目也提供了命令行下载工具，使用手册如下：
+微信支付APIv3使用 (RESTful API with JSON over HTTP）接口设计，数据交换采用非对称（`RSA-OAEP`）加/解密方案。
+API上行所需的`商户API私钥`，可以由商户官方专用证书生成工具生成，
+API下行所需的`平台证书`须从`v3/certificates`接口获取（应答证书还经过了对称`AES-GCM`加密，须采用`APIv3密钥`才能解密）。
+本项目也提供了命令行下载工具，使用手册如下：
 
 <details>
   <summary>$ <b>./node_modules/.bin/wxpay crt --help</b> (点击显示)</summary>
@@ -195,10 +198,10 @@ const wxpay = new Wechatpay({
   mchid: 'your_merchant_id',
   // 商户证书序列号
   serial: 'serial_number_of_your_merchant_public_cert',
-  // 商户私钥证书 PEM格式的文本字符串或者文件buffer
+  // 商户API私钥 PEM格式的文本字符串或者文件buffer
   privateKey: '-----BEGIN PRIVATE KEY-----\n-FULL-OF-THE-FILE-CONTENT-\n-----END PRIVATE KEY-----',
   certs: {
-    // CLI `wxpay crt -m {商户号} -s {商户证书序列号} -f {商户私钥证书路径} -k {APIv3密钥(32字节)} -o {保存地址}` 生成
+    // CLI `wxpay crt -m {商户号} -s {商户证书序列号} -f {商户API私钥文件路径} -k {APIv3密钥(32字节)} -o {保存地址}` 生成
     'serial_number': '-----BEGIN CERTIFICATE-----\n-FULL-OF-THE-FILE-CONTENT-\n-----END CERTIFICATE-----',
   },
   // APIv2密钥(32字节) v0.4 开始支持
@@ -207,14 +210,14 @@ const wxpay = new Wechatpay({
   merchant: {
     // 商户证书 PEM格式的文本字符串或者文件buffer
     cert: '-----BEGIN CERTIFICATE-----\n-FULL-OF-THE-FILE-CONTENT-\n-----END CERTIFICATE-----',
-    // 商户私钥证书 PEM格式的文本字符串或者文件buffer
+    // 商户API私钥 PEM格式的文本字符串或者文件buffer
     key: '-----BEGIN PRIVATE KEY-----\n-FULL-OF-THE-FILE-CONTENT-\n-----END PRIVATE KEY-----',
     // or
     // passphrase: 'your_merchant_id',
     // pfx: fs.readFileSync('/your/merchant/cert/apiclient_cert.p12'),
   },
   // APIv2沙箱环境地址
-  // baseURL: 'https://api.mch.weixin.qq.com/sandboxnew',
+  // baseURL: 'https://api.mch.weixin.qq.com/sandboxnew/',
   // 建议初始化设置此参数，详细说明见Axios官方README
   // maxRedirects: 0,
 })
@@ -224,11 +227,11 @@ const wxpay = new Wechatpay({
 
 - `mchid` 为你的商户号，一般是10字节纯数字
 - `serial` 为你的商户证书序列号，一般是40字节字符串
-- `privateKey` 为你的商户私钥证书，一般是通过官方证书生成工具生成的文件名是`apiclient_key.pem`文件，支持纯字符串或者文件流`buffer`格式
+- `privateKey` 为你的商户API私钥，一般是通过官方证书生成工具生成的文件名是`apiclient_key.pem`文件，支持纯字符串或者文件流`buffer`格式
 - `certs{[serial_number]:string}` 为通过下载工具下载的平台证书`key/value`键值对，键为平台证书序列号，值为平台证书pem格式的纯字符串或者文件流`buffer`格式
 - `secret` 为APIv2版的`密钥`，商户平台上设置的32字节字符串
 - `merchant.cert` 为你的商户证书,一般是文件名为`apiclient_cert.pem`文件，支持纯字符串或者文件流`buffer`格式
-- `merchant.key` 为你的商户私钥证书，一般是通过官方证书生成工具生成的文件名是`apiclient_key.pem`文件，支持纯字符串或者文件流`buffer`格式
+- `merchant.key` 为你的商户API私钥，一般是通过官方证书生成工具生成的文件名是`apiclient_key.pem`文件，支持纯字符串或者文件流`buffer`格式
 - `merchant.passphrase` 一般为你的商户号
 - `merchant.pfx` 为你的商户`PKCS12`格式的证书，文件名一般为`apiclient_cert.p12`，支持二进制文件流`buffer`格式
 
