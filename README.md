@@ -1054,6 +1054,13 @@ QQ群: **684379275**
 
 ## 变更历史
 
+- v0.5.5 (2021-04-13)
+  - 优化文档，`证书`相关名词与官方文档保持一致
+  - 优化代码，使用ES6 `Reflect.set`代替`param-reassign`，性能更高
+  - 新增函数`Hash.hmac`方法，广度支持`Hash-based Message Authentication Code`
+  - 调整函数`Hash.hmacSha256`为不推荐方法，内部改写为固定`Hash.hmac`调用
+  - 调整CLI `req <uri>`成功调用仅返回`{config, headers, data}`数据结构
+
 - v0.5.4 (2021-04-08)
   - 优化CLI，`wxpay crt` 下载平台证书仅在成功验签完成后写入文件
   - 优化文档，`AesGcm` 解密示例
