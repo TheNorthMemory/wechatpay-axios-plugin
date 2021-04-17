@@ -66,11 +66,4 @@ describe('lib/interceptor', () => {
     should(req.fulfilled).is.an.Function().and.have.property('name', 'signer');
     should(res.fulfilled).is.an.Function().and.have.property('name', 'verifier');
   });
-
-  it('TODO: mockup HTTP request with expected `headers`', () => {
-    // It's so hard for now, the mockup server shall more logical verification on the `headers[Authorization]`.
-    // The `GET` may not be allowed `POST`.
-    // The `POST` may not be allowed `GET`, `PUT`, `PATCH`, `OPTIONS` etc.
-    // Leave it here for contributors.
-  });
 });
