@@ -10,9 +10,7 @@ describe('lib/decorator', () => {
 
   describe('Decorator::constructor', () => {
     it('Should be thrown exception while none-arguments passed', () => {
-      should(() => {
-        new Decorator();/* eslint-disable-line no-new */
-      }).throw(assert.AssertionError, {
+      should(() => new Decorator()).throw(assert.AssertionError, {
         code: 'ERR_ASSERTION',
       });
     });
@@ -84,6 +82,32 @@ describe('lib/decorator', () => {
       should((new Decorator({
         mchid: '', serial: '', privateKey: '', certs: { any: undefined },
       })).xmlBased).be.Undefined();
+    });
+  });
+
+  describe('Decorator::requestInterceptor', () => {
+    it('method `requestInterceptor` should be static', () => {
+      should(Decorator.requestInterceptor).be.a.Function();
+      should((new Decorator({
+        mchid: '', serial: '', privateKey: '', certs: { any: undefined },
+      })).requestInterceptor).be.Undefined();
+    });
+
+    it('method `requestInterceptor()` should returns a named `signer` Function', () => {
+      should(Decorator.requestInterceptor()).be.a.Function().and.have.property('name', 'signer');
+    });
+  });
+
+  describe('Decorator::responseVerifier', () => {
+    it('method `responseVerifier` should be static', () => {
+      should(Decorator.responseVerifier).be.a.Function();
+      should((new Decorator({
+        mchid: '', serial: '', privateKey: '', certs: { any: undefined },
+      })).responseVerifier).be.Undefined();
+    });
+
+    it('method `responseVerifier()` should returns a named `verifier` Function', () => {
+      should(Decorator.responseVerifier()).be.a.Function().and.have.property('name', 'verifier');
     });
   });
 
