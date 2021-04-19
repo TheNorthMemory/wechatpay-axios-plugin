@@ -7,8 +7,7 @@ const { tmpdir } = require('os');
 const { readFileSync, writeFileSync } = require('fs');
 const { join } = require('path');
 
-const axios = require('axios');
-const { default: interceptor, Aes: { AesGcm } } = require('../..');
+const { Wechatpay, Aes: { AesGcm } } = require('../..');
 
 module.exports = {
   command: 'crt',
@@ -60,25 +59,23 @@ module.exports = {
 
     const certs = { any: undefined };
 
-    const instance = axios.create({ baseURL });
-
-    instance.interceptors.response.use((response) => {
-      (response.data.data || []).forEach(({
+    const injector = (response) => {
+      (JSON.parse(response).data || []).forEach(({
         serial_no: serialNo, encrypt_certificate: { nonce, associated_data: aad, ciphertext },
       }) => {
         Object.assign(certs, { [serialNo]: AesGcm.decrypt(nonce, secret, ciphertext, aad) });
       });
 
       return response;
-    });
+    };
 
-    interceptor(instance, {
-      mchid, serial, privateKey, certs,
-    }).get('v3/certificates').then(({ data: { data = [] } }) => {
+    (new Wechatpay({
+      baseURL, mchid, serial, privateKey, certs,
+    })).v3.certificates.get({
+      transformResponse: [injector, ...Wechatpay.client.v3.defaults.transformResponse],
+    }).then(({ data: { data = [] } }) => {
       data.forEach(({
-        effective_time: notBefore,
-        expire_time: notAfter,
-        serial_no: serialNo,
+        effective_time: notBefore, expire_time: notAfter, serial_no: serialNo,
       }, index) => {
         // scope a file path based on given `--output` dir
         const savedTo = join(output, `wechatpay_${serialNo}.pem`);
