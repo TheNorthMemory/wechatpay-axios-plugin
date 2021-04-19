@@ -293,11 +293,13 @@ wxpay.v3.bill.tradebill.get({
   }
 }).then(({data: {download_url, hash_value}}) => wxpay.v3.billdownload.file.get({
   params: (new URL(download_url)).searchParams,
-  signed: hash_value,
-  responseType: 'arraybuffer',
+  responseType: 'arraybuffer', // To prevent the axios:utils.stripBOM feature
+  transformResponse: [function csvDigestValidator(payload) {
+    assert(sha1(payload) === hash_value, 'verify the SHA1 digest failed.')
+    return Formatter.castCsvBill(payload)
+  }]
 })).then(res => {
-  assert(sha1(res.data.toString()) === res.config.signed, 'verify the SHA1 digest failed.')
-  console.info(Formatter.castCsvBill(res.data))
+  console.info(res.data.summary)
 }).catch(error => {
   console.error(error)
 })
@@ -467,7 +469,11 @@ imageData.append('file', createReadStream('./hellowechatpay.png'))
     let res = await wxpay.v3.marketing.favor.stocks.$stock_id$.useFlow.get({stock_id})
     res = await wxpay.v3.billdownload.file.get({
       params: (new URL(res.data.url)).searchParams,
-      responseType: 'arraybuffer'
+      responseType: 'arraybuffer', // To prevent the axios:utils.stripBOM feature
+      transformResponse: [function csvDigestValidator(payload) {
+        assert(sha1(payload) === res.data.hash_value, 'verify the SHA1 digest failed.')
+        return payload
+      }]
     })
     // 备注：此接口下载的文件格式与商户平台下载的不完全一致，Formatter.castCsvBill解析有差异
     console.info(res.data.toString())
@@ -525,13 +531,16 @@ const {Hash: {sha1}} = require('wechatpay-axios-plugin')
     })
     const {data} = await wxpay.v3.billdownload.file.GET({
       params: (new URL(download_url)).searchParams,
-      responseType: 'arraybuffer'
+      responseType: 'arraybuffer', // To prevent the axios:utils.stripBOM feature
+      transformResponse: [function csvDigestValidator(payload) {
+        // note here: previous `hash_value` was about the source `csv`, not the `gzip` data
+        //            so it needs unziped first, then to compare the `SHA1` degest
+        const bill = unzipSync(payload)
+        assert.ok(hash_value === sha1(bill), 'SHA1 verification failed')
+        return bill
+      }, function csvCastor(payload) { return Formatter.castCsvBill(payload) }]
     })
-    // note here: previous `hash_value` was about the source `csv`, not the `gzip` data
-    //            so it needs unziped first, then to compare the `SHA1` degest
-    const bill = unzipSync(data)
-    assert.ok(hash_value === sha1(bill.toString()), 'SHA1 verification failed')
-    console.info(Formatter.castCsvBill(bill))
+    console.info(data.summary)
   } catch (error) {
     console.error(error)
   }
