@@ -354,18 +354,6 @@ export namespace WechatpayAxiosPlugin {
     }
 
     /**
-     * register a named request as `signer`(for APIv3 Authorization)
-     *      and a named response as `verifier`(for APIv3 Verification)
-     * onto `Axios.interceptors`
-     *
-     * @param {AxiosInstance} axios - The AxiosInstance
-     * @param {apiConfig} apiConfig - The wechatpay consumer side configuration
-     *
-     * @returns {AxiosInstance} - A decorated AxiosInstance
-     */
-    function interceptor(axios: AxiosInstance, {mchid, serial, privateKey, certs}: apiConfig): AxiosInstance;
-
-    /**
      * Provides some methods for the RSA `sha256WithRSAEncryption` with `RSA_PKCS1_OAEP_PADDING`.
      */
     class Rsa {
@@ -665,4 +653,4 @@ export class Decorator extends WechatpayAxiosPlugin.Decorator{}
 
 export class Wechatpay extends WechatpayAxiosPlugin.Wechatpay {}
 
-export default WechatpayAxiosPlugin.interceptor;
+export default Wechatpay;
