@@ -163,6 +163,16 @@ export namespace WechatpayAxiosPlugin {
          */
         static md5(thing: string | any, key?: string | undefined, agency?: boolean | number | string | undefined): string;
         /**
+         * Calculate the input string with a secret `key` as of `algorithm` string which is one of the 'sha256', 'sha512' etc.
+         * @param {string|buffer} thing - The input string.
+         * @param {string} key - The secret key string.
+         * @param {string} [algorithm = sha256] - The algorithm string, default is `sha256`.
+         * @return {string} - data signature
+         */
+        static hmac(thing: string | any, key: string, algorithm?: string | undefined): string;
+        /**
+         * @deprecated Since v0.5.5, instead of by `hmac`
+         *
          * Calculate the input string with a secret `key` in HMAC-SHA256
          * @param {string|buffer} thing - The input string.
          * @param {string} key - The secret key string.
@@ -436,6 +446,18 @@ export namespace WechatpayAxiosPlugin {
             merchant: merchantCertificate;
         }): AxiosInstance;
         /**
+         * APIv3's requestInterceptor
+         *
+         * @return {function} Named `signer` function
+         */
+        static requestInterceptor(): Function;
+        /**
+         * APIv3's responseVerifier
+         * @param  {object} certs The wechatpay platform serial and certificate(s), `{serial: publicCert}` pair
+         * @return {function} Named as `verifier` function
+         */
+        static responseVerifier(certs?: platformCertificates): Function;
+        /**
         * Create an APIv3's client
         *
         * @param {object} config - configuration
@@ -494,16 +516,16 @@ export namespace WechatpayAxiosPlugin {
     }
 
     /**
-     * A Wechatpay APIv2&v3's amazing client.
+     * A WeChatPay OpenAPI v2&v3's amazing client.
      *
-     * ```js
-     * const {Wechatpay} = require('wechatpay-axios-plugin')
+     * @example
+     * const {Wechatpay} = require('wechatpay-axios-plugin');
      * const wxpay = new Wechatpay({
      *   mchid,
      *   serial,
-     *   privateKey: '-----BEGIN PRIVATE KEY-----' + '...' + '-----END PRIVATE KEY-----',
+     *   privateKey: '-----BEGIN PRIVATE KEY-----\n-FULL-OF-THE-FILE-CONTENT-\n-----END PRIVATE KEY-----',
      *   certs: {
-     *     'serial_number': '-----BEGIN CERTIFICATE-----' + '...' + '-----END CERTIFICATE-----'
+     *     'serial_number': '-----BEGIN CERTIFICATE-----\n-FULL-OF-THE-FILE-CONTENT-\n-----END CERTIFICATE-----',
      *   },
      *   secret,
      *   merchant: {
@@ -512,36 +534,35 @@ export namespace WechatpayAxiosPlugin {
      *     // pfx,
      *     // passphase,
      *   }
-     * })
+     * });
      *
-     * wxpay.v2.pay.micropay({}).then(console.info).catch(console.error)
+     * wxpay.v2.pay.micropay({}).then(console.info).catch(console.error);
      *
-     * wxpay.v2.secapi.pay.refund.POST({}).then(console.info).catch(console.error)
+     * wxpay.v2.secapi.pay.refund.POST({}).then(console.info).catch(console.error);
      *
      * wxpay.V3.Marketing.Busifavor.Stocks.post({})
      *   .then(({data}) => console.info(data))
-     *   .catch(({response: {data}}) => console.error(data))
+     *   .catch(({response: {data}}) => console.error(data));
      *
      * wxpay.V3.Pay.Transactions.Native.post({})
      *   .then(({data: {code_url}}) => console.info(code_url))
-     *   .catch(({response: {data}}) => console.error(data))
+     *   .catch(({ response: {data}}) => console.error(data));
      *
-     * ;(async () => {
+     * (async () => {
      *   try {
      *     const {data: detail} = await wxpay.V3.Pay.Transactions.Id.$transaction_id$
-     *       .get({params: {mchid: '1230000109'}, transaction_id: '1217752501201407033233368018'})
+     *       .get({params: {mchid: '1230000109'}, transaction_id: '1217752501201407033233368018'});
      *     // or simple like this
      *     // const {data: detail} = await wxpay.V3.Pay.Transactions.Id['{transaction_id}']
-     *     //   .get({params: {mchid: '1230000109'}, transaction_id: '1217752501201407033233368018'})
+     *     //   .get({params: {mchid: '1230000109'}, transaction_id: '1217752501201407033233368018'});
      *     // or simple like this
      *     // const {data: detail} = await wxpay.v3.pay.transactions.id['1217752501201407033233368018']
-     *     //   .get({params: {mchid: '1230000109'}})
-     *     console.info(detail)
+     *     //   .get({params: {mchid: '1230000109'}});
+     *     console.info(detail);
      *   } catch({response: {status, statusText, data}}) {
-     *     console.error(status, statusText, data)
+     *     console.error(status, statusText, data);
      *   }
-     * })()
-     * ```
+     * })();
      */
     class Wechatpay {
         /**
