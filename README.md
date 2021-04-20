@@ -294,10 +294,10 @@ wxpay.v3.bill.tradebill.get({
 }).then(({data: {download_url, hash_value}}) => wxpay.v3.billdownload.file.get({
   params: (new URL(download_url)).searchParams,
   responseType: 'arraybuffer', // To prevent the axios:utils.stripBOM feature
-  transformResponse: [function csvDigestValidator(payload) {
-    assert(sha1(payload) === hash_value, 'verify the SHA1 digest failed.')
-    return Formatter.castCsvBill(payload)
-  }]
+  transformResponse: [function csvDigestValidator(data) {
+    assert(sha1(data) === hash_value, 'verify the SHA1 digest failed.')
+    return data
+  }, function csvCastor(data) { return Formatter.castCsvBill(data) }]
 })).then(res => {
   console.info(res.data.summary)
 }).catch(error => {
@@ -470,9 +470,9 @@ imageData.append('file', createReadStream('./hellowechatpay.png'))
     res = await wxpay.v3.billdownload.file.get({
       params: (new URL(res.data.url)).searchParams,
       responseType: 'arraybuffer', // To prevent the axios:utils.stripBOM feature
-      transformResponse: [function csvDigestValidator(payload) {
-        assert(sha1(payload) === res.data.hash_value, 'verify the SHA1 digest failed.')
-        return payload
+      transformResponse: [function csvDigestValidator(data) {
+        assert(sha1(data) === res.data.hash_value, 'verify the SHA1 digest failed.')
+        return data
       }]
     })
     // 备注：此接口下载的文件格式与商户平台下载的不完全一致，Formatter.castCsvBill解析有差异
@@ -532,13 +532,13 @@ const {Hash: {sha1}} = require('wechatpay-axios-plugin')
     const {data} = await wxpay.v3.billdownload.file.GET({
       params: (new URL(download_url)).searchParams,
       responseType: 'arraybuffer', // To prevent the axios:utils.stripBOM feature
-      transformResponse: [function csvDigestValidator(payload) {
+      transformResponse: [function csvDigestValidator(data) {
         // note here: previous `hash_value` was about the source `csv`, not the `gzip` data
         //            so it needs unziped first, then to compare the `SHA1` degest
-        const bill = unzipSync(payload)
+        const bill = unzipSync(data)
         assert.ok(hash_value === sha1(bill), 'SHA1 verification failed')
         return bill
-      }, function csvCastor(payload) { return Formatter.castCsvBill(payload) }]
+      }, function csvCastor(data) { return Formatter.castCsvBill(data) }]
     })
     console.info(data.summary)
   } catch (error) {
@@ -659,9 +659,32 @@ wxpay.v2.risk.getpublickey({
   sign_type: 'MD5',
   nonce_str: Formatter.nonce(),
 }, {
-  baseURL: 'https://fraud.mch.weixin.qq.com'
+  baseURL: 'https://fraud.mch.weixin.qq.com/',
+  // 返回值无`sign`字段，无需数据校验
+  transformResponse: [Transformer.toObject],
 })
 .then(res => console.info(res.data))
+.catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
+```
+
+### 下载交易账单
+
+```js
+wxpay.v2.pay.downloadbill({
+  mch_id,
+  nonce_str: fmt.nonce(),
+  appid,
+  bill_date,
+  bill_type,
+}, {
+  responseType: 'arraybuffer', // To prevent the axios:utils.stripBOM feature
+  transformResponse: [function detector(data) {
+    // 无账单时返回值为`xml`，抛到异常`catch`处理
+    assert.notDeepStrictEqual(data.slice(0, 5), Buffer.from('<xml>'), data.toString())
+    return data
+  }, function csvCastor(data) { return Formatter.castCsvBill(data) }]
+})
+.then(res => console.info(res.data.summary))
 .catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
 ```
 
