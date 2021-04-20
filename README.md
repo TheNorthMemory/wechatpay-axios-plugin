@@ -800,6 +800,9 @@ Wechatpay.client.v2.post('https://fraud.mch.weixin.qq.com/risk/getpublickey', {
   mch_id: '1900000109',
   nonce_str: Formatter.nonce(),
   sign_type: 'HMAC-SHA256',
+}, {
+  // 返回值无`sign`字段，无需数据校验
+  transformResponse: [Transformer.toObject],
 })
 .then(({data}) => console.info(data))
 .catch(({response}) => console.error(response))
