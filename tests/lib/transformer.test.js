@@ -75,10 +75,7 @@ describe('lib/transformer', () => {
     it('method `signer` should throw a `TypeError` while the input object has `sign_type:HMAC-SHA256` annotation and `Transformer.secret` wasn\'t setting', () => {
       // mock doesn't setting
       Transformer.secret = undefined;
-      should(() => {
-        /* eslint-disable-next-line camelcase */
-        Transformer.signer({ sign_type: 'HMAC-SHA256' });
-      }).throw(TypeError);
+      should(() => Transformer.signer({ sign_type: 'HMAC-SHA256' })).throw(TypeError);
     });
 
     it('method `signer` should returns the `{sign}` is length(64) string while the input object has `sign_type:HMAC-SHA256` annotation', () => {
@@ -178,8 +175,8 @@ describe('lib/transformer', () => {
       should(Transformer.toObject('<xml><mch_id>10000100</mch_id></xml>')).be.eql({ mch_id: '10000100' });
     });
 
-    it('method `toObject` should returns `Buffer` while a `Buffer.from([])` passed in', () => {
-      should(Transformer.toObject(Buffer.from([]))).be.eql(Buffer.from([]));
+    it('method `toObject` should returns `null` while a `Buffer.from([])` passed in', () => {
+      should(Transformer.toObject(Buffer.from([]))).be.eql(null);
     });
   });
 
@@ -195,16 +192,16 @@ describe('lib/transformer', () => {
       }).throw(assert.AssertionError);
     });
 
-    it('method `verifier` should returns `test` while a `test` string passed in', () => {
-      should(Transformer.verifier('test')).be.eql('test');
+    it('method `verifier` should be thrown a `TypeError` while a `test` string passed in', () => {
+      should(() => Transformer.verifier('test')).throw(TypeError);
     });
 
-    it('method `verifier` should returns `{}` while a `{}` object passed in', () => {
-      should(Transformer.verifier({})).be.eql({});
+    it('method `verifier` should be thrown a `TypeError` while a `{}` object passed in', () => {
+      should(() => Transformer.verifier({})).throw(TypeError);
     });
 
-    it('method `verifier` should returns `Buffer` while a `Buffer.from([])` passed in', () => {
-      should(Transformer.verifier(Buffer.from([]))).be.eql(Buffer.from([]));
+    it('method `verifier` should be thrown a `TypeError` while a `Buffer.from([])` passed in', () => {
+      should(() => Transformer.verifier(Buffer.from([]))).throw(TypeError);
     });
   });
 
