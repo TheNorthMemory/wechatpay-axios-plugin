@@ -192,16 +192,16 @@ describe('lib/transformer', () => {
       }).throw(assert.AssertionError);
     });
 
-    it('method `verifier` should be thrown a `TypeError` while a `test` string passed in', () => {
-      should(() => Transformer.verifier('test')).throw(TypeError);
+    it('method `verifier` should be thrown a `assert.AssertionError` while a `test` string passed in', () => {
+      should(() => Transformer.verifier('test')).throw(assert.AssertionError);
     });
 
-    it('method `verifier` should be thrown a `TypeError` while a `{}` object passed in', () => {
-      should(() => Transformer.verifier({})).throw(TypeError);
+    it('method `verifier` should be thrown a `assert.AssertionError` while a `{}` object passed in', () => {
+      should(() => Transformer.verifier({})).throw(assert.AssertionError);
     });
 
-    it('method `verifier` should be thrown a `TypeError` while a `Buffer.from([])` passed in', () => {
-      should(() => Transformer.verifier(Buffer.from([]))).throw(TypeError);
+    it('method `verifier` should be thrown a `assert.AssertionError` while a `Buffer.from([])` passed in', () => {
+      should(() => Transformer.verifier(Buffer.from([]))).throw(assert.AssertionError);
     });
   });
 
