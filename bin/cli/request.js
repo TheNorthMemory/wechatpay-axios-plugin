@@ -1,7 +1,7 @@
 /**
  * Play the WeChatPay OpenAPI requests over command line
  */
-const { Wechatpay } = require('../..');
+const { Wechatpay, Transformer: { toObject } } = require('../..');
 
 module.exports = {
   command: '* <uri>',
@@ -16,8 +16,7 @@ module.exports = {
     },
     binary: {
       alias: 'b',
-      describe: 'Point out the response as `arraybuffer`',
-      type: 'boolean',
+      describe: 'True for the `arraybuffer` response, two for without-verifier-response, otherwise for showing the origin',
       group: '<uri>',
     },
     method: {
@@ -29,7 +28,7 @@ module.exports = {
     },
     headers: {
       alias: 'h',
-      describe: 'Special request HTTP header(s)',
+      describe: 'The request HTTP header(s)',
       group: '<uri>',
     },
     data: {
@@ -47,8 +46,13 @@ module.exports = {
     const {
       baseURL, uri, config, method, data, params, headers,
     } = argv;
-    const responseType = argv.binary ? 'arraybuffer' : undefined;
+    const responseType = argv.binary && typeof argv.binary === 'boolean' ? 'arraybuffer' : undefined;
     const structure = [{ params, headers, responseType }];
+
+    if (Array.isArray(argv.binary) && argv.binary.every((x) => x)) {
+      // turn off the `verifier` for APIv2 while the `argv.binary` length is 2, otherwise for showing the origin
+      Reflect.set(structure[0], 'transformResponse', argv.binary.length > 2 ? [] : [toObject]);
+    }
 
     if (data) { structure.unshift(data); }
 

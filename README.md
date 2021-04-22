@@ -98,9 +98,9 @@ Play the WeChatPay OpenAPI requests over command line
 
 <uri>
   -c, --config   The configuration  [required]
-  -b, --binary   Point out the response as `arraybuffer`  [boolean]
+  -b, --binary   True for the `arraybuffer` response, two for without-verifier-response, otherwise for showing the origin
   -m, --method   The request HTTP verb  [choices: "DELETE", "GET", "POST", "PUT", "PATCH", "delete", "get", "post", "put", "patch"] [default: "POST"]
-  -h, --headers  Special request HTTP header(s)
+  -h, --headers  The request HTTP header(s)
   -d, --data     The request HTTP body
   -p, --params   The request HTTP query parameter(s)
 
