@@ -1089,7 +1089,7 @@ QQ群: **684379275**
 
 ## 变更历史
 
-- v0.6.0 (2021-04-22)
+- v0.6.1 (2021-04-22)
   - 优化CLI，扩展`wxpay <uri>`的`-b`参数为可变布尔量，兼容之前版本用法，以支持 [#21](https://github.com/TheNorthMemory/wechatpay-axios-plugin/issues/21)
 
 - v0.6.0 (2021-04-20)
