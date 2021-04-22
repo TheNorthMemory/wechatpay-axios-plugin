@@ -1089,9 +1089,12 @@ QQ群: **684379275**
 
 ## 变更历史
 
+- v0.6.0 (2021-04-22)
+  - 优化CLI，扩展`wxpay <uri>`的`-b`参数为可变布尔量，兼容之前版本用法，以支持 [#21](https://github.com/TheNorthMemory/wechatpay-axios-plugin/issues/21)
+
 - v0.6.0 (2021-04-20)
-  - 代码重构，`APIv2`的返回数据默认强校验，特殊接口需给特殊`transformResponse`，相关见 #20
-  - 代码重构，删除了`interceptor.js`包装文件，不再兼容0.1系列，返回数据默认强校验，特殊接口需给特殊`transformResponse`，相关见 #19
+  - 代码重构，`APIv2`的返回数据默认强校验，特殊接口需给特殊`transformResponse`，相关见 [#20](https://github.com/TheNorthMemory/wechatpay-axios-plugin/issues/20)
+  - 代码重构，删除了`interceptor.js`包装文件，不再兼容0.1系列，返回数据默认强校验，特殊接口需给特殊`transformResponse`，相关见 [#19](https://github.com/TheNorthMemory/wechatpay-axios-plugin/issues/19)
 
 - v0.5.5 (2021-04-13)
   - 优化文档，`证书`相关名词与官方文档保持一致
@@ -1106,18 +1109,18 @@ QQ群: **684379275**
   - 优化内部`chain`逻辑，遵循 `RFC3986` 规范，`baseURL`支持带部分路径的海外接入点
   - 优化代码`SonarQube`检测结果`3A+0.5%`
 
-- v0.5.3
+- v0.5.3 (2021-04-02)
   - 优化CLI，`wxpay <uri>` 向前兼容以支持slash(/)结尾的请求，形如 `v3/applyment4sub/applyment/`
 
-- v0.5.2
+- v0.5.2 (2021-04-01)
   - 优化CLI，`wxpay <uri>` 现在支持型如 `v2.pay.micropay`, `v3.pay.transactions.native` 调用
   - 优化`README`文档，适配最新CLI用法；增加APIv3消息通知QA章节；增加技术交流QQ群说明
 
-- v0.5.1
+- v0.5.1 (2021-03-29)
   - 优化CLI，可以直接 `wxpay <uri>` 发起请求
   - 优化`README`文档，适配最新CLI用法
 
-- v0.5.0
+- v0.5.0 (2021-03-27)
   - 新增命令行方式与微信支付接口交互工具
   - 调整可选依赖包为`peerDependencies`，使用完整功能需手动安装 `form-data` 或/及 `yargs`
 
