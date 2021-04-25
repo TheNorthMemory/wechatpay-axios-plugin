@@ -60,22 +60,23 @@ export namespace WechatpayAxiosPlugin {
         static get pkcs7(): {
             /**
              * padding, 32 bytes/256 bits `secret key` may optional need the last block.
-             * @see https://tools.ietf.org/html/rfc2315#section-10.3
-             * <quote>
+             * @see [rfc2315]{@link https://tools.ietf.org/html/rfc2315#section-10.3}
+             * @memberof Aes.pkcs7#
+             * @summary
              * The padding can be removed unambiguously since all input is
              *     padded and no padding string is a suffix of another. This
              *     padding method is well-defined if and only if k < 256;
              *     methods for larger k are an open issue for further study.
-             * </quote>
              *
              * @param {string|Buffer} thing - The input
-             * @param {boolean} [optional = true] - The flag for the last padding
+             * @param {boolean} [optional = true] - The flag for the last padding, default `true`
              *
              * @return {Buffer} - The PADDING tailed payload
              */
             padding: (thing: string | any, optional?: boolean | undefined) => any;
             /**
              * unpadding
+             * @memberof Aes.pkcs7#
              *
              * @param  {string|Buffer} thing - The input
              * @return {Buffer} - The PADDING wiped payload
@@ -146,14 +147,14 @@ export namespace WechatpayAxiosPlugin {
 
     /**
      * Crypto hash functions utils.
-     * Specification @link https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3
+     * [Specification]{@link https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3}
      */
     class Hash {
         /**
          * Calculate the input string with an optional secret `key` in MD5,
          * when the `key` is Falsey, this method works as normal `MD5`.
          *
-         * - [agency] is available since v0.4.3, spec @link https://work.weixin.qq.com/api/doc/90000/90135/90281
+         * - [agency] is available {@since v0.4.3}, [spec]{@link https://work.weixin.qq.com/api/doc/90000/90135/90281}
          *
          * @param {string|buffer} thing - The input string.
          * @param {string} [key] - The secret key string.
@@ -171,7 +172,7 @@ export namespace WechatpayAxiosPlugin {
          */
         static hmac(thing: string | any, key: string, algorithm?: string | undefined): string;
         /**
-         * @deprecated Since v0.5.5, instead of by `hmac`
+         * @deprecated {@since v0.5.5}, instead of by `hmac`
          *
          * Calculate the input string with a secret `key` in HMAC-SHA256
          * @param {string|buffer} thing - The input string.
@@ -196,7 +197,7 @@ export namespace WechatpayAxiosPlugin {
          * @param {string} type - The sign type, one of the MD5 or HMAC-SHA256.
          * @param {object} data - The input data.
          * @param {string} key - The secret key string.
-         * @return {object} - With data signature
+         * @return {string} - The data signature.
          */
         static sign(type: string, data: object, key: string): object;
     }
