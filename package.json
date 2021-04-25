@@ -52,7 +52,6 @@
     "xml2js": "^0.4.23"
   },
   "peerDependencies": {
-    "form-data": "^3.0.0 || ^4.0.0",
     "yargs": "^16.2.0"
   },
   "devDependencies": {

@@ -20,6 +20,14 @@ describe('index', () => {
     should(whats.Hash).is.a.Function().and.have.property('name', 'Hash');
   });
 
+  it('should have `FormData` property and be a Class', () => {
+    should(whats.FormData).is.a.Function().and.have.property('name', 'FormData');
+  });
+
+  it('should have `Multipart` property and be a Class', () => {
+    should(whats.Multipart).is.a.Function().and.have.property('name', 'Multipart');
+  });
+
   it('should have `Formatter` property and be a Class', () => {
     should(whats.Formatter).is.a.Function().and.have.property('name', 'Formatter');
   });

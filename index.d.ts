@@ -364,6 +364,63 @@ export namespace WechatpayAxiosPlugin {
         [key: string]: string | Buffer
     }
 
+    class Multipart {
+        /**
+         * To retrieve the {@link Miltipart#data} buffer
+         *
+         * @returns {Buffer} - The payload buffer
+         */
+        getBuffer(): any;
+        /**
+         * To retrieve the `Content-Type` multipart/form-data header
+         *
+         * @returns {object<string, string>} - The `Content-Type` header With {@link Multipart#boundary}
+         */
+        getHeaders(): object;
+        /**
+         * Append a customized {@link Multipart#mimeType}
+         *
+         * @example
+         * .appendMimeTypes({p12: 'application/x-pkcs12'})
+         * .appendMimeTypes({txt: 'text/plain'})
+         *
+         * @param {object<string,string>} things - The mime-type
+         *
+         * @returns {Multipart} - The `Multipart` class instance self
+         */
+        appendMimeTypes(things: any): this;
+        /**
+         * Append data wrapped by {@link Multipart#boundary}
+         *
+         * @param  {string} field - The field
+         * @param  {string|buffer} value - The value
+         * @param  {String} [filename] - Optional filename, when provided, then append the `Content-Type` after of the `Content-Disposition`
+         *
+         * @returns {Multipart} - The `Multipart` class instance self
+         */
+        append(field: string, value: string | any, filename?: string): this;
+        entries(): this;
+        set(): this;
+        get(): this;
+        getAll(): this;
+        has(): this;
+        delete(): this;
+        keys(): this;
+        values(): this;
+        /**
+         * @returns {string} - FormData string
+         */
+        static get [Symbol.toStringTag](): string;
+        /**
+         * @returns {string} - FormData string
+         */
+        get [Symbol.toStringTag](): string;
+        /**
+         * @returns {string} - FormData string
+         */
+        toString(): string;
+    }
+
     /**
      * Provides some methods for the RSA `sha256WithRSAEncryption` with `RSA_PKCS1_OAEP_PADDING`.
      */
@@ -668,6 +725,10 @@ export class Transformer extends WechatpayAxiosPlugin.Transformer{}
 export class Formatter extends WechatpayAxiosPlugin.Formatter{}
 
 export class Aes extends WechatpayAxiosPlugin.Aes{}
+
+export class Multipart extends WechatpayAxiosPlugin.Multipart {}
+
+export class FormData extends Multipart {}
 
 export class Rsa extends WechatpayAxiosPlugin.Rsa{}
 
