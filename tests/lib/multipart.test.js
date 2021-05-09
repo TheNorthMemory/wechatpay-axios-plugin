@@ -1,8 +1,8 @@
 const should = require('should');
 
-const FormData = require('../../lib/multipart');
+const Multipart = require('../../lib/multipart');
 
-const { Multipart } = FormData;
+const { FormData } = Multipart;
 
 describe('lib/multipart', () => {
   it('default should be class `FormData`', () => {
@@ -104,13 +104,13 @@ describe('lib/multipart', () => {
       should(delete form.indices).be.False();
     });
 
-    it('Method `getBuffer()` should returns a Buffer instance and had fixed length(108) default', () => {
+    it('Method `getBuffer()` should returns a Buffer instance and had 0 length default', () => {
       should(Multipart.getBuffer).be.Undefined();
       should(() => Multipart.getBuffer()).throw(TypeError);
 
       const form = new Multipart();
 
-      form.getBuffer().should.be.instanceOf(Buffer).and.have.length(108);
+      form.getBuffer().should.be.instanceOf(Buffer).and.have.length(0);
     });
 
     it('Method `getHeaders()` should returns a Object[`Content-type`] with `multipart/form-data; boundary=`', () => {
@@ -157,9 +157,13 @@ describe('lib/multipart', () => {
       form.append();
       const current = form.data.slice();
 
+      form.append();
+      const nextone = form.data.slice();
+
       defaults.should.be.Array().and.have.length(0);
-      previous.should.be.Array().and.have.length(8);
-      current.should.be.Array().and.have.length(16);
+      previous.should.be.Array().and.have.length(1 * 8 + 4);
+      current.should.be.Array().and.have.length(2 * 8 + 4);
+      nextone.should.be.Array().and.have.length(3 * 8 + 4);
     });
 
     it('Method `append()` should append name="undefined" disposition onto the `form.data` property', () => {
@@ -169,14 +173,16 @@ describe('lib/multipart', () => {
 
       form.append().should.be.instanceOf(Multipart);
       should(Buffer.concat(form.data).toString()).be.String()
-        .and.match(/^Content-Disposition.*/)
+        .and.match(/^---{26}[0-9]{24}\r\n/)
+        .and.match(/Content-Disposition.*/)
         .and.match(/name="undefined"/)
-        .and.match(/.*\r\n$/);
+        .and.match(/---{26}[0-9]{24}--\r\n$/);
 
       should(form.getBuffer().toString()).be.String()
-        .and.match(/^--.*/)
+        .and.match(/^---{26}[0-9]{24}\r\n/)
+        .and.match(/Content-Disposition.*/)
         .and.match(/name="undefined"/)
-        .and.match(/.*--\r\n$/);
+        .and.match(/---{26}[0-9]{24}--\r\n$/);
     });
 
     it('Method `append({}, 1)` should append name="[object Object]" disposition onto the `form.data` property', () => {
@@ -186,14 +192,16 @@ describe('lib/multipart', () => {
 
       form.append({}, 1).should.be.instanceOf(Multipart);
       should(Buffer.concat(form.data).toString()).be.String()
-        .and.match(/^Content-Disposition.*/)
+        .and.match(/^---{26}[0-9]{24}\r\n/)
+        .and.match(/Content-Disposition.*/)
         .and.match(/name="\[object Object\]"/)
-        .and.match(/.*\r\n$/);
+        .and.match(/---{26}[0-9]{24}--\r\n$/);
 
       should(form.getBuffer().toString()).be.String()
-        .and.match(/^--.*/)
+        .and.match(/^---{26}[0-9]{24}\r\n/)
+        .and.match(/Content-Disposition.*/)
         .and.match(/name="\[object Object\]"/)
-        .and.match(/.*--\r\n$/);
+        .and.match(/---{26}[0-9]{24}--\r\n$/);
     });
 
     it('Method `append(\'meta\', JSON.stringify({}), \'meta.json\')` should append a `Content-Type: application/json` onto the `form.data` property', () => {
@@ -203,16 +211,18 @@ describe('lib/multipart', () => {
 
       form.append('meta', JSON.stringify({}), 'meta.json').should.be.instanceOf(Multipart);
       should(Buffer.concat(form.data).toString()).be.String()
-        .and.match(/^Content-Disposition.*/)
+        .and.match(/^---{26}[0-9]{24}\r\n/)
+        .and.match(/Content-Disposition.*/)
         .and.match(/name="meta"/)
         .and.match(/Content-Type: application\/json/)
-        .and.match(/.*\r\n$/);
+        .and.match(/---{26}[0-9]{24}--\r\n$/);
 
       should(form.getBuffer().toString()).be.String()
-        .and.match(/^--.*/)
+        .and.match(/^---{26}[0-9]{24}\r\n/)
+        .and.match(/Content-Disposition.*/)
         .and.match(/name="meta"/)
         .and.match(/Content-Type: application\/json/)
-        .and.match(/.*--\r\n$/);
+        .and.match(/---{26}[0-9]{24}--\r\n$/);
     });
 
     it('Method `append(\'image_content\', '
@@ -225,16 +235,18 @@ describe('lib/multipart', () => {
       form.append('image_content', buf, filename).should.be.instanceOf(Multipart);
 
       should(Buffer.concat(form.data).toString()).be.String()
-        .and.match(new RegExp(`^Content-Disposition:.*?filename="${filename}`))
+        .and.match(/^---{26}[0-9]{24}\r\n/)
+        .and.match(new RegExp(`Content-Disposition:.*?filename="${filename}`))
         .and.match(/name="image_content"/)
         .and.match(/Content-Type: image\/gif/)
-        .and.match(/.*\r\n$/);
+        .and.match(/---{26}[0-9]{24}--\r\n$/);
 
       should(form.getBuffer().toString()).be.String()
-        .and.match(/^--.*/)
+        .and.match(/^---{26}[0-9]{24}\r\n/)
+        .and.match(new RegExp(`Content-Disposition:.*?filename="${filename}`))
         .and.match(/name="image_content"/)
         .and.match(/Content-Type: image\/gif/)
-        .and.match(/.*--\r\n$/);
+        .and.match(/---{26}[0-9]{24}--\r\n$/);
 
       should(Buffer.compare(form.data[form.indices.image_content], buf)).be.equal(0);
     });
