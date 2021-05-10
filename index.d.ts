@@ -1,3 +1,5 @@
+/// <reference types="node" />
+import { Readable } from "stream";
 import { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 
 /**
@@ -364,13 +366,26 @@ export namespace WechatpayAxiosPlugin {
         [key: string]: string | Buffer
     }
 
-    class Multipart {
+    /**
+     * Simple and lite of `multipart/form-data` implementation, most similar to `form-data`.
+     *
+     * @since v0.7.0
+     * @example
+     * (new Multipart())
+     *   .append('a', 1)
+     *   .append('b', '2')
+     *   .append('c', Buffer.from('31'))
+     *   .append('d', JSON.stringify({}), 'any.json')
+     *   .append('e', require('fs').readFileSync('/path/your/file.jpg'), 'file.jpg')
+     *   .getBuffer();
+     */
+    class Multipart extends Readable {
         /**
          * To retrieve the {@link Miltipart#data} buffer
          *
          * @returns {Buffer} - The payload buffer
          */
-        getBuffer(): any;
+        getBuffer(): Buffer;
         /**
          * To retrieve the `Content-Type` multipart/form-data header
          *
@@ -399,14 +414,14 @@ export namespace WechatpayAxiosPlugin {
          * @returns {Multipart} - The `Multipart` class instance self
          */
         append(field: string, value: string | any, filename?: string): this;
-        entries(): this;
-        set(): this;
-        get(): this;
-        getAll(): this;
-        has(): this;
-        delete(): this;
-        keys(): this;
-        values(): this;
+        entries(): void;
+        set(): void;
+        get(): void;
+        getAll(): void;
+        has(): void;
+        delete(): void;
+        keys(): void;
+        values(): void;
         /**
          * @returns {string} - FormData string
          */
@@ -419,6 +434,11 @@ export namespace WechatpayAxiosPlugin {
          * @returns {string} - FormData string
          */
         toString(): string;
+        /**
+         * To fetch data from the underlying resource.
+         * @private
+         */
+        _read(): void;
     }
 
     /**
