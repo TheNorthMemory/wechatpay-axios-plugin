@@ -1,6 +1,7 @@
 const should = require('should');
 
 const utils = require('../../lib/utils');
+const Multipart = require('../../lib/multipart');
 
 describe('lib/utils', () => {
   it('should be an Object', () => {
@@ -25,6 +26,11 @@ describe('lib/utils', () => {
   it('should have `isObject` property and be a function', () => {
     utils.should.have.property('isObject');
     should(utils.isObject).be.a.Function();
+  });
+
+  it('should have `isStream` property and be a function', () => {
+    utils.should.have.property('isStream');
+    should(utils.isStream).be.a.Function();
   });
 
   it('should have `merge` property and be a function', () => {
@@ -60,12 +66,32 @@ describe('lib/utils', () => {
       utils.isProcessFormData().should.be.a.Boolean();
     });
 
-    const mockup = {
-      toString: () => '[object FormData]',
-    };
     it('method `isProcessFormData` should returns boolean `true` under Node environment', () => {
-      mockup.should.be.an.Object();
-      utils.isProcessFormData(mockup).should.be.a.Boolean().and.be.True();
+      (new Multipart()).should.be.an.Object();
+      utils.isProcessFormData(new Multipart()).should.be.a.Boolean().and.be.True();
+    });
+
+    it('method `isProcessFormData` should returns boolean `true` under Node environment', () => {
+      (new Multipart.FormData()).should.be.an.Object();
+      utils.isProcessFormData(new Multipart.FormData()).should.be.a.Boolean().and.be.True();
+    });
+  });
+
+  describe('utils::isStream', () => {
+    it('method `isStream` should be function', () => {
+      should(utils.isStream).be.a.Function();
+    });
+
+    it('method `isStream` should returns Boolean', () => {
+      utils.isStream().should.be.a.Boolean();
+    });
+
+    it('method `isStream` should returns boolean `true` while the `Multipart` instance passed in', () => {
+      utils.isStream(new Multipart()).should.be.a.Boolean().and.be.True();
+    });
+
+    it('method `isStream` should returns boolean `true` while the `FormData` instance passed in', () => {
+      utils.isStream(new Multipart.FormData()).should.be.a.Boolean().and.be.True();
     });
   });
 });
