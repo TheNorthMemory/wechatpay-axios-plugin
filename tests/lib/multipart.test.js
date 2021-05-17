@@ -248,7 +248,7 @@ describe('lib/multipart', () => {
         .and.match(/Content-Type: image\/gif/)
         .and.match(/---{26}[0-9]{24}--\r\n$/);
 
-      should(Buffer.compare(form.data[form.indices.image_content], buf)).be.equal(0);
+      should(Buffer.compare(form.get('image_content'), buf)).be.equal(0);
     });
   });
 });
