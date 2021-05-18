@@ -161,9 +161,9 @@ describe('lib/multipart', () => {
       const nextone = form.data.slice();
 
       defaults.should.be.Array().and.have.length(0);
-      previous.should.be.Array().and.have.length(1 * 8 + 4);
-      current.should.be.Array().and.have.length(2 * 8 + 4);
-      nextone.should.be.Array().and.have.length(3 * 8 + 4);
+      previous.should.be.Array().and.have.length(1 * 10 + 4);
+      current.should.be.Array().and.have.length(2 * 10 + 4);
+      nextone.should.be.Array().and.have.length(3 * 10 + 4);
     });
 
     it('Method `append()` should append name="undefined" disposition onto the `form.data` property', () => {
