@@ -402,7 +402,7 @@ const imageMeta = {
 }
 
 const imageData = new FormData()
-imageData.append('meta', JSON.stringify(imageMeta), 'meta.json'})
+imageData.append('meta', JSON.stringify(imageMeta), 'meta.json')
 imageData.append('file', createReadStream('./hellowechatpay.png'), 'hellowechatpay.png')
 
 ;(async () => {
