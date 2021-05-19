@@ -402,8 +402,8 @@ const imageMeta = {
 }
 
 const imageData = new FormData()
-imageData.append('meta', JSON.stringify(imageMeta), {contentType: 'application/json'})
-imageData.append('file', createReadStream('./hellowechatpay.png'))
+imageData.append('meta', JSON.stringify(imageMeta), 'meta.json'})
+imageData.append('file', createReadStream('./hellowechatpay.png'), 'hellowechatpay.png')
 
 ;(async () => {
   try {
@@ -498,8 +498,8 @@ const videoMeta = {
 }
 
 const videoData = new FormData()
-videoData.append('meta', JSON.stringify(videoMeta), {contentType: 'application/json'})
-videoData.append('file', createReadStream('./hellowechatpay.mp4'))
+videoData.append('meta', JSON.stringify(videoMeta))
+videoData.append('file', createReadStream('./hellowechatpay.mp4'), 'hellowechatpay.mp4')
 
 ;(async () => {
   try {
@@ -1090,8 +1090,11 @@ QQ群: **684379275**
 
 ## 变更历史
 
+- v0.7.1
+  - 完善`Multipart#set, delete, has, get, getAll, keys, values`等方法
+
 - v0.7.0 (2021-05-15)
-  - 新增`Multipart`类，不再`peerDependency`,`form-data`说明及用法见[#22](https://github.com/TheNorthMemory/wechatpay-axios-plugin/issues/22)
+  - 新增`Multipart`类，不再`peerDependency`,`form-data`说明及用法见 [#22](https://github.com/TheNorthMemory/wechatpay-axios-plugin/issues/22)
 
 - v0.6.1 (2021-04-22)
   - 优化CLI，扩展`wxpay <uri>`的`-b`参数为可变布尔量，兼容之前版本用法，以支持 [#21](https://github.com/TheNorthMemory/wechatpay-axios-plugin/issues/21)
