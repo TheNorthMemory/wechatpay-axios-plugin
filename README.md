@@ -1090,7 +1090,7 @@ QQ群: **684379275**
 
 ## 变更历史
 
-- v0.7.1
+- v0.7.1 (2021-05-20)
   - 完善`Multipart#set, delete, has, get, getAll, keys, values`等方法
 
 - v0.7.0 (2021-05-15)
