@@ -419,7 +419,7 @@ describe('lib/multipart', () => {
       const form = new Multipart();
       should(form.toJSON()).be.Null();
       form.set('meta', JSON.stringify({})).data.should.be.length(14);
-      form.has('meta').should.be.True()
+      form.has('meta').should.be.True();
       form.get('meta').should.be.instanceOf(Buffer).and.eql(Buffer.from('{}'));
       form.toJSON().should.be.Object().and.eql({});
       JSON.stringify(form).should.be.String().and.eql('{}');
