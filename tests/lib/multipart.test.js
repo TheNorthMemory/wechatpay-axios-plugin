@@ -380,35 +380,35 @@ describe('lib/multipart', () => {
   });
 
   describe('Multipart::entries', () => {
-    it('Method `entries()` should returns an Array', () => {
+    it('Method `entries()` should returns an Iterator', () => {
       should(() => Multipart.entries()).throw(TypeError);
 
       const form = new Multipart();
-      form.entries().should.be.Array().and.have.length(0);
+      form.entries().toString().should.be.eql('[object Array Iterator]');
       form.set().data.should.be.length(14);
-      form.entries().should.be.Array().and.eql([[undefined, Buffer.from('undefined')]]);
+      Array.from(form.entries()).should.be.Array().and.eql([[undefined, Buffer.from('undefined')]]);
     });
   });
 
   describe('Multipart::keys', () => {
-    it('Method `keys()` should returns an Array', () => {
+    it('Method `keys()` should returns an Iterator', () => {
       should(() => Multipart.keys()).throw(TypeError);
 
       const form = new Multipart();
-      form.keys().should.be.Array().and.have.length(0);
+      form.keys().toString().should.be.eql('[object Array Iterator]');
       form.set().data.should.be.length(14);
-      form.keys().should.be.Array().and.eql([undefined]);
+      Array.from(form.keys()).should.be.Array().and.eql([undefined]);
     });
   });
 
   describe('Multipart::values', () => {
-    it('Method `values()` should returns an Array', () => {
+    it('Method `values()` should returns an Iterator', () => {
       should(() => Multipart.values()).throw(TypeError);
 
       const form = new Multipart();
-      form.values().should.be.Array().and.have.length(0);
+      form.values().toString().should.be.eql('[object Array Iterator]');
       form.set().data.should.be.length(14);
-      form.values().should.be.Array().and.eql([Buffer.from('undefined')]);
+      Array.from(form.values()).should.be.Array().and.eql([Buffer.from('undefined')]);
     });
   });
 
@@ -419,7 +419,8 @@ describe('lib/multipart', () => {
       const form = new Multipart();
       should(form.toJSON()).be.Null();
       form.set('meta', JSON.stringify({})).data.should.be.length(14);
-      form.values('meta').should.be.Array().and.eql([Buffer.from('{}')]);
+      form.has('meta').should.be.True()
+      form.get('meta').should.be.instanceOf(Buffer).and.eql(Buffer.from('{}'));
       form.toJSON().should.be.Object().and.eql({});
       JSON.stringify(form).should.be.String().and.eql('{}');
     });
