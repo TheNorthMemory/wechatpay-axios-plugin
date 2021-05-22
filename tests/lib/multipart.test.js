@@ -127,6 +127,17 @@ describe('lib/multipart', () => {
     });
   });
 
+  describe('Multipart[Symbol.toStringTag]', () => {
+    it('`[Symbol.toStringTag]` on the Multipart class should returns `FormData` string', () => {
+      should(Multipart[Symbol.toStringTag]).be.String().and.eql('FormData');
+    });
+
+    it('`[Symbol.toStringTag]` on the Multipart instance should returns `FormData` string', () => {
+      const form = new Multipart();
+      should(form[Symbol.toStringTag]).be.String().and.eql('FormData');
+    });
+  });
+
   describe('Multipart::getBuffer', () => {
     it('Method `getBuffer()` should returns a Buffer instance and had 0 length default', () => {
       should(Multipart.getBuffer).be.Undefined();
@@ -336,11 +347,12 @@ describe('lib/multipart', () => {
   });
 
   describe('Multipart::get', () => {
-    it('Method `get()` should thrown a TypeError while none named value append/set', () => {
+    it('Method `get()` should returns undefined while none named value append/set', () => {
       should(() => Multipart.get()).throw(TypeError);
 
       const form = new Multipart();
-      should(() => form.get()).throw(TypeError);
+      should(form.get()).be.Undefined();
+      should(form.set().get()).be.not.Undefined();
     });
 
     it('Method `get()` should returns a Buffer which equal to Buffer.from("undefined")', () => {
@@ -469,6 +481,21 @@ describe('lib/multipart', () => {
       });
 
       form.set().pipe(fd);
+    });
+  });
+
+  describe('Multipart.FormData', () => {
+    it('The Multipart.FormData should be class or Function, which\'s named as `FormData`', () => {
+      should(Multipart.FormData).be.a.Function().and.have.property('name', 'FormData');
+    });
+
+    it('`[Symbol.toStringTag]` on the Multipart.FormData class/Function should returns `FormData` string', () => {
+      should(Multipart.FormData[Symbol.toStringTag]).be.String().and.eql('FormData');
+    });
+
+    it('`[Symbol.toStringTag]` on the Multipart.FormData instance should returns `FormData` string', () => {
+      const form = new Multipart.FormData();
+      should(form[Symbol.toStringTag]).be.String().and.eql('FormData');
     });
   });
 });

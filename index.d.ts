@@ -488,7 +488,7 @@ export namespace WechatpayAxiosPlugin {
          *
          * @param {string} name - The field name
          *
-         * @return {Buffer|ReadStream} value - The value
+         * @return {Buffer|ReadStream|undefined} value - The value, undefined means none named key exists
          */
         get(name: string): Buffer | ReadStream;
         /**
