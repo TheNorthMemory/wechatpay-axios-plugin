@@ -1091,6 +1091,11 @@ QQ群: **684379275**
 
 ## 变更历史
 
+- v0.7.2 (2021-05-22)
+  - 调整`Multipart#entries, keys, values`严格遵从`Iterator protocols`，其返回值均为`Array Iterator`
+  - 优化`Multipart#get`方法的返回值，当且当无键时返回`undefined`
+  - 增加测试用例覆盖`Multipart.FormData`
+
 - v0.7.1 (2021-05-20)
   - 完善`Multipart#set, delete, has, get, getAll, keys, values`等方法
 
