@@ -3,18 +3,19 @@
 The WeChatPay OpenAPI v2&v3' Smart Development Kit
 
 [![GitHub actions](https://github.com/TheNorthMemory/wechatpay-axios-plugin/workflows/npm%20test/badge.svg)](https://github.com/TheNorthMemory/wechatpay-axios-plugin/actions)
-[![GitHub release](https://badgen.net/npm/v/wechatpay-axios-plugin)](https://github.com/TheNorthMemory/wechatpay-axios-plugin/releases)
-[![types](https://badgen.net/npm/types/wechatpay-axios-plugin)](https://www.npmjs.com/package/wechatpay-axios-plugin)
-[![NPM version](https://badgen.net/npm/node/wechatpay-axios-plugin)](https://www.npmjs.com/package/wechatpay-axios-plugin)
-[![NPM downloads per month](https://badgen.net/npm/dm/wechatpay-axios-plugin)](https://www.npmjs.com/package/wechatpay-axios-plugin)
-[![NPM license](https://badgen.net/npm/license/wechatpay-axios-plugin)](https://www.npmjs.com/package/wechatpay-axios-plugin)
+[![GitHub release](https://img.shields.io/npm/v/wechatpay-axios-plugin)](https://github.com/TheNorthMemory/wechatpay-axios-plugin/releases)
+[![Vulnerabilities](https://img.shields.io/snyk/vulnerabilities/npm/wechatpay-axios-plugin?label=synk.io)](https://snyk.io/advisor/npm-package/wechatpay-axios-plugin)
+[![types](https://img.shields.io/badge/types-included-blue)](https://www.npmjs.com/package/wechatpay-axios-plugin)
+[![NPM version](https://img.shields.io/npm/node/wechatpay-axios-plugin)](https://www.npmjs.com/package/wechatpay-axios-plugin)
+[![NPM downloads per month](https://img.shields.io/npm/dm/wechatpay-axios-plugin)](https://www.npmjs.com/package/wechatpay-axios-plugin)
+[![NPM license](https://img.shields.io/npm/license/wechatpay-axios-plugin)](https://www.npmjs.com/package/wechatpay-axios-plugin)
 
 ## 主要功能
 
 - [x] 使用Node原生`crypto`实现微信支付APIv3的AES加/解密功能(`aes-256-gcm` with `aad`)
 - [x] 使用Node原生`crypto`实现微信支付APIv3的RSA加/解密、签名、验签功能(`sha256WithRSAEncryption` with `RSA_PKCS1_OAEP_PADDING`)
-- [x] 大部分微信支付APIv3的HTTP GET/POST/PUT/PATCH/DELETE应该能够正常工作，依赖 [Axios](https://github.com/axios/axios), 示例代码如下
-- [x] 支持微信支付APIv3的媒体文件上传(图片/视频)功能，以内置`Multipart`类驱动，兼容选装 [form-data](https://github.com/form-data/form-data), 示例代码如下
+- [x] 支持微信支付APIv3的HTTP GET/POST/PUT/PATCH/DELETE多方法链式操作，依赖 [Axios](https://github.com/axios/axios), 示例代码如下
+- [x] 支持微信支付APIv3的媒体文件上传(图片/视频)功能，由`Multipart`类驱动，兼容选装 [form-data](https://github.com/form-data/form-data), 示例代码如下
 - [x] 支持微信支付APIv3的平台证书下载功能，需手动安装 [yargs](https://github.com/yargs/yargs), 使用手册如下
 - [x] 支持微信支付APIv3的帐单下载及解析功能，示例代码如下
 - [x] 支持微信支付APIv2 & APIv3面向对象编程模式，示例代码如下
@@ -497,7 +498,7 @@ const videoMeta = {
   sha256: '1a47b1eb40f501457eaeafb1b1417edaddfbe7a4a8f9decec2d330d1b4477fbe',
 }
 
-const videoData = new FormData()
+const videoData = new Multipart()
 videoData.append('meta', JSON.stringify(videoMeta))
 videoData.append('file', createReadStream('./hellowechatpay.mp4'), 'hellowechatpay.mp4')
 
@@ -1131,101 +1132,101 @@ QQ群: **684379275**
   - 新增命令行方式与微信支付接口交互工具
   - 调整可选依赖包为`peerDependencies`，使用完整功能需手动安装 `form-data` 或/及 `yargs`
 
-- v0.4.6
+- v0.4.6 (2021-03-25)
   - 使用最新版`eslint`及`eslint-config-airbnb-base`
   - 增加`utils.merge`依赖函数测试校验
 
-- v0.4.5
+- v0.4.5 (2021-03-16)
   - 支持APIv2版的俩账单下载，调用方法与APIv3类同；
   - 增加测试用例覆盖，初始化参数`secret`(for APIv2)如未设置，`HMAC-SHA256`数据签名时，可能引发 #14
 
-- v0.4.4
+- v0.4.4 (2021-03-07)
   - 优化`Wechatpay`在多次实例化时赋值`Symbol(CLIENT)`异常问题，增加`wechatpay.test.js`测试用例覆盖
 
-- v0.4.3
+- v0.4.3 (2021-03-06)
   - 支持 *企业微信-企业支付* 链式调用，需要额外注入签名规则，见上述文档用法示例
 
-- v0.4.2
+- v0.4.2 (2021-03-03)
   - 文件名大小写问题 #11 感谢 @LiuXiaoZhuang 报告此问题
 
-- v0.4.1
+- v0.4.1 (2021-03-02)
   - 解决了一个`AES-GCM`在`Node10`上的解密兼容性问题，程序在`Node10`上有可能崩溃，建议`Node10`用户升级至此版本
 
-- v0.4.0
+- v0.4.0 (2021-02-28)
   - 重构 `Wechatpay` 类，同时支持 APIv2&v3's 链式调用
   - 改变 `Wechatpay.client` 返回值为`Wechatpay.client.v3`，`Wechatpay.client.v2` 为 `xmlBased` 接口客户端
   - 废弃 `withEntities` 方法，其在链式多次调用时，有可能达不到预期，详情见 #10，感谢 @ali-pay 报告此问题
   - README 文档中文化
   - 完善补缺 `tsd` 声明
 
-- v0.3.4
+- v0.3.4 (2021-01-22)
   - Typed and tips on `Wechatpay` class(#9), thanks @ipoa
 
-- v0.3.3
+- v0.3.3 (2021-01-06)
   - Upgrade Axios for the CVE-2020-28168
 
-- v0.3.2
+- v0.3.2 (2020-09-19)
   - Optim: Let `Aes.pkcs7.padding` strictly following the `rfc2315` spec
   - Optim: Better of the `Hash.md5` and `Hash.hmacSha256`
   - Coding comments and README
 
-- v0.3.1
+- v0.3.1 (2020-09-15)
   - Optim: new param on `xmlBased({mchid})`, while passed in, then `Transformer.signer` doing the `assert` with the post data.
   - Feature: Customize the HTTP `User-Agent`.
   - Refactor: Split `aes.js` as of `Aes`, `AesGcm` and `AesEcb` classes for `aes-256-ecb/pkcs7padding` algo.
 
-- v0.3.0
+- v0.3.0 (2020-09-11)
   - Feature: The XML based API requests.
 
-- v0.2.3
+- v0.2.3 (2020-09-09)
   - Optim: Coding quality.
 
-- v0.2.2
+- v0.2.2 (2020-07-21)
   - Fix: #8 `verfier` on the `204` status case.
 
-- v0.2.1
+- v0.2.1 (2020-07-13)
   - Optim: Back compatible for `12.4.0` < `Node` ≧ `10.15.0`.
 
-- v0.2.0
+- v0.2.0 (2020-07-07)
   - Feature: `OOP` developing style of the wechatpay APIv3.
 
-- v0.1.0
+- v0.1.0 (2020-07-02)
   - Optim: Toggle the `Nodejs` version ≧ `10.15.0`.
   - Optim: Documentation and coding comments.
 
-- v0.0.9
+- v0.0.9 (2020-06-26)
   - Feature: definition of the `Typescript`
 
-- v0.0.8
+- v0.0.8 (2020-06-21)
   - Optim: on `castCsvBill`, drop the `trim` on each rows
   - Optim: on `response` validation, checking ± 5 mins first then to `Rsa.verify`
   - Optim: moved the `commander` optional dependency, because it's only for the `CLI` tool
   - Feature: shipped 99 tests(`npm test`)
 
-- v0.0.7
+- v0.0.7 (2020-06-18)
   - Feature: billdownload and castCsvBill
   - eslint enabled (`npm run lint`)
 
-- v0.0.6
+- v0.0.6 (2020-06-16)
   - Chinese document
 
-- v0.0.5
+- v0.0.5 (2020-06-15)
   - Renew document and codes comments
 
-- v0.0.4
+- v0.0.4 (2020-06-14)
   - Feature: certificate downloader, deps on `commander`
 
-- v0.0.3
+- v0.0.3 (2020-06-14)
   - Feature: media file upload, optional deps on `form-data`
 
-- v0.0.2
+- v0.0.2 (2020-06-13)
   - Feature: Assert the response's timestamp ± 5 mins
   - Refactor as CommonJS style(#6)
   - Limits the communicating parameters(#7)
   - Coding styles(#5)
   - Coding comments and Document(#4, #3, #2, #1)
 
-- v0.0.1
+- v0.0.1 (2020-06-12)
   - Init ES2015+ style
 
 ## License
