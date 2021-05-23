@@ -6,15 +6,9 @@ const should = require('should');
 
 const Multipart = require('../../lib/multipart');
 
-const { FormData } = Multipart;
-
 describe('lib/multipart', () => {
   it('default should be class `Multipart`', () => {
     should(Multipart).be.a.Function().and.have.property('name', 'Multipart');
-  });
-
-  it('Multipart.FormData should be class `FormData`', () => {
-    should(FormData).be.a.Function().and.have.property('name', 'FormData');
   });
 
   describe('new Multipart', () => {
