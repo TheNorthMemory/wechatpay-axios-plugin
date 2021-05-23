@@ -372,6 +372,7 @@ export namespace WechatpayAxiosPlugin {
      *
      * @since v0.7.0
      * @example
+     * // buffer style(Synchronous)
      * (new Multipart())
      *   .append('a', 1)
      *   .append('b', '2')
@@ -379,6 +380,8 @@ export namespace WechatpayAxiosPlugin {
      *   .append('d', JSON.stringify({}), 'any.json')
      *   .append('e', require('fs').readFileSync('/path/your/file.jpg'), 'file.jpg')
      *   .getBuffer();
+     * // stream style(Asynchronous)
+     *   .pipe(require('fs').createWriteStream('./file3.jpg'));
      */
     class Multipart extends Readable {
         /**
@@ -414,15 +417,15 @@ export namespace WechatpayAxiosPlugin {
         /**
          * @protected
          * @memberof Multipart#
-         * @prop {buffer[]} data - The Multipart's data storage
+         * @prop {Array<Buffer|ReadStream>} data - The Multipart's instance data storage
          */
-        protected data: Buffer[] | ReadStream[];
+        protected data: Array<Buffer|ReadStream>;
         /**
          * @protected
          * @memberof Multipart#
-         * @prop {Array<string, number>} indices - The entities' value indices whose were in {@link Multipart#data}
+         * @prop {[string|undefined, number][]} indices - The entities' value indices whose were in {@link Multipart#data}
          */
-        protected indices: any;
+        protected indices: [string|undefined, number][];
         /**
          * To retrieve the {@link Miltipart#data} buffer
          *
@@ -464,15 +467,15 @@ export namespace WechatpayAxiosPlugin {
          * @param {string|Buffer|ReadStream} value - The value
          * @param {string} [filename] - Optional filename, when provided, then append the `Content-Type` after of the `Content-Disposition`
          *
-         * @returns {array<Buffer[]>} - The part of data
+         * @returns {Array<Buffer|ReadStream>} - The part of data
          */
-        formed(name: string, value: string | Buffer | ReadStream, filename?: string): Buffer[];
+        formed(name: string, value: string | Buffer | ReadStream, filename?: string): Array<Buffer | ReadStream>;
         /**
          * To go through all key/value pairs contained in this {@link Multipart#data} instance
          *
-         * @return {Array<string, Buffer|ReadStream>} - An IteratorLike key/value pairs.
+         * @return {Iterator<Array<string|undefined, Buffer|ReadStream>>} - An Array Iterator key/value pairs.
          */
-        entries(): Array<Buffer[]>;
+        entries(): Iterator<Array<string | undefined, Buffer | ReadStream>>;
         /**
          * Sets a new value for an existing key inside a {@link Multipart#data} instance, or adds the key/value if it does not already exist.
          *
@@ -490,15 +493,15 @@ export namespace WechatpayAxiosPlugin {
          *
          * @return {Buffer|ReadStream|undefined} value - The value, undefined means none named key exists
          */
-        get(name: string): Buffer | ReadStream;
+        get(name: string): Buffer | ReadStream | undefined;
         /**
          * Returns all values associated with a given key from within a {@link Multipart#data} instance
          *
          * @param {string} name - The field name
          *
-         * @return {Buffer|ReadStream} value(s) - The value(s)
+         * @return {(Buffer|ReadStream)[]} value(s) - The value(s)
          */
-        getAll(name: string): Buffer[] | ReadStream[];
+        getAll(name: string): (Buffer | ReadStream)[];
         /**
          * Returns a boolean stating whether a {@link Multipart#data} instance contains a certain key.
          *
@@ -518,33 +521,38 @@ export namespace WechatpayAxiosPlugin {
         /**
          * To go through all keys contained in {@link Multipart#data} instance
          *
-         * @return {Array<string>} - An IteratorLike key array.
+         * @return {Iterator<string|undefined>} - An Array Iterator key pairs.
          */
-        keys(): string[];
+        keys(): Iterator<string | undefined>;
         /**
          * To go through all values contained in {@link Multipart#data} instance
          *
-         * @return {Array<Buffer|ReadStream>} - An IteratorLike value array.
+         * @returns {Iterator<Array<Buffer|ReadStream>>} - An Array Iterator value pairs.
          */
-        values(): Buffer[] | ReadStream[];
+        values(): Iterator<Array<Buffer | ReadStream>>;
         /**
          * @returns {string} - FormData string
          */
-        static get [Symbol.toStringTag](): string;
+        static get [Symbol.toStringTag](): "FormData";
         /**
          * @returns {string} - FormData string
          */
-        get [Symbol.toStringTag](): string;
+        get [Symbol.toStringTag](): "FormData";
         /**
          * @returns {string} - FormData string
          */
-        toString(): string;
+        toString(): "[object FormData]";
         /**
          * The WeChatPay APIv3' specific, the `meta` JSON
          *
          * @return {object<string, string>|null} - The `meta{filename,sha1}` information.
          */
-        toJSON(): object | null;
+        toJSON(): { filename: string, sha1: string } | null;
+        /**
+         * alias of {@link Multipart#entries}
+         * @returns {Iterator<Array<string|undefined, Buffer|ReadStream>>} - An Array Iterator key/value pairs.
+         */
+        [Symbol.iterator](): Iterator<Array<string|undefined, Buffer|ReadStream>>;
         _read(): void;
         /**
          * Pushing {@link Multipart#data} into the readable BufferList
