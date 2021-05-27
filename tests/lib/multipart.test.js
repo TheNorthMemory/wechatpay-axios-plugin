@@ -338,6 +338,34 @@ describe('lib/multipart', () => {
       form.append().append().data.should.be.length(24);
       form.delete(undefined).data.should.be.length(0);
     });
+
+    it('Chain `append(a).append(b).append(a).append(d).delete(a)` should re-indexed the value(s) and equal to a new `set(b).set(c)` instance', () => {
+      should(() => Multipart.delete()).throw(TypeError);
+
+      const form = new Multipart();
+
+      form.append('a').append('b').append('a').append('c');
+
+      const previous = form.indices.slice();
+
+      form.data.should.be.length(4 * 10 + 4);
+      form.delete('a').data.should.be.length(2 * 10 + 4);
+
+      form.indices.should.be.Array().and.be.length(2);
+      form.indices[0].should.be.Array().and.be.length(2);
+      form.indices[1].should.be.Array().and.be.length(2);
+      previous.should.be.Array().and.length(4);
+
+      previous[0].should.be.Array().and.length(2);
+      previous[0][0].should.not.be.eql(form.indices[0][0]);
+      previous[0][1].should.be.eql(form.indices[0][1]);
+
+      previous[1].should.be.Array().and.length(2);
+      previous[1][0].should.not.be.eql(form.indices[1][0]);
+      previous[1][1].should.be.eql(form.indices[1][1]);
+
+      form.indices.should.be.eql((new Multipart()).set('b').set('c').indices);
+    });
   });
 
   describe('Multipart::get', () => {
