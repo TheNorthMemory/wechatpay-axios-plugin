@@ -1,5 +1,9 @@
 # 变更历史
 
+## v0.7.3 (2021-05-28)
+  - 修正`Multipart#delete`方法，其在删除多`name`的值时，存在bug
+  - 增加测试用例覆盖`Multipart.delete`
+
 ## v0.7.2 (2021-05-22)
   - 调整`Multipart#entries, keys, values`严格遵从`Iterator protocols`，其返回值均为`Array Iterator`
   - 优化`Multipart#get`方法的返回值，当且当无键时返回`undefined`
