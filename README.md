@@ -12,18 +12,18 @@ The WeChatPay OpenAPI v2&v3' Smart Development Kit
 
 ## 主要功能
 
-- [x] 使用Node原生`crypto`实现微信支付APIv3的AES加/解密功能(`aes-256-gcm` with `aad`)
-- [x] 使用Node原生`crypto`实现微信支付APIv3的RSA加/解密、签名、验签功能(`sha256WithRSAEncryption` with `RSA_PKCS1_OAEP_PADDING`)
-- [x] 支持微信支付APIv3的HTTP GET/POST/PUT/PATCH/DELETE多方法链式操作，依赖 [Axios](https://github.com/axios/axios), 示例代码如下
-- [x] 支持微信支付APIv3的媒体文件上传(图片/视频)功能，由`Multipart`类驱动，兼容选装 [form-data](https://github.com/form-data/form-data), 示例代码如下
-- [x] 支持微信支付APIv3的平台证书下载功能，需手动安装 [yargs](https://github.com/yargs/yargs), 使用手册如下
-- [x] 支持微信支付APIv3的帐单下载及解析功能，示例代码如下
-- [x] 支持微信支付APIv2 & APIv3面向对象编程模式，示例代码如下
-- [x] 支持 `Typescript`
-- [x] 支持微信支付XML风格的接口(通常所说v2)调用，依赖 [node-xml2js](https://github.com/Leonidas-from-XIV/node-xml2js), 示例代码如下
-- [x] 支持微信支付APIv2版的 `AES-256-ECB/PKCS7PADDING` 通知消息加/解密
-- [x] APIv2 & APIv3 与微信交互的各种数据签名用法示例
-- [x] 支持 企业微信-企业支付-企业红包/向员工付款 功能，示例用法及代码如下
+- 使用Node原生`crypto`实现微信支付APIv3的AES加/解密功能(`aes-256-gcm` with `aad`)
+- 使用Node原生`crypto`实现微信支付APIv3的RSA加/解密、签名、验签功能(`sha256WithRSAEncryption` with `RSA_PKCS1_OAEP_PADDING`)
+- 支持微信支付APIv3的HTTP GET/POST/PUT/PATCH/DELETE多方法链式操作，依赖 [Axios](https://github.com/axios/axios), 示例代码如下
+- 支持微信支付APIv3的媒体文件上传(图片/视频)功能，由`Multipart`类驱动，兼容选装 [form-data](https://github.com/form-data/form-data), 示例代码如下
+- 支持微信支付APIv3的平台证书下载功能，需手动安装 [yargs](https://github.com/yargs/yargs), 使用手册如下
+- 支持微信支付APIv3的帐单下载及解析功能，示例代码如下
+- 支持微信支付APIv2 & APIv3面向对象编程模式，示例代码如下
+- 支持 `Typescript`
+- 支持微信支付XML风格的接口(通常所说v2)调用，依赖 [node-xml2js](https://github.com/Leonidas-from-XIV/node-xml2js), 示例代码如下
+- 支持微信支付APIv2版的 `AES-256-ECB/PKCS7PADDING` 通知消息加/解密
+- 微信支付APIv2 & APIv3 与微信交互的各种数据签名用法示例
+- 支持 企业微信-企业支付-企业红包/向员工付款 功能，示例用法及代码如下
 
 ## 系统要求
 
