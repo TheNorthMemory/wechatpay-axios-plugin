@@ -1091,6 +1091,7 @@ QQ群: **684379275**
 
 ## 链接
 
+- [参与贡献](CONTRIBUTING.md)
 - [贡献者公约](CODE_OF_CONDUCT.md)
 - [变更历史](CHANGELOG.md)
 
