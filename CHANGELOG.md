@@ -1,5 +1,9 @@
 # 变更历史
 
+## v0.7.4 (2021-06-08)
+  - 解决`index.d.ts`上的`Iterator<Tuple>`异常问题
+  - 暂时使用`// @ts-ignore: FIXEME`备注上不准确的`Proxy chain`写法，欢迎熟悉这块的同学贡献解决方案
+
 ## v0.7.3 (2021-05-28)
   - 修正`Multipart#delete`方法，其在删除多`name`的值时，存在bug
   - 增加测试用例覆盖`Multipart.delete`
