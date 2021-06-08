@@ -473,9 +473,9 @@ export namespace WechatpayAxiosPlugin {
         /**
          * To go through all key/value pairs contained in this {@link Multipart#data} instance
          *
-         * @return {Iterator<Array<string|undefined, Buffer|ReadStream>>} - An Array Iterator key/value pairs.
+         * @return {Iterator<[string|undefined, Buffer|ReadStream]>} - An Array Iterator key/value pairs.
          */
-        entries(): Iterator<Array<string | undefined, Buffer | ReadStream>>;
+        entries(): Iterator<[string | undefined, Buffer | ReadStream]>;
         /**
          * Sets a new value for an existing key inside a {@link Multipart#data} instance, or adds the key/value if it does not already exist.
          *
@@ -550,9 +550,9 @@ export namespace WechatpayAxiosPlugin {
         toJSON(): { filename: string, sha1: string } | null;
         /**
          * alias of {@link Multipart#entries}
-         * @returns {Iterator<Array<string|undefined, Buffer|ReadStream>>} - An Array Iterator key/value pairs.
+         * @returns {Iterator<[string|undefined, Buffer|ReadStream]>} - An Array Iterator key/value pairs.
          */
-        [Symbol.iterator](): Iterator<Array<string|undefined, Buffer|ReadStream>>;
+        [Symbol.iterator](): Iterator<[string|undefined, Buffer|ReadStream]>;
         _read(): void;
         /**
          * Pushing {@link Multipart#data} into the readable BufferList
