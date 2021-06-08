@@ -392,7 +392,7 @@ wxpay.v3.marketing.busifavor.stocks
 
 ```js
 // optional require the form-data npm package, when installed then use it
-const { FormData } = require('wechpaypay-axios-plugin')
+const { FormData } = require('wechatpay-axios-plugin')
 const {createReadStream} = require('fs')
 
 const imageMeta = {
