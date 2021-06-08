@@ -792,6 +792,7 @@ export namespace WechatpayAxiosPlugin {
          * @param {any} config - The request configuration
          * @returns {PromiseLike} - The `AxiosPromise`
          */
+        // @ts-ignore: FIXEME, needs contributing
         GET<T = any, R = AxiosResponse<T>>(config?: AxiosRequestConfig): Promise<R>;
 
         /**
@@ -800,6 +801,7 @@ export namespace WechatpayAxiosPlugin {
          * @param {any} config - The request configuration
          * @returns {PromiseLike} - The `AxiosPromise`
          */
+        // @ts-ignore: FIXEME, needs contributing
         POST<T = any, R = AxiosResponse<T>>(data?: any, config?: AxiosRequestConfig): Promise<R>;
 
         /**
@@ -808,6 +810,7 @@ export namespace WechatpayAxiosPlugin {
          * @param {any} config - The request configuration
          * @returns {PromiseLike} - The `AxiosPromise`
          */
+        // @ts-ignore: FIXEME, needs contributing
         PUT<T = any, R = AxiosResponse<T>>(data?: any, config?: AxiosRequestConfig): Promise<R>;
 
         /**
@@ -816,6 +819,7 @@ export namespace WechatpayAxiosPlugin {
          * @param {any} config - The request configuration
          * @returns {PromiseLike} - The `AxiosPromise`
          */
+        // @ts-ignore: FIXEME, needs contributing
         PATCH<T = any, R = AxiosResponse<T>>(data?: any, config?: AxiosRequestConfig): Promise<R>;
 
         /**
@@ -823,6 +827,7 @@ export namespace WechatpayAxiosPlugin {
          * @param {any} config - The request configuration
          * @returns {PromiseLike} - The `AxiosPromise`
          */
+        // @ts-ignore: FIXEME, needs contributing
         DELETE<T = any, R = AxiosResponse<T>>(config?: AxiosRequestConfig): Promise<R>;
 
         /**
@@ -831,6 +836,7 @@ export namespace WechatpayAxiosPlugin {
          * @param {any} config - The request configuration
          * @returns {PromiseLike} - The `AxiosPromise`
          */
+        // @ts-ignore: FIXEME, needs contributing
         get<T = any, R = AxiosResponse<T>>(config?: AxiosRequestConfig): Promise<R>;
 
         /**
@@ -839,6 +845,7 @@ export namespace WechatpayAxiosPlugin {
          * @param {any} config - The request configuration
          * @returns {PromiseLike} - The `AxiosPromise`
          */
+        // @ts-ignore: FIXEME, needs contributing
         post<T = any, R = AxiosResponse<T>>(data?: any, config?: AxiosRequestConfig): Promise<R>;
 
         /**
@@ -847,6 +854,7 @@ export namespace WechatpayAxiosPlugin {
          * @param {any} config - The request configuration
          * @returns {PromiseLike} - The `AxiosPromise`
          */
+        // @ts-ignore: FIXEME, needs contributing
         put<T = any, R = AxiosResponse<T>>(data?: any, config?: AxiosRequestConfig): Promise<R>;
 
         /**
@@ -855,6 +863,7 @@ export namespace WechatpayAxiosPlugin {
          * @param {any} config - The request configuration
          * @returns {PromiseLike} - The `AxiosPromise`
          */
+        // @ts-ignore: FIXEME, needs contributing
         patch<T = any, R = AxiosResponse<T>>(data?: any, config?: AxiosRequestConfig): Promise<R>;
 
         /**
@@ -862,6 +871,7 @@ export namespace WechatpayAxiosPlugin {
          * @param {any} config - The request configuration
          * @returns {PromiseLike} - The `AxiosPromise`
          */
+        // @ts-ignore: FIXEME, needs contributing
         delete<T = any, R = AxiosResponse<T>>(config?: AxiosRequestConfig): Promise<R>;
 
         [key: string]: this
