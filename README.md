@@ -392,7 +392,7 @@ wxpay.v3.marketing.busifavor.stocks
 
 ```js
 // optional require the form-data npm package, when installed then use it
-const { FormData } = require('wechatpay-axios-plugin')
+const { Multipart } = require('wechatpay-axios-plugin')
 const {createReadStream} = require('fs')
 
 const imageMeta = {
@@ -402,7 +402,7 @@ const imageMeta = {
   sha256: '1a47b1eb40f501457eaeafb1b1417edaddfbe7a4a8f9decec2d330d1b4477fbe',
 }
 
-const imageData = new FormData()
+const imageData = new Multipart()
 imageData.append('meta', JSON.stringify(imageMeta), 'meta.json')
 imageData.append('file', createReadStream('./hellowechatpay.png'), 'hellowechatpay.png')
 
