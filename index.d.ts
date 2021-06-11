@@ -36,6 +36,10 @@ export namespace WechatpayAxiosPlugin {
          */
         static get ALGO_AES_256_ECB(): string;
         /**
+         * @property {string} ALGO_AES_128_CBC - The `aes-128-cbc` algorithm
+         */
+        static get ALGO_AES_128_CBC(): string;
+        /**
          * Encrypts plaintext.
          *
          * @param {string} iv - The initialization vector, 16 bytes string.
@@ -129,33 +133,7 @@ export namespace WechatpayAxiosPlugin {
              *
              * @param {string} plaintext - Text to encode.
              * @param {string} key - The secret key, 32 bytes string.
-             *
-             * @returns {string} Base64-encoded ciphertext.
-             */
-            static encrypt(plaintext: string, key: string): string;
-            /**
-             * Decrypts ciphertext.
-             * Notes here: While turns the `setAutoPadding(true)`, it works well.
-             *             Beause the `pkcs5padding` is a subset of `pkcs7padding`.
-             *             Let's `unpadding` self.
-             *
-             * @param {string} ciphertext - Base64-encoded ciphertext.
-             * @param {string} key - The secret key, 32 bytes string.
-             *
-             * @returns {string} Utf-8 plaintext.
-             */
-            static decrypt(ciphertext: string, key: string): string;
-        }
-
-        /**
-         * Aes encrypt/decrypt using `aes-128-cbc` algorithm with pkcs7padding.
-         */
-        class AesCbc extends Aes {
-            /**
-             * Encrypts plaintext.
-             *
-             * @param {string} plaintext - Text to encode.
-             * @param {string} key - The secret key, 32 bytes string.
+             * @param {string} iv - The initialization vector.
              *
              * @returns {string} Base64-encoded ciphertext.
              */
@@ -168,6 +146,36 @@ export namespace WechatpayAxiosPlugin {
              *
              * @param {string} ciphertext - Base64-encoded ciphertext.
              * @param {string} key - The secret key, 32 bytes string.
+             * @param {string} iv - The initialization vector.
+             *
+             * @returns {string} Utf-8 plaintext.
+             */
+            static decrypt(ciphertext: string, key: string, iv?: string): string;
+        }
+
+        /**
+         * Aes encrypt/decrypt using `aes-128-cbc` algorithm with pkcs7padding.
+         */
+        class AesCbc extends Aes {
+            /**
+             * Encrypts plaintext.
+             *
+             * @param {string} plaintext - Text to encode.
+             * @param {string} key - The secret key, 32 bytes string.
+             * @param {string} iv - The initialization vector.
+             *
+             * @returns {string} Base64-encoded ciphertext.
+             */
+            static encrypt(plaintext: string, key: string, iv?: string): string;
+            /**
+             * Decrypts ciphertext.
+             * Notes here: While turns the `setAutoPadding(true)`, it works well.
+             *             Beause the `pkcs5padding` is a subset of `pkcs7padding`.
+             *             Let's `unpadding` self.
+             *
+             * @param {string} ciphertext - Base64-encoded ciphertext.
+             * @param {string} key - The secret key, 32 bytes string.
+             * @param {string} iv - The initialization vector.
              *
              * @returns {string} Utf-8 plaintext.
              */
