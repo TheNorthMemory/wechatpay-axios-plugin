@@ -572,60 +572,46 @@ describe('lib/aes', () => {
         should((new Aes.AesCbc()).encrypt).is.Undefined();
       });
 
-      it('method `encrypt` should thrown a TypeError with `code:ERR_INVALID_ARG_TYPE` while none arguments passed in', () => {
+      it('method `encrypt` should thrown a TypeError while none arguments passed in', () => {
         should(() => {
           Aes.AesCbc.encrypt();
-        }).throw(TypeError, {
-          code: 'ERR_INVALID_ARG_TYPE',
-        });
+        }).throw(TypeError);
       });
 
-      it('method `encrypt` should thrown a TypeError with `code:ERR_INVALID_ARG_TYPE` while only an empty string passed in', () => {
+      it('method `encrypt` should thrown a TypeError while only an empty string passed in', () => {
         should(() => {
           Aes.AesCbc.encrypt('');
-        }).throw(TypeError, {
-          code: 'ERR_INVALID_ARG_TYPE',
-        });
+        }).throw(TypeError);
       });
 
-      it('method `encrypt` should thrown a Error with `code: ERR_INVALID_ARG_TYPE` while an undefined vi passed in', () => {
+      it('method `encrypt` should thrown a TypeError while an undefined vi passed in', () => {
         should(() => {
           Aes.AesCbc.encrypt('', '', undefined);
-        }).throw(TypeError, {
-          code: 'ERR_INVALID_ARG_TYPE',
-        });
+        }).throw(TypeError);
       });
 
-      it('method `encrypt` should thrown a Error with `message: Missing IV for cipher aes-128-cbc` while an undefined vi passed in', () => {
+      it('method `encrypt` should thrown a Error while an undefined vi passed in', () => {
         should(() => {
           Aes.AesCbc.encrypt('', '', null);
-        }).throw(Error, {
-          message: 'Missing IV for cipher aes-128-cbc',
-        });
+        }).throw(Error);
       });
 
-      it('method `encrypt` should thrown an Error with `code: ERR_INVALID_ARG_TYPE` while two empty string passed in', () => {
+      it('method `encrypt` should thrown an Error while two empty string passed in', () => {
         should(() => {
           Aes.AesCbc.encrypt('', '');
-        }).throw(Error, {
-          code: 'ERR_INVALID_ARG_TYPE',
-        });
+        }).throw(Error);
       });
 
-      it('method `encrypt` should thrown an Error with `message: Invalid IV length` while two empty string passed in', () => {
+      it('method `encrypt` should thrown an Error while two empty string passed in', () => {
         should(() => {
           Aes.AesCbc.encrypt('', '', '');
-        }).throw(Error, {
-          message: 'Invalid IV length',
-        });
+        }).throw(Error);
       });
 
-      it('method `encrypt` should thrown an Error with `message: Invalid key length` while two empty string passed in', () => {
+      it('method `encrypt` should thrown an Error while two empty string passed in', () => {
         should(() => {
           Aes.AesCbc.encrypt('', '', Crypto.randomBytes(16));
-        }).throw(Error, {
-          message: 'Invalid key length',
-        });
+        }).throw(Error);
       });
 
       it('The encoding string should be equal to the decoding string', () => {
@@ -650,44 +636,34 @@ describe('lib/aes', () => {
         should((new Aes.AesCbc()).decrypt).is.Undefined();
       });
 
-      it('method `decrypt` should thrown a TypeError with `code:ERR_INVALID_ARG_TYPE` while none arguments passed in', () => {
+      it('method `decrypt` should thrown a TypeError while none arguments passed in', () => {
         should(() => {
           Aes.AesCbc.decrypt();
-        }).throw(TypeError, {
-          code: 'ERR_INVALID_ARG_TYPE',
-        });
+        }).throw(TypeError);
       });
 
-      it('method `decrypt` should thrown a TypeError with `code:ERR_INVALID_ARG_TYPE` while only an empty string passed in', () => {
+      it('method `decrypt` should thrown a TypeError while only an empty string passed in', () => {
         should(() => {
           Aes.AesCbc.decrypt('');
-        }).throw(TypeError, {
-          code: 'ERR_INVALID_ARG_TYPE',
-        });
+        }).throw(TypeError);
       });
 
-      it('method `decrypt` should thrown an Error with `code: ERR_INVALID_ARG_TYPE` while two empty string passed in', () => {
+      it('method `decrypt` should thrown an Error while two empty string passed in', () => {
         should(() => {
           Aes.AesCbc.decrypt('', '');
-        }).throw(TypeError, {
-          code: 'ERR_INVALID_ARG_TYPE',
-        });
+        }).throw(TypeError);
       });
 
-      it('method `decrypt` should thrown an Error with `message: Invalid IV length` while two empty string passed in', () => {
+      it('method `decrypt` should thrown an Error while two empty string passed in', () => {
         should(() => {
           Aes.AesCbc.decrypt('', '', '');
-        }).throw(Error, {
-          message: 'Invalid IV length',
-        });
+        }).throw(Error);
       });
 
-      it('method `decrypt` should thrown an Error with `message: Invalid key length` while two empty string passed in', () => {
+      it('method `decrypt` should thrown an Error while two empty string passed in', () => {
         should(() => {
           Aes.AesCbc.decrypt('', '', Crypto.randomBytes(16));
-        }).throw(Error, {
-          message: 'Invalid key length',
-        });
+        }).throw(Error);
       });
 
       it('wx.getUserInfo example', () => {
