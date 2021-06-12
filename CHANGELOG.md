@@ -1,5 +1,11 @@
 # 变更历史
 
+## v0.7.5 (2021-06-12)
+  - 解决`index.d.ts`上的`AesEcb`类型签名遗漏，感谢 @zhoulingfengofcd
+  - 新增 `aes-128-cbc/pkcs7padding` 加解密功能, `AesCbc::encrypt` 与其他语言兼容，详情见 [PR #29](https://github.com/TheNorthMemory/wechatpay-axios-plugin/pull/29) 感谢 @zhoulingfengofcd
+  - 新增 `AesCbc` 单元测试用例覆盖， 感谢 @zhoulingfengofcd
+  - 调整文档，使用内置 `Multipart` 类上传图片，使用 `form-data` 包的同学需要看下 [PR #26](https://github.com/TheNorthMemory/wechatpay-axios-plugin/pull/26) 内置包与下游包功能实现上的异同，感谢 @wptad
+
 ## v0.7.4 (2021-06-08)
   - 解决`index.d.ts`上的`Iterator<Tuple>`异常问题
   - 暂时使用`// @ts-ignore: FIXEME`备注上不准确的`Proxy chain`写法，欢迎熟悉这块的同学贡献解决方案
