@@ -2,6 +2,7 @@
 import { ReadStream } from "fs";
 import { Readable } from "stream";
 import { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
+import { CipherKey, BinaryLike } from 'crypto'
 
 /**
  * Wechatpay Axios Plugin
@@ -161,12 +162,12 @@ export namespace WechatpayAxiosPlugin {
              * Encrypts plaintext.
              *
              * @param {string} plaintext - Text to encode.
-             * @param {string} key - The secret key, 32 bytes string.
-             * @param {string} iv - The initialization vector.
+             * @param {string} key - The secret key, 16 bytes string.
+             * @param {string} [iv] - The initialization vector, 16 bytes string.
              *
              * @returns {string} Base64-encoded ciphertext.
              */
-            static encrypt(plaintext: string, key: string, iv?: string): string;
+            static encrypt(plaintext: string, key: CipherKey, iv: BinaryLike): string;
             /**
              * Decrypts ciphertext.
              * Notes here: While turns the `setAutoPadding(true)`, it works well.
@@ -174,12 +175,12 @@ export namespace WechatpayAxiosPlugin {
              *             Let's `unpadding` self.
              *
              * @param {string} ciphertext - Base64-encoded ciphertext.
-             * @param {string} key - The secret key, 32 bytes string.
-             * @param {string} iv - The initialization vector.
+             * @param {string} key - The secret key, 16 bytes string.
+             * @param {string} [iv] - The initialization vector, 16 bytes string.
              *
              * @returns {string} Utf-8 plaintext.
              */
-            static decrypt(ciphertext: string, key: string, iv?: string): string;
+            static decrypt(ciphertext: string, key: CipherKey, iv: BinaryLike): string;
         }
     }
 
