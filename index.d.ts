@@ -104,25 +104,25 @@ export namespace WechatpayAxiosPlugin {
             /**
              * Encrypts plaintext.
              *
-             * @param {string} iv - The initialization vector, 16 bytes string.
-             * @param {string} key - The secret key, 32 bytes string.
+             * @param {BinaryLike} iv - The initialization vector, 16 bytes.
+             * @param {CipherKey} key - The secret key, 32 bytes.
              * @param {string} plaintext - Text to encode.
              * @param {string} aad - The additional authenticated data, maybe empty string.
              *
              * @returns {string} Base64-encoded ciphertext.
              */
-            static encrypt(iv: string, key: string, plaintext: string, aad?: string): string;
+            static encrypt(iv: BinaryLike, key: CipherKey, plaintext: string, aad?: string): string;
             /**
              * Decrypts ciphertext.
              *
-             * @param {string} iv - The initialization vector, 16 bytes string.
-             * @param {string} key - The secret key, 32 bytes string.
+             * @param {BinaryLike} iv - The initialization vector, 16 bytes.
+             * @param {CipherKey} key - The secret key, 32 bytes.
              * @param {string} ciphertext - Base64-encoded ciphertext.
              * @param {string} aad - The additional authenticated data, maybe empty string.
              *
              * @returns {string} Utf-8 plaintext.
              */
-            static decrypt(iv: string, key: string, ciphertext: string, aad?: string): string;
+            static decrypt(iv: BinaryLike, key: CipherKey, ciphertext: string, aad?: string): string;
         }
 
         /**
@@ -133,12 +133,12 @@ export namespace WechatpayAxiosPlugin {
              * Encrypts plaintext.
              *
              * @param {string} plaintext - Text to encode.
-             * @param {string} key - The secret key, 32 bytes string.
-             * @param {string} iv - The initialization vector.
+             * @param {CipherKey} key - The secret key, 32 bytes.
+             * @param {BinaryLike} iv - The initialization vector.
              *
              * @returns {string} Base64-encoded ciphertext.
              */
-            static encrypt(plaintext: string, key: string, iv?: string): string;
+            static encrypt(plaintext: string, key: CipherKey, iv?: BinaryLike): string;
             /**
              * Decrypts ciphertext.
              * Notes here: While turns the `setAutoPadding(true)`, it works well.
@@ -146,12 +146,12 @@ export namespace WechatpayAxiosPlugin {
              *             Let's `unpadding` self.
              *
              * @param {string} ciphertext - Base64-encoded ciphertext.
-             * @param {string} key - The secret key, 32 bytes string.
-             * @param {string} iv - The initialization vector.
+             * @param {CipherKey} key - The secret key, 32 bytes.
+             * @param {BinaryLike} iv - The initialization vector.
              *
              * @returns {string} Utf-8 plaintext.
              */
-            static decrypt(ciphertext: string, key: string, iv?: string): string;
+            static decrypt(ciphertext: string, key: CipherKey, iv?: BinaryLike): string;
         }
 
         /**
@@ -162,8 +162,8 @@ export namespace WechatpayAxiosPlugin {
              * Encrypts plaintext.
              *
              * @param {string} plaintext - Text to encode.
-             * @param {string} key - The secret key, 16 bytes string.
-             * @param {string} [iv] - The initialization vector, 16 bytes string.
+             * @param {CipherKey} key - The secret key, 16 bytes.
+             * @param {BinaryLike} [iv] - The initialization vector, 16 bytes.
              *
              * @returns {string} Base64-encoded ciphertext.
              */
@@ -175,8 +175,8 @@ export namespace WechatpayAxiosPlugin {
              *             Let's `unpadding` self.
              *
              * @param {string} ciphertext - Base64-encoded ciphertext.
-             * @param {string} key - The secret key, 16 bytes string.
-             * @param {string} [iv] - The initialization vector, 16 bytes string.
+             * @param {CipherKey} key - The secret key, 16 bytes.
+             * @param {BinaryLike} [iv] - The initialization vector, 16 bytes.
              *
              * @returns {string} Utf-8 plaintext.
              */

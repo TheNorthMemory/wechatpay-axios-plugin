@@ -1,6 +1,5 @@
 const should = require('should');
 const Aes = require('../../lib/aes');
-const assert  = require("assert");
 
 describe('lib/aes', () => {
   it('should be class Aes', () => {
@@ -629,23 +628,20 @@ describe('lib/aes', () => {
       });
 
       it('The encoding string should be equal to the decoding string', () => {
-        let key = Buffer.from('tiihtNczf5v6AKRyjwEUhQ==', 'base64')
-        let iv = Buffer.from('r7BXXKkLb8qrSNn05n0qiA==', 'base64')
-        const encryptData = Aes.AesCbc.encrypt('', key, iv)
-        assert.strictEqual(encryptData, 'qJ3AQxeKzsJ9mDC9BRN4YQ==');
+        const key = Buffer.from('tiihtNczf5v6AKRyjwEUhQ==', 'base64');
+        const iv = Buffer.from('r7BXXKkLb8qrSNn05n0qiA==', 'base64');
+        const encryptData = Aes.AesCbc.encrypt('', key, iv);
+        encryptData.should.be.String().eql('qJ3AQxeKzsJ9mDC9BRN4YQ==');
         
-        let decryptData = Aes.AesCbc.decrypt(encryptData, key, iv)
-        assert.strictEqual(decryptData, '');
+        Aes.AesCbc.decrypt(encryptData, key, iv).should.be.String().eql('');
       });
 
       it('The encoding string should be equal to the decoding string', () => {
-        let key = require('crypto').randomBytes(16)
-        let iv = require('crypto').randomBytes(16)
-        const encryptData = Aes.AesCbc.encrypt('0123456789', key, iv)
+        const key = require('crypto').randomBytes(16);
+        const iv = require('crypto').randomBytes(16);
+        const encryptData = Aes.AesCbc.encrypt('0123456789', key, iv);
         
-        let decryptData = Aes.AesCbc.decrypt(encryptData, key, iv)
-        assert.strictEqual(decryptData, '0123456789');
-        
+        const decryptData = Aes.AesCbc.decrypt(encryptData, key, iv).should.be.String().eql('0123456789');
       });
     });
 
@@ -701,12 +697,12 @@ describe('lib/aes', () => {
           // 例子来源：https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/signature.html#%E5%8A%A0%E5%AF%86%E6%95%B0%E6%8D%AE%E8%A7%A3%E5%AF%86%E7%AE%97%E6%B3%95，官方示例代码下载
         
           // 初始向量
-          const iv = 'r7BXXKkLb8qrSNn05n0qiA=='  
+          const iv = 'r7BXXKkLb8qrSNn05n0qiA==';
           // 秘钥key
-          const key = 'tiihtNczf5v6AKRyjwEUhQ==' 
+          const key = 'tiihtNczf5v6AKRyjwEUhQ==';
           // 加解密的数据
-          const data = '{"openId":"oGZUI0egBJY1zhBYw2KhdUfwVJJE","nickName":"Band","gender":1,"language":"zh_CN","city":"Guangzhou","province":"Guangdong","country":"CN","avatarUrl":"http://wx.qlogo.cn/mmopen/vi_32/aSKcBBPpibyKNicHNTMM0qJVh8Kjgiak2AHWr8MHM4WgMEm7GFhsf8OYrySdbvAMvTsw3mo8ibKicsnfN5pRjl1p8HQ/0","unionId":"ocMvos6NjeKLIBqg5Mr9QjxrP1FA","watermark":{"timestamp":1477314187,"appid":"wx4f4bc4dec97d474b"}}'
-          const appid = 'wx4f4bc4dec97d474b' // 加密数据中的appid
+          const data = '{"openId":"oGZUI0egBJY1zhBYw2KhdUfwVJJE","nickName":"Band","gender":1,"language":"zh_CN","city":"Guangzhou","province":"Guangdong","country":"CN","avatarUrl":"http://wx.qlogo.cn/mmopen/vi_32/aSKcBBPpibyKNicHNTMM0qJVh8Kjgiak2AHWr8MHM4WgMEm7GFhsf8OYrySdbvAMvTsw3mo8ibKicsnfN5pRjl1p8HQ/0","unionId":"ocMvos6NjeKLIBqg5Mr9QjxrP1FA","watermark":{"timestamp":1477314187,"appid":"wx4f4bc4dec97d474b"}}';
+          const appid = 'wx4f4bc4dec97d474b'; // 加密数据中的appid
           // 加密后的数据（校验用）
           const encryptedData = 
                 'CiyLU1Aw2KjvrjMdj8YKliAjtP4gsMZM'+
@@ -725,14 +721,14 @@ describe('lib/aes', () => {
                 'lqYTopNHR1Vf7XjfhQlVsAJdNiKdYmYV'+
                 'oKlaRv85IfVunYzO0IKXsyl7JCUjCpoG'+
                 '20f0a04COwfneQAGGwd5oa+T8yO5hzuy'+
-                'Db/XcxxmK01EpqOyuxINew=='
+                'Db/XcxxmK01EpqOyuxINew==';
 
           // 1、加密
-          const encryptData = Aes.AesCbc.encrypt(data, Buffer.from(key, 'base64'), Buffer.from(iv, 'base64'))
-          assert.strictEqual(encryptData, encryptedData)
+          const encryptData = Aes.AesCbc.encrypt(data, Buffer.from(key, 'base64'), Buffer.from(iv, 'base64'));
+          encryptData.should.be.String().eql(encryptedData);
 
           // 2、解密
-          const decryptData = Aes.AesCbc.decrypt(encryptedData, Buffer.from(key, 'base64'), Buffer.from(iv, 'base64'))
+          const decryptData = Aes.AesCbc.decrypt(encryptedData, Buffer.from(key, 'base64'), Buffer.from(iv, 'base64'));
           // 解密后的数据为
           /*   
           {
@@ -751,8 +747,8 @@ describe('lib/aes', () => {
             }
           }
           */
-          assert.strictEqual(decryptData, data)
-          assert.strictEqual(JSON.parse(decryptData).watermark.appid, appid)
+          decryptData.should.be.String().eql(data);
+          JSON.parse(decryptData).watermark.appid.should.be.String().eql(appid);
       })
     });
   });
