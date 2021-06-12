@@ -47,8 +47,7 @@ describe('lib/rsa', () => {
 
     it('method `encrypt` should returns a String when passs the `publicCertificate` a string', () => {
       const cert = readFileSync(join(__dirname, '../fixtures/apiserver_cert.pem')).toString();
-
-      cert.should.be.a.String().and.startWith('-----BEGIN CERTIFICATE-----').and.match(/-----END CERTIFICATE-----\n?$/);
+      cert.should.be.a.String().and.startWith('-----BEGIN CERTIFICATE-----').and.match(/-----END CERTIFICATE-----\r?\n?$/);
       Rsa.encrypt('', cert).should.be.a.String().and.not.empty();
     });
   });
@@ -120,7 +119,7 @@ describe('lib/rsa', () => {
 
       const privateKey = readFileSync(join(__dirname, '../fixtures/apiclient_key.pem')).toString();
 
-      privateKey.should.be.a.String().and.startWith('-----BEGIN PRIVATE KEY-----').and.match(/-----END PRIVATE KEY-----\n?$/);
+      privateKey.should.be.a.String().and.startWith('-----BEGIN PRIVATE KEY-----').and.match(/-----END PRIVATE KEY-----\r?\n?$/);
       Rsa.decrypt(ciphertext, privateKey).should.be.a.String().and.empty();
     });
   });
@@ -167,7 +166,7 @@ describe('lib/rsa', () => {
     it('method `sign` should returns a `string` when the `ciphertext` is empty string and `privateKeyCertificate` is a pkcs8 `pem` string', () => {
       const privateKey = readFileSync(join(__dirname, '../fixtures/apiclient_key.pem')).toString();
 
-      privateKey.should.be.a.String().and.startWith('-----BEGIN PRIVATE KEY-----').and.match(/-----END PRIVATE KEY-----\n?$/);
+      privateKey.should.be.a.String().and.startWith('-----BEGIN PRIVATE KEY-----').and.match(/-----END PRIVATE KEY-----\r?\n?$/);
       Rsa.sign('', privateKey).should.be.a.String().and.not.be.empty();
     });
   });
@@ -244,7 +243,7 @@ describe('lib/rsa', () => {
 
       const cert = readFileSync(join(__dirname, '../fixtures/apiserver_cert.pem')).toString();
 
-      cert.should.be.a.String().and.startWith('-----BEGIN CERTIFICATE-----').and.match(/-----END CERTIFICATE-----\n?$/);
+      cert.should.be.a.String().and.startWith('-----BEGIN CERTIFICATE-----').and.match(/-----END CERTIFICATE-----\r?\n?$/);
       Rsa.verify('', signature, cert).should.be.Boolean().and.be.True();
     });
   });

@@ -1,4 +1,5 @@
 const should = require('should');
+const Crypto = require('crypto');
 const Aes = require('../../lib/aes');
 
 describe('lib/aes', () => {
@@ -552,6 +553,162 @@ describe('lib/aes', () => {
         }).throw(RangeError, {
           code: /ERR_INDEX_OUT_OF_RANGE|ERR_OUT_OF_RANGE/,
         });
+      });
+    });
+  });
+
+  describe('Aes::AesCbc', () => {
+    it('should be class AesCbc', () => {
+      Aes.AesCbc.should.be.a.Function().and.have.property('name', 'AesCbc');
+    });
+
+    it('`new Aes.AesCbc` should be instanceof `Aes`', () => {
+      (new Aes.AesCbc()).should.be.instanceof(Aes);
+    });
+
+    describe('Aes::AesCbc::encrypt', () => {
+      it('method `encrypt` should be static', () => {
+        should(Aes.AesCbc.encrypt).be.a.Function();
+        should((new Aes.AesCbc()).encrypt).is.Undefined();
+      });
+
+      it('method `encrypt` should thrown a TypeError while none arguments passed in', () => {
+        should(() => {
+          Aes.AesCbc.encrypt();
+        }).throw(TypeError);
+      });
+
+      it('method `encrypt` should thrown a TypeError while only an empty string passed in', () => {
+        should(() => {
+          Aes.AesCbc.encrypt('');
+        }).throw(TypeError);
+      });
+
+      it('method `encrypt` should thrown a TypeError while an undefined vi passed in', () => {
+        should(() => {
+          Aes.AesCbc.encrypt('', '', undefined);
+        }).throw(TypeError);
+      });
+
+      it('method `encrypt` should thrown a Error while an undefined vi passed in', () => {
+        should(() => {
+          Aes.AesCbc.encrypt('', '', null);
+        }).throw(Error);
+      });
+
+      it('method `encrypt` should thrown an Error while two empty string passed in', () => {
+        should(() => {
+          Aes.AesCbc.encrypt('', '');
+        }).throw(Error);
+      });
+
+      it('method `encrypt` should thrown an Error while two empty string passed in', () => {
+        should(() => {
+          Aes.AesCbc.encrypt('', '', '');
+        }).throw(Error);
+      });
+
+      it('method `encrypt` should thrown an Error while two empty string passed in', () => {
+        should(() => {
+          Aes.AesCbc.encrypt('', '', Crypto.randomBytes(16));
+        }).throw(Error);
+      });
+
+      it('The encoding string should be equal to the decoding string', () => {
+        const key = Buffer.from('tiihtNczf5v6AKRyjwEUhQ==', 'base64');
+        const iv = Buffer.from('r7BXXKkLb8qrSNn05n0qiA==', 'base64');
+        const encryptData = Aes.AesCbc.encrypt('', key, iv);
+        encryptData.should.be.String().eql('qJ3AQxeKzsJ9mDC9BRN4YQ==');
+        Aes.AesCbc.decrypt(encryptData, key, iv).should.be.String().eql('');
+      });
+
+      it('The encoding string should be equal to the decoding string', () => {
+        const key = Crypto.randomBytes(16);
+        const iv = Crypto.randomBytes(16);
+        const encryptData = Aes.AesCbc.encrypt('0123456789', key, iv);
+        Aes.AesCbc.decrypt(encryptData, key, iv).should.be.String().eql('0123456789');
+      });
+    });
+
+    describe('Aes::AesCbc::decrypt', () => {
+      it('method `decrypt` should be static', () => {
+        should(Aes.AesCbc.decrypt).be.a.Function();
+        should((new Aes.AesCbc()).decrypt).is.Undefined();
+      });
+
+      it('method `decrypt` should thrown a TypeError while none arguments passed in', () => {
+        should(() => {
+          Aes.AesCbc.decrypt();
+        }).throw(TypeError);
+      });
+
+      it('method `decrypt` should thrown a TypeError while only an empty string passed in', () => {
+        should(() => {
+          Aes.AesCbc.decrypt('');
+        }).throw(TypeError);
+      });
+
+      it('method `decrypt` should thrown an Error while two empty string passed in', () => {
+        should(() => {
+          Aes.AesCbc.decrypt('', '');
+        }).throw(TypeError);
+      });
+
+      it('method `decrypt` should thrown an Error while two empty string passed in', () => {
+        should(() => {
+          Aes.AesCbc.decrypt('', '', '');
+        }).throw(Error);
+      });
+
+      it('method `decrypt` should thrown an Error while two empty string passed in', () => {
+        should(() => {
+          Aes.AesCbc.decrypt('', '', Crypto.randomBytes(16));
+        }).throw(Error);
+      });
+
+      it('wx.getUserInfo example', () => {
+        // AES算法aes-128-cbc使用示例
+        // 例子来源：https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/signature.html#%E5%8A%A0%E5%AF%86%E6%95%B0%E6%8D%AE%E8%A7%A3%E5%AF%86%E7%AE%97%E6%B3%95
+        // 初始向量
+        const iv = 'r7BXXKkLb8qrSNn05n0qiA==';
+        // 秘钥key
+        const key = 'tiihtNczf5v6AKRyjwEUhQ==';
+        // 加解密的数据
+        const data = '{"openId":"oGZUI0egBJY1zhBYw2KhdUfwVJJE","nickName":"Band","gender":1,"language":"zh_CN","city":"Guangzhou","province":"Guangdong","country":"CN",'
+          + '"avatarUrl":"http://wx.qlogo.cn/mmopen/vi_32/aSKcBBPpibyKNicHNTMM0qJVh8Kjgiak2AHWr8MHM4WgMEm7GFhsf8OYrySdbvAMvTsw3mo8ibKicsnfN5pRjl1p8HQ/0",'
+          + '"unionId":"ocMvos6NjeKLIBqg5Mr9QjxrP1FA","watermark":{"timestamp":1477314187,"appid":"wx4f4bc4dec97d474b"}}';
+        const appid = 'wx4f4bc4dec97d474b'; // 加密数据中的appid
+        // 加密后的数据（校验用）
+        const encryptedData = 'CiyLU1Aw2KjvrjMdj8YKliAjtP4gsMZMQmRzooG2xrDcvSnxIMXFufNstNGTyaGS9uT5geRa0W4oTOb1WT7fJlAC+oNPdbB+3hVbJSRgv+4lGOETKUQz6OYStslQ142dNCuabNPGB'
+          + 'zlooOmB231qMM85d2/fV6ChevvXvQP8Hkue1poOFtnEtpyxVLW1zAo6/1Xx1COxFvrc2d7UL/lmHInNlxuacJXwu0fjpXfz/YqYzBIBzD6WUfTIF9GRHpOn/Hz7saL8xz+W//FRAUid1OksQaQ'
+          + 'x4CMs8LOddcQhULW4ucetDf96JcR3g0gfRK4PC7E/r7Z6xNrXd2UIeorGj5Ef7b1pJAYB6Y5anaHqZ9J6nKEBvB4DnNLIVWSgARns/8wR2SiRS7MNACwTyrGvt9ts8p12PKFdlqYTopNHR1Vf7X'
+          + 'jfhQlVsAJdNiKdYmYVoKlaRv85IfVunYzO0IKXsyl7JCUjCpoG20f0a04COwfneQAGGwd5oa+T8yO5hzuyDb/XcxxmK01EpqOyuxINew==';
+
+        // 1、加密
+        const encryptData = Aes.AesCbc.encrypt(data, Buffer.from(key, 'base64'), Buffer.from(iv, 'base64'));
+        encryptData.should.be.String().eql(encryptedData);
+        // 2、解密
+        const decryptData = Aes.AesCbc.decrypt(encryptedData, Buffer.from(key, 'base64'), Buffer.from(iv, 'base64'));
+        // 解密后的数据为
+        /*
+        {
+          "openId": "oGZUI0egBJY1zhBYw2KhdUfwVJJE",
+          "nickName": "Band",
+          "gender": 1,
+          "language": "zh_CN",
+          "city": "Guangzhou",
+          "province": "Guangdong",
+          "country": "CN",
+          "avatarUrl": "http://wx.qlogo.cn/mmopen/vi_32/aSKcBBPpibyKNicHNTMM0qJVh8Kjgiak2AHWr8MHM4WgMEm7GFhsf8OYrySdbvAMvTsw3mo8ibKicsnfN5pRjl1p8HQ/0",
+          "unionId": "ocMvos6NjeKLIBqg5Mr9QjxrP1FA",
+          "watermark": {
+            "timestamp": 1477314187,
+            "appid": "wx4f4bc4dec97d474b"
+          }
+        }
+        */
+        decryptData.should.be.String().eql(data);
+        JSON.parse(decryptData).watermark.appid.should.be.String().eql(appid);
       });
     });
   });

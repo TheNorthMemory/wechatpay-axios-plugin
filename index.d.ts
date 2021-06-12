@@ -2,6 +2,7 @@
 import { ReadStream } from "fs";
 import { Readable } from "stream";
 import { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
+import { CipherKey, BinaryLike } from 'crypto'
 
 /**
  * Wechatpay Axios Plugin
@@ -35,6 +36,10 @@ export namespace WechatpayAxiosPlugin {
          * @property {string} ALGO_AES_256_ECB - The `aes-256-ecb` algorithm
          */
         static get ALGO_AES_256_ECB(): string;
+        /**
+         * @property {string} ALGO_AES_128_CBC - The `aes-128-cbc` algorithm
+         */
+        static get ALGO_AES_128_CBC(): string;
         /**
          * Encrypts plaintext.
          *
@@ -99,25 +104,25 @@ export namespace WechatpayAxiosPlugin {
             /**
              * Encrypts plaintext.
              *
-             * @param {string} iv - The initialization vector, 16 bytes string.
-             * @param {string} key - The secret key, 32 bytes string.
+             * @param {BinaryLike} iv - The initialization vector, 16 bytes.
+             * @param {CipherKey} key - The secret key, 32 bytes.
              * @param {string} plaintext - Text to encode.
              * @param {string} aad - The additional authenticated data, maybe empty string.
              *
              * @returns {string} Base64-encoded ciphertext.
              */
-            static encrypt(iv: string, key: string, plaintext: string, aad?: string): string;
+            static encrypt(iv: BinaryLike, key: CipherKey, plaintext: string, aad?: string): string;
             /**
              * Decrypts ciphertext.
              *
-             * @param {string} iv - The initialization vector, 16 bytes string.
-             * @param {string} key - The secret key, 32 bytes string.
+             * @param {BinaryLike} iv - The initialization vector, 16 bytes.
+             * @param {CipherKey} key - The secret key, 32 bytes.
              * @param {string} ciphertext - Base64-encoded ciphertext.
              * @param {string} aad - The additional authenticated data, maybe empty string.
              *
              * @returns {string} Utf-8 plaintext.
              */
-            static decrypt(iv: string, key: string, ciphertext: string, aad?: string): string;
+            static decrypt(iv: BinaryLike, key: CipherKey, ciphertext: string, aad?: string): string;
         }
 
         /**
@@ -128,11 +133,12 @@ export namespace WechatpayAxiosPlugin {
              * Encrypts plaintext.
              *
              * @param {string} plaintext - Text to encode.
-             * @param {string} key - The secret key, 32 bytes string.
+             * @param {CipherKey} key - The secret key, 32 bytes.
+             * @param {BinaryLike} iv - The initialization vector.
              *
              * @returns {string} Base64-encoded ciphertext.
              */
-            static encrypt(plaintext: string, key: string): string;
+            static encrypt(plaintext: string, key: CipherKey, iv?: BinaryLike): string;
             /**
              * Decrypts ciphertext.
              * Notes here: While turns the `setAutoPadding(true)`, it works well.
@@ -140,11 +146,41 @@ export namespace WechatpayAxiosPlugin {
              *             Let's `unpadding` self.
              *
              * @param {string} ciphertext - Base64-encoded ciphertext.
-             * @param {string} key - The secret key, 32 bytes string.
+             * @param {CipherKey} key - The secret key, 32 bytes.
+             * @param {BinaryLike} iv - The initialization vector.
              *
              * @returns {string} Utf-8 plaintext.
              */
-            static decrypt(ciphertext: string, key: string): string;
+            static decrypt(ciphertext: string, key: CipherKey, iv?: BinaryLike): string;
+        }
+
+        /**
+         * Aes encrypt/decrypt using `aes-128-cbc` algorithm with pkcs7padding.
+         */
+        class AesCbc extends Aes {
+            /**
+             * Encrypts plaintext.
+             *
+             * @param {string} plaintext - Text to encode.
+             * @param {CipherKey} key - The secret key, 16 bytes.
+             * @param {BinaryLike} [iv] - The initialization vector, 16 bytes.
+             *
+             * @returns {string} Base64-encoded ciphertext.
+             */
+            static encrypt(plaintext: string, key: CipherKey, iv: BinaryLike): string;
+            /**
+             * Decrypts ciphertext.
+             * Notes here: While turns the `setAutoPadding(true)`, it works well.
+             *             Beause the `pkcs5padding` is a subset of `pkcs7padding`.
+             *             Let's `unpadding` self.
+             *
+             * @param {string} ciphertext - Base64-encoded ciphertext.
+             * @param {CipherKey} key - The secret key, 16 bytes.
+             * @param {BinaryLike} [iv] - The initialization vector, 16 bytes.
+             *
+             * @returns {string} Utf-8 plaintext.
+             */
+            static decrypt(ciphertext: string, key: CipherKey, iv: BinaryLike): string;
         }
     }
 
