@@ -258,7 +258,7 @@ wxpay.v3.pay.transactions.id['{transaction_id}']
 
 ### 关闭订单
 ```js
-wxpay.v3.pay.transactions.outTradeNo['1217752501201407033233368018']
+wxpay.v3.pay.transactions.outTradeNo['1217752501201407033233368018'].close
   .post({mchid: '1230000109'})
   .then(({status, statusText}) => console.info(status, statusText))
   .catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
