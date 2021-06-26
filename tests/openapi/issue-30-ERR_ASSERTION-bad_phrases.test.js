@@ -11,19 +11,15 @@ describe('Issue #30 v3/pay/transcations/h5', () => {
   let scope;
   let instance;
 
-  const mocks = () => {
-    return {};
-  };
+  const mocks = () => '{}';
 
-  const sandboxEndpoints = () => {
-    return [
-      '<xml>',
-      '  <return_code><![CDATA[FAIL]]></return_code>',
-      '  <retmsg><![CDATA[请确认请求参数是否正确param mch_id invalid]]></retmsg>',
-      '  <retcode><![CDATA[1]]></retcode>',
-      '</xml>',
-    ].join('\r\n');
-  }
+  const sandboxEndpoints = () => [
+    '<xml>',
+    '  <return_code><![CDATA[FAIL]]></return_code>',
+    '  <retmsg><![CDATA[请确认请求参数是否正确param mch_id invalid]]></retmsg>',
+    '  <retcode><![CDATA[1]]></retcode>',
+    '</xml>',
+  ].join('\r\n');
 
   beforeEach(() => {
     // {@link ../../fixtures/README.md}

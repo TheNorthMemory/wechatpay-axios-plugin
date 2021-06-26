@@ -11,12 +11,10 @@ describe('Issue #28 jsapi 请求路径有误', () => {
   let scope;
   let instance;
 
-  const mocks = () => {
-    return {
-      code: 'SYSTEM_ERROR',
-      message: '系统繁忙，请稍后重试',
-    };
-  };
+  const mocks = () => JSON.stringify({
+    code: 'SYSTEM_ERROR',
+    message: '系统繁忙，请稍后重试',
+  });
 
   beforeEach(() => {
     // {@link ../../fixtures/README.md}
