@@ -9,7 +9,7 @@ const { Wechatpay } = require('../..');
 describe('OpenAPI Kick Start 101', () => {
   let scope;
   let instance;
-  const HTML_REGEXP_PATTERN = /^<html>.*?<\/html>\r?\n?$/;
+  const HTML_REGEXP_PATTERN = /^<html>.*?<\/html>\r?\n?$/s;
 
   const mocks = (requestUri) => {
     requestUri.should.be.String().and.eql('/');
@@ -48,7 +48,7 @@ describe('OpenAPI Kick Start 101', () => {
   describe('DELETE/GET/POST/PUT/PATCH the URI(`/`) resource with the default endpoints', () => {
     it('delete the `root(/)` should got a `404` HTML page', async () => {
       scope.delete('/').reply(404, mocks);
-      instance.delete({ transformResponse: [] }).catch((resp) => {
+      await instance.delete({ transformResponse: [] }).catch((resp) => {
         resp.response.status.should.be.eql(404);
         resp.response.data.should.be.String().and.match(HTML_REGEXP_PATTERN);
       });
@@ -56,7 +56,7 @@ describe('OpenAPI Kick Start 101', () => {
 
     it('get the `root(/)` should got a `404` HTML page', async () => {
       scope.get('/').reply(404, mocks);
-      instance.get({ transformResponse: [] }).catch((resp) => {
+      await instance.get({ transformResponse: [] }).catch((resp) => {
         resp.response.status.should.be.eql(404);
         resp.response.data.should.be.String().and.match(HTML_REGEXP_PATTERN);
       });
@@ -64,7 +64,7 @@ describe('OpenAPI Kick Start 101', () => {
 
     it('post to the `root(/)` should got a `404` HTML page', async () => {
       scope.post('/').reply(404, mocks);
-      instance.post({ hello: 'wechatpay' }, { transformResponse: [] }).catch((resp) => {
+      await instance.post({ hello: 'wechatpay' }, { transformResponse: [] }).catch((resp) => {
         resp.response.status.should.be.eql(404);
         resp.response.data.should.be.String().and.match(HTML_REGEXP_PATTERN);
       });
@@ -72,7 +72,7 @@ describe('OpenAPI Kick Start 101', () => {
 
     it('patch to the `root(/)` should got a `404` HTML page', async () => {
       scope.patch('/').reply(404, mocks);
-      instance.patch({ hello: 'wechatpay' }, { transformResponse: [] }).catch((resp) => {
+      await instance.patch({ hello: 'wechatpay' }, { transformResponse: [] }).catch((resp) => {
         resp.response.status.should.be.eql(404);
         resp.response.data.should.be.String().and.match(HTML_REGEXP_PATTERN);
       });
@@ -80,7 +80,7 @@ describe('OpenAPI Kick Start 101', () => {
 
     it('put to the `root(/)` should got a `404` HTML page', async () => {
       scope.put('/').reply(404, mocks);
-      instance.put({ hello: 'wechatpay' }, { transformResponse: [] }).catch((resp) => {
+      await instance.put({ hello: 'wechatpay' }, { transformResponse: [] }).catch((resp) => {
         resp.response.status.should.be.eql(404);
         resp.response.data.should.be.String().and.match(HTML_REGEXP_PATTERN);
       });
