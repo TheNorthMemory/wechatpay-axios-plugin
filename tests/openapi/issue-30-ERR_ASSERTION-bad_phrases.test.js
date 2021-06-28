@@ -30,7 +30,7 @@ describe('Issue #30 v3/pay/transcations/h5', () => {
       mchid: 101,
       serial: '898DBAD30F416EC7',
       privateKey,
-      certs: { '898DBAD30F416EC7': publicCert },
+      certs: { BE2A2344B984167B: publicCert },
     });
 
     scope = nock('https://api.mch.weixin.qq.com/')
@@ -50,7 +50,7 @@ describe('Issue #30 v3/pay/transcations/h5', () => {
         mchid: 101,
         serial: '898DBAD30F416EC7',
         privateKey,
-        certs: { '898DBAD30F416EC7': publicCert },
+        certs: { BE2A2344B984167B: publicCert },
         baseURL: 'https://api.mch.weixin.qq.com/sandboxnew/',
         maxRedirects: 0,
       })).v3.pay.transactions.h5.post({}).catch((resp) => {
@@ -99,7 +99,7 @@ describe('Issue #30 v3/pay/transcations/h5', () => {
     it('post onto the `v3/pay/transactions/h5` with better `AssertionError`: `Wechatpay-Serial`', async () => {
       scope.post('/v3/pay/transactions/h5').reply(200, mocks, {
         'Wechatpay-Nonce': 'mock',
-        'Wechatpay-Serial': 'BE2A2344B984167B',
+        'Wechatpay-Serial': 'fake',
         'Wechatpay-Signature': 'mock',
         'Wechatpay-Timestamp': Math.floor((+new Date()) / 1000),
       });
