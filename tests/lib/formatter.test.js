@@ -156,7 +156,7 @@ describe('lib/formatter', () => {
         .and.match(/,signature="3"/)
         .and.match(/,timestamp="4"/)
         .and.match(/,serial_no="5"/)
-        .and.equal('WECHATPAY2-SHA256-RSA2048 mchid="1",nonce_str="2",signature="3",timestamp="4",serial_no="5"');
+        .and.equal('WECHATPAY2-SHA256-RSA2048 mchid="1",serial_no="5",timestamp="4",nonce_str="2",signature="3"');
     });
   });
 

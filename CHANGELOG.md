@@ -1,5 +1,10 @@
 # 变更历史
 
+## v0.7.8 (2021-07-11)
+  - 改进 `Formatter.nonce` 发生器算法；
+  - 调整 `Formatter.authorization` 字典排序，关键信息优先展示；
+  - 修正 内置常量拼写错误，优化文档；
+
 ## v0.7.7 (2021-06-28)
   - 优化 APIv3 `Decorator.jsonBased` 逻辑，平台证书`certs`配置项，排除掉配置项的商户`serial`序列号；
 

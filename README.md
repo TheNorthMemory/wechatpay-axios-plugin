@@ -119,9 +119,9 @@ Options:
 ```
 ./node_modules/.bin/wxpay v3.pay.transactions.native \
   -c.mchid 1230000109 \
-  -c.serial HEXADECIAL \
+  -c.serial MCHSERIAL \
   -c.privateKey /path/your/merchant/mchid.key \
-  -c.certs.HEXADECIAL /path/the/platform/certificates/HEXADECIAL.pem \
+  -c.certs.PLATSERIAL /path/the/platform/certificates/HEXADECIAL.pem \
   -d.appid wxd678efh567hg6787 \
   -d.mchid 1230000109 \
   -d.description 'Image形象店-深圳腾大-QQ公仔' \
@@ -140,7 +140,7 @@ Options:
 ```
 ./node_modules/.bin/wxpay v2.pay.micropay \
   -c.mchid 1230000109 \
-  -c.serial any \
+  -c.serial nop \
   -c.privateKey any \
   -c.certs.any \
   -c.secret your_merchant_secret_key_string \
@@ -165,7 +165,7 @@ Options:
 ```
 ./node_modules/.bin/wxpay v2/tools/authcodetoopenid \
   -c.mchid 1230000109 \
-  -c.serial any \
+  -c.serial nop \
   -c.privateKey any \
   -c.certs.any \
   -c.secret your_merchant_secret_key_string \

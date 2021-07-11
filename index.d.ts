@@ -316,11 +316,11 @@ export namespace WechatpayAxiosPlugin {
          */
         static castCsvLine(row: string, keys?: any[], skipFirstChar?: string, separator?: string): object;
         /**
-         * Generate a random string aka `nonce`, similar as `crypto.randomBytes`.
+         * Generate a Base62 random string aka `nonce`, similar as `crypto.randomBytes`.
          *
          * @param {number} size - Nonce string length, default is 32 bytes.
          *
-         * @returns {string} 62 radix random string.
+         * @returns {string} Base62 random string.
          */
         static nonce(size?: number): string;
         /**
