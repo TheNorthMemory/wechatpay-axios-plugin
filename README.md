@@ -424,7 +424,7 @@ imageData.append('file', createReadStream('./hellowechatpay.png'), 'hellowechatp
 ```js
 ;(async () => {
   try {
-    const res = await wxpay.v3.marketing.favor.stocks.$stock_id$.post({
+    const res = await wxpay.v3.marketing.favor.stocks.$stock_id$.get({
       params: {
         stock_creator_mchid,
       },
