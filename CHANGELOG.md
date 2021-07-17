@@ -9,8 +9,8 @@
   - 优化 APIv3 `Decorator.jsonBased` 逻辑，平台证书`certs`配置项，排除掉配置项的商户`serial`序列号；
 
 ## v0.7.6 (2021-06-26)
-  - 优化 APIv3 `Decorator.responseVerifier`，对于验签逻辑异常原样返回 `response{data,headers}` 结构，方便排查问题，相关 [#28]((https://github.com/TheNorthMemory/wechatpay-axios-plugin/issues/28), [#30]((https://github.com/TheNorthMemory/wechatpay-axios-plugin/issues/30)；
-  - 新增 `OpenAPI` mock测试，使用 `nock` 驱动，覆盖 [#28]((https://github.com/TheNorthMemory/wechatpay-axios-plugin/issues/28), [#30]((https://github.com/TheNorthMemory/wechatpay-axios-plugin/issues/30) 问题；
+  - 优化 APIv3 `Decorator.responseVerifier`，对于验签逻辑异常原样返回 `response{data,headers}` 结构，方便排查问题，相关 [#28](https://github.com/TheNorthMemory/wechatpay-axios-plugin/issues/28), [#30](https://github.com/TheNorthMemory/wechatpay-axios-plugin/issues/30)；
+  - 新增 `OpenAPI` mock测试，使用 `nock` 驱动，覆盖 [#28]((https://github.com/TheNorthMemory/wechatpay-axios-plugin/issues/28), [#30](https://github.com/TheNorthMemory/wechatpay-axios-plugin/issues/30) 问题；
 
 ## v0.7.5 (2021-06-12)
   - 解决`index.d.ts`上的`AesEcb`类型签名遗漏，感谢 @zhoulingfengofcd
