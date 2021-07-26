@@ -232,6 +232,13 @@ export namespace WechatpayAxiosPlugin {
          */
         static sha256(thing: string | any): string;
         /**
+         * Wrapping the builtins `crypto.timingSafeEqual` function.
+         * @param {string} known - The string of known length to compare against.
+         * @param {string?} [user] - The user-supplied string.
+         * @return {boolean} - Returns true when the two are equal, false otherwise.
+         */
+        static equals(known: string, user?: string|undefined|null): boolean;
+        /**
          * Utils of the data signature calculation.
          * @param {string} type - The sign type, one of the MD5 or HMAC-SHA256.
          * @param {object} data - The input data.

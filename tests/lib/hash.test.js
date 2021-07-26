@@ -76,6 +76,41 @@ describe('lib/hash', () => {
     });
   });
 
+  describe('Hash::equals', () => {
+    it('method `equals` should be static', () => {
+      should(Hash.equals).be.a.Function();
+      should((new Hash()).equals).is.Undefined();
+    });
+
+    it('method `equals` should thrown TypeError while none-arguments passed', () => {
+      should(() => {
+        Hash.equals();
+      }).throw(TypeError, {
+        code: 'ERR_INVALID_ARG_TYPE',
+      });
+    });
+
+    it('method `equals("")` should returns `false` while only the first argument(empty string) passed', () => {
+      Hash.equals('').should.be.Boolean().and.equals(false);
+    });
+
+    it('method `equals("", null)` should returns `false` while the second argument(null) passed', () => {
+      Hash.equals('', null).should.be.Boolean().and.equals(false);
+    });
+
+    it('method `equals("", false)` should thrown TypeError while the second argument(boolean) passed', () => {
+      should(() => {
+        Hash.equals('', false);
+      }).throw(TypeError, {
+        code: 'ERR_INVALID_ARG_TYPE',
+      });
+    });
+
+    it('method `equals("", "")` should returns `false` while two arguments(empty string) passed', () => {
+      Hash.equals('', '').should.be.Boolean().and.equals(true);
+    });
+  });
+
   describe('Hash::sign', () => {
     it('method `sign` should be static', () => {
       should(Hash.sign).be.a.Function();
