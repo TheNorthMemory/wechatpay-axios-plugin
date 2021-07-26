@@ -1,5 +1,8 @@
 # 变更历史
 
+## v0.7.9 (2021-07-26)
+  - 新增 `Hash.equals` 用来判断签名值是否相等；
+
 ## v0.7.8 (2021-07-11)
   - 改进 `Formatter.nonce` 发生器算法；
   - 调整 `Formatter.authorization` 字典排序，关键信息优先展示；
