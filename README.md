@@ -15,7 +15,7 @@ The WeChatPay OpenAPI v2&v3' Smart Development Kit
 - 使用Node原生`crypto`实现微信支付APIv3的AES加/解密功能(`aes-256-gcm` with `aad`)
 - 使用Node原生`crypto`实现微信支付APIv3的RSA加/解密、签名、验签功能(`sha256WithRSAEncryption` with `RSA_PKCS1_OAEP_PADDING`)
 - 支持微信支付APIv3的HTTP GET/POST/PUT/PATCH/DELETE多方法链式操作，依赖 [Axios](https://github.com/axios/axios), 示例代码如下
-- 支持微信支付APIv3的媒体文件上传(图片/视频)功能，由`Multipart`类驱动，兼容选装 [form-data](https://github.com/form-data/form-data), 示例代码如下
+- 支持微信支付APIv3的媒体文件上传(图片/视频)功能，由内置 `Multipart` 类驱动，示例代码如下
 - 支持微信支付APIv3的平台证书下载功能，需手动安装 [yargs](https://github.com/yargs/yargs), 使用手册如下
 - 支持微信支付APIv3的帐单下载及解析功能，示例代码如下
 - 支持微信支付APIv2 & APIv3面向对象编程模式，示例代码如下
@@ -209,7 +209,7 @@ const wxpay = new Wechatpay({
   mchid: merchantId,
   serial: merchantSerialNumber,
   privateKey: merchantPrivateKey,
-  certs: { platformSerialNumber: platformCertificate, },
+  certs: { [platformSerialNumber]: platformCertificate, },
   // APIv2密钥(32字节)
   // secret: 'your_merchant_secret_key_string',
   // // 接口不要求证书情形，例如仅收款merchant对象参数可选
@@ -247,7 +247,17 @@ const wxpay = new Wechatpay({
 ### Native下单
 ```js
 wxpay.v3.pay.transactions.native
-  .post({/*文档参数放这里就好*/})
+  .post({
+    mchid: '1900006XXX',
+    ut_trade_no: 'native12177525012014070332333',
+    appid: 'wxdace645e0bc2cXXX',
+    description: 'Image形象店-深圳腾大-QQ公仔',
+    notify_url: 'https://weixin.qq.com/',
+    amount: {
+      total: 1,
+      currency: 'CNY'
+    },
+  })
   .then(({data: {code_url}}) => console.info(code_url))
   .catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
 ```
@@ -395,7 +405,6 @@ wxpay.v3.marketing.busifavor.stocks
 ### 图片上传
 
 ```js
-// optional require the form-data npm package, when installed then use it
 const { Multipart } = require('wechatpay-axios-plugin')
 const {createReadStream} = require('fs')
 
@@ -457,7 +466,7 @@ imageData.append('file', createReadStream('./hellowechatpay.png'), 'hellowechatp
       }
     }, {
       headers: {
-        [`Idempotency-Key`]: 12345
+        `Idempotency-Key`: 12345
       }
     })
     console.info(res.data)
