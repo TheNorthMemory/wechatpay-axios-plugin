@@ -27,7 +27,7 @@ The WeChatPay OpenAPI v2&v3' Smart Development Kit
 
 ## 系统要求
 
-NodeJS原生`crypto`模块，自v12.9.0在 `publicEncrypt` 及 `privateDecrypt` 增加了 `oaepHash` 入参选项，本类库封装的 `Rsa.encrypt` 及 `Rsa.decrypt` 显式声明了此入参，测试下来在NodeJS10.15.0上可正常工作；虽然在v10.15上可用，不过仍旧推荐使用 NodeJS >= v12.9.0。
+NodeJs >= 10.15.0
 
 ## 安装
 
@@ -85,7 +85,7 @@ You may confirm the above infos again even if this library already did(by Rsa.ve
 
 ### 命令行请求
 
-v0.5版，命令行工具做了加强，增加了基础请求方法，可以用来做快速接入体验，用法如下:
+命令行工具可用来做快速接入体验，用法如下:
 
 #### 帮助信息
 
@@ -178,50 +178,54 @@ Options:
 
 ## 面向对象模式
 
-本类库自`0.2`开始，按照 `URL.pathname` 以`/`做切分，映射成对象属性，`0.4`版开始，支持APIv2的`pathname`映射，编码书写方式有如下约定：
+本类库是把 `URL.pathname` 以`/`做切分，取出 `segments` 映射成实例对象属性，同时支持`APIv2`的实例对象属性映射，编码书写方式有如下约定：
 
-1. 请求 `pathname` 作为级联对象，可以轻松构建请求对象，例如 `v3/pay/transactions/native` 即自然翻译成 `v3.pay.transactions.native`;
-2. 每个 `pathname` 所支持的 `HTTP METHOD`，即作为 请求对象的末尾执行方法，例如: `v3.pay.transactions.native.post({})`;
-3. 每个 `pathname` 级联对象默认为HTTP`POST`函数，其同时隐式内置`GET/POST/PUT/PATCH/DELETE` 操作方法链，支持全大写及全小写两种编码方式，说明见`变更历史`;
-4. 每个 `pathname` 有中线(dash)分隔符的，可以使用驼峰`camelCase`风格书写，例如: `merchant-service`可写成 `merchantService`，或者属性风格，例如 `v3['merchant-service']`;
-5. 每个 `pathname` 中，若有动态参数，例如 `business_code/{business_code}` 可写成 `business_code.$business_code$` 或者属性风格书写，例如 `business_code['{business_code}']`，抑或按属性风格，直接写值也可以，例如 `business_code['2000001234567890']`;
-6. SDK内置的 `v2/` 对象，其特殊标识为APIv2级联对象，之后串接切分后的`pathname`，如源 `pay/micropay` 翻译成 `v2.pay.micropay` 即以XML形式请求远端接口；
-7. 建议 `pathname` 按照 `PascalCase` 风格书写, `TS Definition` 已在路上(还有若干问题没解决)，将是这种风格，代码提示将会很自然;
+1. 请求 `segments` 按照顺序作为级联对象，例如 `v3/pay/transactions/native` 即链接成 `v3.pay.transactions.native`;
+2. 每个 `segments` 所支持的 `HTTP METHOD`，即作为 请求对象的末尾执行方法，例如: `v3.pay.transactions.native.post({})`;
+3. 每个 `segments` 级联对象默认为HTTP`POST`方法，其同时隐式内置`GET/POST/PUT/PATCH/DELETE` 方法链，支持全大写及全小写两种编码方式，说明见`变更历史`;
+4. 每个 `segments` 有中线(dash)分隔符的，可以使用驼峰`camelCase`风格书写，例如: `merchant-service`可写成 `merchantService`，或者字面量属性，如 `v3['merchant-service']`;
+5. 每个 `segments` 中，若有动态参数，例如 `business_code/{business_code}` 可写成 `business_code.$business_code$` 或者字面量属性风格，如 `business_code['{business_code}']`;
+6. 如果 `segments` 以 `v2` 开始，其特殊标识为`APIv2`级联对象开始位，之后串接其他`segments`，如源 `pay/micropay` 即串接成 `v2.pay.micropay` 即以XML形式请求远端接口；
+7. 建议 `segments` 按照 `PascalCase` 风格书写, `TS Definition` 已在路上(还有若干问题没解决)，将是这种风格，代码提示将会很自然;
 
-以下示例用法，均以`Promise`或`Async/Await`结合此种编码模式展开，级联对象操作符的调试信息见文档末。
+以下示例用法，均以`Promise`或`Async/Await`结合此种编码模式展开。
 
 ## 初始化
 
 ```js
-const {Wechatpay, Formatter} = require('wechatpay-axios-plugin')
+const { Wechatpay } = require('wechatpay-axios-plugin');
+const { readFileSync } = require('fs');
+
+// 商户号
+const merchantId = 'your_merchant_id';
+// 商户证书序列号
+const merchantSerialNumber = '商户证书序列号';
+// 商户API私钥 PEM格式的文本字符串或者文件buffer
+const merchantPrivateKey = readFileSync('/path/to/apiclient_key.pem');
+const platformSerialNumber = '平台证书序列号';
+// CLI `wxpay crt -m {商户号} -s {商户证书序列号} -f {商户API私钥文件路径} -k {APIv3密钥(32字节)} -o {保存地址}` 生成
+const platformCertificate = readFileSync('/path/to/wechatpay/cert.pem');
 const wxpay = new Wechatpay({
-  // 商户号
-  mchid: 'your_merchant_id',
-  // 商户证书序列号
-  serial: 'serial_number_of_your_merchant_public_cert',
-  // 商户API私钥 PEM格式的文本字符串或者文件buffer
-  privateKey: '-----BEGIN PRIVATE KEY-----\n-FULL-OF-THE-FILE-CONTENT-\n-----END PRIVATE KEY-----',
-  certs: {
-    // CLI `wxpay crt -m {商户号} -s {商户证书序列号} -f {商户API私钥文件路径} -k {APIv3密钥(32字节)} -o {保存地址}` 生成
-    'serial_number': '-----BEGIN CERTIFICATE-----\n-FULL-OF-THE-FILE-CONTENT-\n-----END CERTIFICATE-----',
-  },
-  // APIv2密钥(32字节) v0.4 开始支持
-  secret: 'your_merchant_secret_key_string',
-  // 接口不要求证书情形，例如仅收款merchant对象参数可选
-  merchant: {
-    // 商户证书 PEM格式的文本字符串或者文件buffer
-    cert: '-----BEGIN CERTIFICATE-----\n-FULL-OF-THE-FILE-CONTENT-\n-----END CERTIFICATE-----',
-    // 商户API私钥 PEM格式的文本字符串或者文件buffer
-    key: '-----BEGIN PRIVATE KEY-----\n-FULL-OF-THE-FILE-CONTENT-\n-----END PRIVATE KEY-----',
-    // or
-    // passphrase: 'your_merchant_id',
-    // pfx: fs.readFileSync('/your/merchant/cert/apiclient_cert.p12'),
-  },
+  mchid: merchantId,
+  serial: merchantSerialNumber,
+  privateKey: merchantPrivateKey,
+  certs: { platformSerialNumber: platformCertificate, },
+  // APIv2密钥(32字节)
+  // secret: 'your_merchant_secret_key_string',
+  // // 接口不要求证书情形，例如仅收款merchant对象参数可选
+  // merchant: {
+  //   // 商户证书 PEM格式的文本字符串或者文件buffer
+  //   cert: '-----BEGIN CERTIFICATE-----\n-FULL-OF-THE-FILE-CONTENT-\n-----END CERTIFICATE-----',
+  //   key: merchantPrivateKey,
+  //   // or
+  //   // passphrase: 'your_merchant_id',
+  //   // pfx: fs.readFileSync('/your/merchant/cert/apiclient_cert.p12'),
+  // },
   // APIv2沙箱环境地址
   // baseURL: 'https://api.mch.weixin.qq.com/sandboxnew/',
   // 建议初始化设置此参数，详细说明见Axios官方README
   // maxRedirects: 0,
-})
+});
 ```
 
 初始化字典说明如下：
@@ -236,7 +240,7 @@ const wxpay = new Wechatpay({
 - `merchant.passphrase` 一般为你的商户号
 - `merchant.pfx` 为你的商户`PKCS12`格式的证书，文件名一般为`apiclient_cert.p12`，支持二进制文件流`buffer`格式
 
-**注：** 0.4版本做了重构及优化，APIv2&v3以及Axios初始参数，均融合在一个型参上。
+**注：** APIv2&APIv3以及Axios初始参数，均融合在一个型参上，APIv2已不推荐使用，推荐优先使用APIv3。
 
 ## APIv3
 
@@ -373,7 +377,7 @@ wxpay.v3.marketing.busifavor.stocks
 ```js
 ;(async () => {
   try {
-    const res = await wxpay.v3.merchantService.complaints.get({
+    const res = await wxpay.v3.merchantService.complaintsV2.get({
       params: {
         limit      : 5,
         offset     : 0,
@@ -986,108 +990,6 @@ Q: 接口地址为slash(`/`)结尾的，应该如何构建请求参数？
 如果遇到困难或建议可以 提ISSUE 或 加群，交流技术，分享经验。
 
 QQ群: **684379275**
-
-## 文末打印一波示例方法链
-
-<details>
-  <summary>console.info(wxpay)</summary>
-
-```js
-[Function (anonymous)] {
-  v2: [Function: v2] {
-    risk: [Function: v2/risk] {
-      getpublickey: [Function: v2/risk/getpublickey]
-    },
-    pay: [Function: v2/pay] { micropay: [Function: v2/pay/micropay] },
-    secapi: [Function: v2/secapi] {
-      pay: [Function: v2/secapi/pay] {
-        refund: [Function: v2/secapi/pay/refund]
-      }
-    },
-    mmpaymkttransfers: [Function: v2/mmpaymkttransfers] {
-      sendredpack: [Function: v2/mmpaymkttransfers/sendredpack],
-      promotion: [Function: v2/mmpaymkttransfers/promotion] {
-        transfers: [Function: v2/mmpaymkttransfers/promotion/transfers],
-        paywwsptrans2pocket: [Function: v2/mmpaymkttransfers/promotion/paywwsptrans2pocket]
-      },
-      sendworkwxredpack: [Function: v2/mmpaymkttransfers/sendworkwxredpack]
-    }
-  },
-  v3: [Function: v3] {
-    pay: [Function: v3/pay] {
-      transactions: [Function: v3/pay/transactions] {
-        native: [Function: v3/pay/transactions/native],
-        id: [Function: v3/pay/transactions/id] {
-          '{transaction_id}': [Function: v3/pay/transactions/id/{transaction_id}]
-        },
-        outTradeNo: [Function: v3/pay/transactions/out-trade-no] {
-          '1217752501201407033233368018': [Function: v3/pay/transactions/out-trade-no/1217752501201407033233368018]
-        }
-      },
-      partner: [Function: v3/pay/partner] {
-        transactions: [Function: v3/pay/partner/transactions] {
-          native: [Function: v3/pay/partner/transactions/native]
-        }
-      }
-    },
-    marketing: [Function: v3/marketing] {
-      busifavor: [Function: v3/marketing/busifavor] {
-        stocks: [Function: v3/marketing/busifavor/stocks],
-        users: [Function: v3/marketing/busifavor/users] {
-          '$openid$': [Function: v3/marketing/busifavor/users/{openid}] {
-            coupons: [Function: v3/marketing/busifavor/users/{openid}/coupons] {
-              '{coupon_code}': [Function: v3/marketing/busifavor/users/{openid}/coupons/{coupon_code}] {
-                appids: [Function: v3/marketing/busifavor/users/{openid}/coupons/{coupon_code}/appids] {
-                  wx233544546545989: [Function: v3/marketing/busifavor/users/{openid}/coupons/{coupon_code}/appids/wx233544546545989]
-                }
-              }
-            }
-          }
-        }
-      },
-      favor: [Function: v3/marketing/favor] {
-        media: [Function: v3/marketing/favor/media] {
-          imageUpload: [Function: v3/marketing/favor/media/image-upload]
-        },
-        stocks: [Function: v3/marketing/favor/stocks] {
-          '$stock_id$': [Function: v3/marketing/favor/stocks/{stock_id}] {
-            useFlow: [Function: v3/marketing/favor/stocks/{stock_id}/use-flow]
-          }
-        }
-      },
-      partnerships: [Function: v3/marketing/partnerships] {
-        build: [Function: v3/marketing/partnerships/build]
-      }
-    },
-    combineTransactions: [Function: v3/combine-transactions] {
-      jsapi: [Function: v3/combine-transactions/jsapi]
-    },
-    bill: [Function: v3/bill] {
-      tradebill: [Function: v3/bill/tradebill],
-      fundflowbill: [Function: v3/bill/fundflowbill]
-    },
-    billdownload: [Function: v3/billdownload] {
-      file: [Function: v3/billdownload/file]
-    },
-    smartguide: [Function: v3/smartguide] {
-      guides: [Function: v3/smartguide/guides] {
-        '$guide_id$': [Function: v3/smartguide/guides/{guide_id}] {
-          assign: [Function: v3/smartguide/guides/{guide_id}/assign]
-        }
-      }
-    },
-    merchantService: [Function: v3/merchant-service] {
-      complaints: [Function: v3/merchant-service/complaints]
-    },
-    merchant: [Function: v3/merchant] {
-      media: [Function: v3/merchant/media] {
-        video_upload: [Function: v3/merchant/media/video_upload]
-      }
-    }
-  }
-}
-```
-</details>
 
 ## 链接
 
