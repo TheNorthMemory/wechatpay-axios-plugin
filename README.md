@@ -196,35 +196,39 @@ Options:
 const { Wechatpay } = require('wechatpay-axios-plugin');
 const { readFileSync } = require('fs');
 
-// 商户号
-const merchantId = 'your_merchant_id';
+// 商户号，假定为`1000100`
+const merchantId = '1000100';
 // 商户证书序列号
-const merchantSerialNumber = '商户证书序列号';
+// 也可以使用openssl命令行获取证书序列号
+// openssl x509 -in /path/to/merchant/apiclient_cert.pem -noout -serial | awk -F= '{print $2}'
+const merchantCertificateSerial = '可以从商户平台直接获取到';// API证书不重置，商户证书序列号就是个常量
+// 商户私钥，文件路径假定为 `/path/to/merchant/apiclient_key.pem`
+const merchantPrivateKeyFilePath = '/path/to/merchant/apiclient_key.pem';
 // 商户API私钥 PEM格式的文本字符串或者文件buffer
-const merchantPrivateKey = readFileSync('/path/to/apiclient_key.pem');
-const platformSerialNumber = '平台证书序列号';
-// CLI `wxpay crt -m {商户号} -s {商户证书序列号} -f {商户API私钥文件路径} -k {APIv3密钥(32字节)} -o {保存地址}` 生成
-const platformCertificate = readFileSync('/path/to/wechatpay/cert.pem');
+const merchantPrivateKeyInstance = readFileSync(merchantPrivateKeyFilePath);
+// 平台证书，可由下载器 `wxpay crt -m {商户号} -s {商户证书序列号} -f {商户API私钥文件路径} -k {APIv3密钥(32字节)} -o {保存地址}`
+// 载器生成并假定保存为 `/path/to/wechatpay/cert.pem`
+const platformCertificateFilePath = '/path/to/wechatpay/cert.pem';
+const platformCertificateInstance = readFileSync(platformCertificateFilePath);
+// 平台证书序列号，下载器下载后有提示序列号字段，也可由命令行
+// openssl x509 -in /path/to/wechatpay/cert.pem -noout -serial | awk -F= '{print $2}'
+const platformCertificateSerial = '平台证书序列号';
 const wxpay = new Wechatpay({
   mchid: merchantId,
-  serial: merchantSerialNumber,
-  privateKey: merchantPrivateKey,
-  certs: { [platformSerialNumber]: platformCertificate, },
+  serial: merchantCertificateSerial,
+  privateKey: merchantPrivateKeyInstance,
+  certs: { [platformCertificateSerial]: platformCertificateInstance, },
+  // 使用APIv2时，需要至少设置 `secret`字段，示例代码未开启
   // APIv2密钥(32字节)
   // secret: 'your_merchant_secret_key_string',
   // // 接口不要求证书情形，例如仅收款merchant对象参数可选
   // merchant: {
-  //   // 商户证书 PEM格式的文本字符串或者文件buffer
-  //   cert: '-----BEGIN CERTIFICATE-----\n-FULL-OF-THE-FILE-CONTENT-\n-----END CERTIFICATE-----',
-  //   key: merchantPrivateKey,
+  //   cert: readFileSync('/path/to/merchant/apiclient_cert.pem'),
+  //   key: merchantPrivateKeyInstance,
   //   // or
   //   // passphrase: 'your_merchant_id',
   //   // pfx: fs.readFileSync('/your/merchant/cert/apiclient_cert.p12'),
   // },
-  // APIv2沙箱环境地址
-  // baseURL: 'https://api.mch.weixin.qq.com/sandboxnew/',
-  // 建议初始化设置此参数，详细说明见Axios官方README
-  // maxRedirects: 0,
 });
 ```
 
@@ -466,7 +470,7 @@ imageData.append('file', createReadStream('./hellowechatpay.png'), 'hellowechatp
       }
     }, {
       headers: {
-        `Idempotency-Key`: 12345
+        'Idempotency-Key': 12345
       }
     })
     console.info(res.data)
