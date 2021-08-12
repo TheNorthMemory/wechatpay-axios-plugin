@@ -1,5 +1,8 @@
 # 变更历史
 
+## v0.7.10 (2021-08-12)
+  - 修正 [#35 v2付款接口无法使用的问题](https://github.com/TheNorthMemory/wechatpay-axios-plugin/issues/35) ，感谢 @Starrah 报告及PR修正；
+
 ## v0.7.9 (2021-07-26)
   - 新增 `Hash.equals` 用来判断签名值是否相等；
 
