@@ -655,8 +655,8 @@ wxpay.v2.mmpaymkttransfers.sendredpack.POST({
 
 ```js
 wxpay.v2.mmpaymkttransfers.promotion.transfers({
-  appid: 'wx8888888888888888',
-  mch_id: '1900000109',
+  mch_appid: 'wx8888888888888888',
+  mchid: '1900000109',// 注意这个商户号，key是`mchid`非`mch_id`
   partner_trade_no: '10000098201411111234567890',
   openid: 'oxTWIuGaIt6gTKsQRLau2M0yL16E',
   check_name: 'FORCE_CHECK',
