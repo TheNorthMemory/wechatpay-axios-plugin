@@ -253,7 +253,7 @@ const wxpay = new Wechatpay({
 wxpay.v3.pay.transactions.native
   .post({
     mchid: '1900006XXX',
-    ut_trade_no: 'native12177525012014070332333',
+    out_trade_no: 'native12177525012014070332333',
     appid: 'wxdace645e0bc2cXXX',
     description: 'Image形象店-深圳腾大-QQ公仔',
     notify_url: 'https://weixin.qq.com/',
