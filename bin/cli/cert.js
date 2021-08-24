@@ -95,6 +95,9 @@ module.exports = {
         console.info();
         /* eslint-enable no-console */
       });
+    }).catch((thing) => {
+      /* eslint-disable-next-line no-console */
+      console.info(thing.response || thing);
     });
   },
 };
