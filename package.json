@@ -1,6 +1,6 @@
 {
   "name": "wechatpay-axios-plugin",
-  "version": "0.7.11",
+  "version": "0.7.12",
   "description": "微信支付APIv2及v3 NodeJS SDK，支持CLI模式请求OpenAPI，支持v3证书下载，v2付款码支付、企业付款、退款，企业微信-企业支付-企业红包/向员工付款，v2&v3 Native支付、扫码支付、H5支付、JSAPI/小程序支付、合单支付...",
   "main": "index.js",
   "typings": "index.d.ts",
@@ -11,6 +11,7 @@
     "bin/",
     "CHANGELOG.md",
     "README.md",
+    "SECURITY.md",
     "LICENSE"
   ],
   "bin": {
@@ -50,16 +51,16 @@
   "author": "James ZHANG",
   "license": "MIT",
   "dependencies": {
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "xml2js": "^0.4.23"
   },
   "peerDependencies": {
-    "yargs": "^16.2.0"
+    "yargs": "^17.1.1"
   },
   "devDependencies": {
     "@babel/core": "^7.14.6",
     "@babel/eslint-parser": "^7.14.7",
-    "@types/node": "^15.12.4",
+    "@types/node": "^16.7.10",
     "eslint": "^7.29.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.23.4",
