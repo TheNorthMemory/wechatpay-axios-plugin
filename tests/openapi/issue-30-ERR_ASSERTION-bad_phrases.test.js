@@ -27,7 +27,7 @@ describe('Issue #30 v3/pay/transcations/h5', () => {
     const publicCert = readFileSync(join(__dirname, '../fixtures/apiserver_cert.pem'));
 
     instance = new Wechatpay({
-      mchid: 101,
+      mchid: '101',
       serial: '898DBAD30F416EC7',
       privateKey,
       certs: { BE2A2344B984167B: publicCert },
@@ -47,7 +47,7 @@ describe('Issue #30 v3/pay/transcations/h5', () => {
       const privateKey = readFileSync(join(__dirname, '../fixtures/apiclient_key.pem'));
       const publicCert = readFileSync(join(__dirname, '../fixtures/apiserver_cert.pem'));
       await (new Wechatpay({
-        mchid: 101,
+        mchid: '101',
         serial: '898DBAD30F416EC7',
         privateKey,
         certs: { BE2A2344B984167B: publicCert },

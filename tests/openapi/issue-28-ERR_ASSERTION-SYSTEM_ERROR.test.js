@@ -22,7 +22,7 @@ describe('Issue #28 jsapi 请求路径有误', () => {
     const publicCert = readFileSync(join(__dirname, '../fixtures/apiserver_cert.pem'));
 
     instance = new Wechatpay({
-      mchid: 101,
+      mchid: '101',
       serial: '898DBAD30F416EC7',
       privateKey,
       certs: { BE2A2344B984167B: publicCert },
