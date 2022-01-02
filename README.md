@@ -972,6 +972,10 @@ console.info(params)
 
 ## 常见问题
 
+Q: `平台证书`下载工具，一直抛异常`AssertionError [ERR_ASSERTION]: The response's Headers incomplete`是为何？
+
+> 命令行下的 `-s`参数，即：`商户证书序列号`参数给错了，就会抛上述异常，这个时候服务端其实返回的是`401`状态码，下一个版本会优化一下下载工具，对异常进行捕获，当前请校对你的`商户证书序列号`并且确保正确；
+
 Q: APIv3消息通知，`AES-256-GCM`加密字段，应该如何解密？
 
 > 官方文档有介绍，APIv3平台证书及消息通知关键信息均使用`AesGcm`加解密，依赖`APIv3密钥`，商户侧解密可参考`bin/cli/cert.js`证书下载工具，例如：
@@ -1005,6 +1009,11 @@ Q: 接口地址为slash(`/`)结尾的，应该如何构建请求参数？
 QQ群: **684379275**
 
 ## 链接
+
+如果你觉得这个`library`不错，你可以扫如下`赞赏码`以资鼓励作者，[博客](https://thenorthmemory.github.io/)更有部分"实战"内容，也可能对你的开发对接有所帮助。
+
+<img src="https://thenorthmemory.github.io/donate.png" />
+
 
 - [参与贡献](CONTRIBUTING.md)
 - [贡献者公约](CODE_OF_CONDUCT.md)

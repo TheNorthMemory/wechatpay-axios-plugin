@@ -14,34 +14,42 @@ export namespace WechatpayAxiosPlugin {
     class Aes {
         /**
          * @property {string} hex - Alias of `hex` string
+         * @deprecated v1.0.0 - Only for compatible, use the literal `hex` string instead
          */
         static get hex(): string;
         /**
          * @property {string} utf8 - Alias of `utf8` string
+         * @deprecated v1.0.0 - Only for compatible, use the literal `utf8` string instead
          */
         static get utf8(): string;
         /**
          * @property {string} base64 - Alias of `base64` string
+         * @deprecated v1.0.0 - Only for compatible, use the literal `base64` string instead
          */
         static get base64(): string;
         /**
          * @property {integer} BLOCK_SIZE - The `aes` block size
+         * @deprecated v1.0.0 - Only for compatible, use the literal `16` number instead
          */
         static get BLOCK_SIZE(): number;
         /**
          * @property {string} ALGO_AES_256_GCM - The `aes-256-gcm` algorithm
+         * @deprecated v1.0.0 - Only for compatible, use the literal `aes-256-gcm` string instead
          */
         static get ALGO_AES_256_GCM(): string;
         /**
          * @property {string} ALGO_AES_256_ECB - The `aes-256-ecb` algorithm
+         * @deprecated v1.0.0 - Only for compatible, use the literal `aes-256-ecb` string instead
          */
         static get ALGO_AES_256_ECB(): string;
         /**
          * @property {string} ALGO_AES_128_CBC - The `aes-128-cbc` algorithm
+         * @deprecated v1.0.0 - Only for compatible, use the literal `aes-128-cbc` string instead
          */
         static get ALGO_AES_128_CBC(): string;
         /**
          * Encrypts plaintext.
+         * @deprecated v1.0.0 - Only for compatible, use the `AesGcm.encrypt` method instead
          *
          * @param {string} iv - The initialization vector, 16 bytes string.
          * @param {string} key - The secret key, 32 bytes string.
@@ -53,6 +61,7 @@ export namespace WechatpayAxiosPlugin {
         static encrypt(iv: string, key: string, plaintext: string, aad?: string): string;
         /**
          * Decrypts ciphertext.
+         * @deprecated v1.0.0 - Only for compatible, use the `AesGcm.decrypt` method instead
          *
          * @param {string} iv - The initialization vector, 16 bytes string.
          * @param {string} key - The secret key, 32 bytes string.
@@ -195,7 +204,7 @@ export namespace WechatpayAxiosPlugin {
          *
          * - [agency] is available {@since v0.4.3}, [spec]{@link https://work.weixin.qq.com/api/doc/90000/90135/90281}
          *
-         * @param {string|buffer} thing - The input string.
+         * @param {string|Buffer} thing - The input string.
          * @param {string} [key] - The secret key string.
          * @param {boolean|number|string} [agency = false] - The secret **key** is from wework, placed with `true` or better of the `AgentId` value.
          *
@@ -204,7 +213,7 @@ export namespace WechatpayAxiosPlugin {
         static md5(thing: string | any, key?: string | undefined, agency?: boolean | number | string | undefined): string;
         /**
          * Calculate the input string with a secret `key` as of `algorithm` string which is one of the 'sha256', 'sha512' etc.
-         * @param {string|buffer} thing - The input string.
+         * @param {string|Buffer} thing - The input string.
          * @param {string} key - The secret key string.
          * @param {string} [algorithm = sha256] - The algorithm string, default is `sha256`.
          * @return {string} - data signature
@@ -214,20 +223,20 @@ export namespace WechatpayAxiosPlugin {
          * @deprecated {@since v0.5.5}, instead of by `hmac`
          *
          * Calculate the input string with a secret `key` in HMAC-SHA256
-         * @param {string|buffer} thing - The input string.
+         * @param {string|Buffer} thing - The input string.
          * @param {string} key - The secret key string.
          * @return {string} - data signature
          */
         static hmacSha256(thing: string | any, key: string): string;
         /**
          * Calculate the input in SHA1.
-         * @param {string|buffer} thing - The input.
+         * @param {string|Buffer} thing - The input.
          * @return {string} - data signature
          */
         static sha1(thing: string | any): string;
         /**
          * Calculate the input in SHA256.
-         * @param {string|buffer} thing - The input.
+         * @param {string|Buffer} thing - The input.
          * @return {string} - data signature
          */
         static sha256(thing: string | any): string;
@@ -377,7 +386,7 @@ export namespace WechatpayAxiosPlugin {
      * @prop {string|number} mchid - The merchant ID
      * @prop {string} serial - The serial number of the merchant certificate
      * @prop {string|Buffer} privateKey - The merchant private key certificate
-     * @prop {platformCertificates} certs - The wechatpay provider size configuration, `{serial: publicCert}` pair
+     * @prop {platformCertificates} certs - The wechatpay provider size configuration, `{serial: publicKey}` pair
      */
     type apiConfig = {
         mchid: string | number,
@@ -436,25 +445,25 @@ export namespace WechatpayAxiosPlugin {
         /**
          * @readonly
          * @memberof Multipart#
-         * @prop {buffer} dashDash - Double `dash` buffer
+         * @prop {Buffer} dashDash - Double `dash` buffer
          */
         readonly dashDash: Buffer;
         /**
          * @readonly
          * @memberof Multipart#
-         * @prop {buffer} boundary - The boundary buffer.
+         * @prop {Buffer} boundary - The boundary buffer.
          */
         readonly boundary: Buffer;
         /**
          * @readonly
          * @memberof Multipart#
-         * @prop {buffer} EMPTY - An empty buffer
+         * @prop {Buffer} EMPTY - An empty buffer
          */
         readonly EMPTY: Buffer;
         /**
          * @readonly
          * @memberof Multipart#
-         * @prop {buffer} CRLF - Double `dash` buffer
+         * @prop {Buffer} CRLF - Double `dash` buffer
          */
         readonly CRLF: Buffer;
         /**
@@ -497,7 +506,7 @@ export namespace WechatpayAxiosPlugin {
          * Append data wrapped by {@link Multipart#boundary}
          *
          * @param  {string} field - The field
-         * @param  {string|buffer} value - The value
+         * @param  {string|Buffer} value - The value
          * @param  {String} [filename] - Optional filename, when provided, then append the `Content-Type` after of the `Content-Disposition`
          *
          * @returns {Multipart} - The `Multipart` class instance self
@@ -623,40 +632,40 @@ export namespace WechatpayAxiosPlugin {
          * Node Limits >= 12.9.0 (`oaepHash` was added)
          *
          * @param {string} plaintext - Cleartext to encode.
-         * @param {string|Buffer} publicCertificate - A PEM encoded public certificate.
+         * @param {string|Buffer} publicKey - A PEM encoded public certificate.
          *
          * @returns {string} Base64-encoded ciphertext.
          */
-        static encrypt(plaintext: string, publicCertificate: string | Buffer): string;
+        static encrypt(plaintext: string, publicKey: string | Buffer): string;
         /**
-         * Decrypts base64 encoded string with `privateKeyCertificate`.
+         * Decrypts base64 encoded string with `privateKey`.
          * Node Limits >= 12.9.0 (`oaepHash` was added)
          *
          * @param {string} ciphertext - Was previously encrypted string using the corresponding public certificate.
-         * @param {string|Buffer} privateKeyCertificate - A PEM encoded private key certificate.
+         * @param {string|Buffer} privateKey - A PEM encoded private key certificate.
          *
          * @returns {string} Utf-8 plaintext.
          */
-        static decrypt(ciphertext: string, privateKeyCertificate: string | Buffer): string;
+        static decrypt(ciphertext: string, privateKey: string | Buffer): string;
         /**
          * Creates and returns a `Sign` string that uses `sha256WithRSAEncryption`.
          *
          * @param {string} message - Content will be `crypto.Sign`.
-         * @param {string|Buffer} privateKeyCertificate - A PEM encoded private key certificate.
+         * @param {string|Buffer} privateKey - A PEM encoded private key certificate.
          *
          * @returns {string} Base64-encoded signature.
          */
-        static sign(message: string, privateKeyCertificate: string | Buffer): string;
+        static sign(message: string, privateKey: string | Buffer): string;
         /**
          * Verifying the `message` with given `signature` string that uses `sha256WithRSAEncryption`.
          *
          * @param {string} message - Content will be `crypto.Verify`.
          * @param {string} signature - The base64-encoded ciphertext.
-         * @param {string|Buffer} publicCertificate - A PEM encoded public certificate.
+         * @param {string|Buffer} publicKey - A PEM encoded public certificate.
          *
          * @returns {boolean} True is passed, false is failed.
          */
-        static verify(message: string, signature: string, publicCertificate: string | Buffer): boolean;
+        static verify(message: string, signature: string, publicKey: string | Buffer): boolean;
     }
 
     /**
@@ -684,10 +693,10 @@ export namespace WechatpayAxiosPlugin {
         * @param {string|number} [config[.mchid] - The merchant ID
         * @param {string} [config.secret] - The merchant secret key string
         * @param {object} [config.merchant] - The merchant certificates, more @see {import('tls').createSecureContext}
-        * @param {string|buffer} [config.merchant.cert] - The merchant cert chains in PEM format
-        * @param {string|buffer} [config.merchant.key] - The merchant private keys in PEM format
-        * @param {string|buffer} [config.merchant.pfx] - The merchant PFX or PKCS12 encoded private key and certificate chain.
-        * @param {string|buffer} [config.merchant.passphrase] - The merchant shared passphrase used for a single private key and/or a PFX.
+        * @param {string|Buffer} [config.merchant.cert] - The merchant cert chains in PEM format
+        * @param {string|Buffer} [config.merchant.key] - The merchant private keys in PEM format
+        * @param {string|Buffer} [config.merchant.pfx] - The merchant PFX or PKCS12 encoded private key and certificate chain.
+        * @param {string|Buffer} [config.merchant.passphrase] - The merchant shared passphrase used for a single private key and/or a PFX.
         *
         * @returns {AxiosInstance} - The axios instance
         */
@@ -704,7 +713,7 @@ export namespace WechatpayAxiosPlugin {
         static requestInterceptor(): Function;
         /**
          * APIv3's responseVerifier
-         * @param  {object} certs The wechatpay platform serial and certificate(s), `{serial: publicCert}` pair
+         * @param  {object} certs The wechatpay platform serial and certificate(s), `{serial: publicKey}` pair
          * @return {function} Named as `verifier` function
          */
         static responseVerifier(certs?: platformCertificates): Function;
@@ -715,7 +724,7 @@ export namespace WechatpayAxiosPlugin {
         * @param {string|number} config.mchid - The merchant ID
         * @param {string} config.serial - The serial number of the merchant certificate
         * @param {string|Buffer} config.privateKey - The merchant private key certificate
-        * @param {object} config.certs - The wechatpay provider size configuration, `{serial: publicCert}` pair
+        * @param {object} config.certs - The wechatpay provider size configuration, `{serial: publicKey}` pair
         *
         * @returns {AxiosInstance} - The axios instance
         */
@@ -731,13 +740,13 @@ export namespace WechatpayAxiosPlugin {
         * @param {string|number} config.mchid - The merchant ID
         * @param {string} config.serial - The serial number of the merchant certificate
         * @param {string|Buffer} config.privateKey - The merchant private key certificate
-        * @param {object} config.certs - The wechatpay provider size configuration, `{serial: publicCert}` pair
+        * @param {object} config.certs - The wechatpay provider size configuration, `{serial: publicKey}` pair
         * @param {string} [config.secret] - The merchant secret key string
         * @param {object} [config.merchant] - The merchant certificates, more @see {import('tls').createSecureContext}
-        * @param {string|buffer} [config.merchant.cert] - The merchant cert chains in PEM format
-        * @param {string|buffer} [config.merchant.key] - The merchant private keys in PEM format
-        * @param {string|buffer} [config.merchant.pfx] - The merchant PFX or PKCS12 encoded private key and certificate chain.
-        * @param {string|buffer} [config.merchant.passphrase] - The merchant shared passphrase used for a single private key and/or a PFX.
+        * @param {string|Buffer} [config.merchant.cert] - The merchant cert chains in PEM format
+        * @param {string|Buffer} [config.merchant.key] - The merchant private keys in PEM format
+        * @param {string|Buffer} [config.merchant.pfx] - The merchant PFX or PKCS12 encoded private key and certificate chain.
+        * @param {string|Buffer} [config.merchant.passphrase] - The merchant shared passphrase used for a single private key and/or a PFX.
         * @constructor
         */
         constructor(config: apiConfig & AxiosRequestConfig);
@@ -791,20 +800,20 @@ export namespace WechatpayAxiosPlugin {
      *
      * wxpay.v2.secapi.pay.refund.POST({}).then(console.info).catch(console.error);
      *
-     * wxpay.V3.Marketing.Busifavor.Stocks.post({})
+     * wxpay.v3.marketing.busifavor.stocks.post({})
      *   .then(({data}) => console.info(data))
      *   .catch(({response: {data}}) => console.error(data));
      *
-     * wxpay.V3.Pay.Transactions.Native.post({})
+     * wxpay.v3.pay.transactions.native.post({})
      *   .then(({data: {code_url}}) => console.info(code_url))
      *   .catch(({ response: {data}}) => console.error(data));
      *
      * (async () => {
      *   try {
-     *     const {data: detail} = await wxpay.V3.Pay.Transactions.Id.$transaction_id$
+     *     const {data: detail} = await wxpay.v3.pay.transactions.id.$transaction_id$
      *       .get({params: {mchid: '1230000109'}, transaction_id: '1217752501201407033233368018'});
      *     // or simple like this
-     *     // const {data: detail} = await wxpay.V3.Pay.Transactions.Id['{transaction_id}']
+     *     // const {data: detail} = await wxpay.v3.pay.transactions.id['{transaction_id}']
      *     //   .get({params: {mchid: '1230000109'}, transaction_id: '1217752501201407033233368018'});
      *     // or simple like this
      *     // const {data: detail} = await wxpay.v3.pay.transactions.id['1217752501201407033233368018']
