@@ -379,6 +379,30 @@ export namespace WechatpayAxiosPlugin {
          * @returns {string} - The content for `Rsa.verify`
          */
         static response(timestamp: string | number, nonce: string, body?: string): string;
+        /**
+         * Joined this inputs by for `Line Feed`(LF) char.
+         *
+         * @param {string[]} pieces - The string(s) joined by line feed.
+         *
+         * @returns {string} - The joined string.
+         */
+        static joinedByLineFeed(pieces: string[]): string;
+        /**
+         * Sorts an Object by key.
+         *
+         * @param {object} thing - The input object.
+         *
+         * @returns {object} - The sorted object.
+         */
+        static ksort(thing: object): object;
+        /**
+         * Like `queryString` does but without the `sign` and `empty value` entities.
+         *
+         * @param {object} thing - The input object.
+         *
+         * @returns {string} - The sorted object.
+         */
+        static queryStringLike(thing: object): string;
     }
 
     /**
