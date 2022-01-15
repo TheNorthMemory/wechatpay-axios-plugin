@@ -9,6 +9,18 @@ describe('lib/rsa', () => {
     Rsa.should.be.a.Function().and.have.property('name', 'Rsa');
   });
 
+  describe('Rsa::RSA_PKCS1_OAEP_PADDING', () => {
+    it('property `RSA_PKCS1_OAEP_PADDING` should be number', () => {
+      should(Rsa.RSA_PKCS1_OAEP_PADDING).be.a.Number();
+    });
+  });
+
+  describe('Rsa::RSA_PKCS1_PADDING', () => {
+    it('property `RSA_PKCS1_PADDING` should be number', () => {
+      should(Rsa.RSA_PKCS1_PADDING).be.a.Number();
+    });
+  });
+
   describe('Rsa::encrypt', () => {
     it('method `encrypt` should be static', () => {
       should(Rsa.encrypt).be.a.Function();

@@ -68,6 +68,10 @@ describe('lib/wechatpay', () => {
     it('method `normalize` should be equal to `{variable-mixed_underline}` while `$variableMixed_underline$` passed in', () => {
       Wechatpay.normalize('$variableMixed_underline$').should.be.a.String().and.equal('{variable-mixed_underline}');
     });
+
+    it('method `normalize` should be equal to `{variable-mixed_underline}` while `_variableMixed_underline_` passed in', () => {
+      Wechatpay.normalize('_variableMixed_underline_').should.be.a.String().and.equal('{variable-mixed_underline}');
+    });
   });
 
   describe('Wechatpay::compose', () => {

@@ -14,42 +14,42 @@ export namespace WechatpayAxiosPlugin {
     class Aes {
         /**
          * @property {string} hex - Alias of `hex` string
-         * @deprecated v1.0.0 - Only for compatible, use the literal `hex` string instead
+         * @deprecated v0.8.0 - Only for compatible, use the literal `hex` string instead
          */
         static get hex(): string;
         /**
          * @property {string} utf8 - Alias of `utf8` string
-         * @deprecated v1.0.0 - Only for compatible, use the literal `utf8` string instead
+         * @deprecated v0.8.0 - Only for compatible, use the literal `utf8` string instead
          */
         static get utf8(): string;
         /**
          * @property {string} base64 - Alias of `base64` string
-         * @deprecated v1.0.0 - Only for compatible, use the literal `base64` string instead
+         * @deprecated v0.8.0 - Only for compatible, use the literal `base64` string instead
          */
         static get base64(): string;
         /**
          * @property {integer} BLOCK_SIZE - The `aes` block size
-         * @deprecated v1.0.0 - Only for compatible, use the literal `16` number instead
+         * @deprecated v0.8.0 - Only for compatible, use the literal `16` number instead
          */
         static get BLOCK_SIZE(): number;
         /**
          * @property {string} ALGO_AES_256_GCM - The `aes-256-gcm` algorithm
-         * @deprecated v1.0.0 - Only for compatible, use the literal `aes-256-gcm` string instead
+         * @deprecated v0.8.0 - Only for compatible, use the literal `aes-256-gcm` string instead
          */
         static get ALGO_AES_256_GCM(): string;
         /**
          * @property {string} ALGO_AES_256_ECB - The `aes-256-ecb` algorithm
-         * @deprecated v1.0.0 - Only for compatible, use the literal `aes-256-ecb` string instead
+         * @deprecated v0.8.0 - Only for compatible, use the literal `aes-256-ecb` string instead
          */
         static get ALGO_AES_256_ECB(): string;
         /**
          * @property {string} ALGO_AES_128_CBC - The `aes-128-cbc` algorithm
-         * @deprecated v1.0.0 - Only for compatible, use the literal `aes-128-cbc` string instead
+         * @deprecated v0.8.0 - Only for compatible, use the literal `aes-128-cbc` string instead
          */
         static get ALGO_AES_128_CBC(): string;
         /**
          * Encrypts plaintext.
-         * @deprecated v1.0.0 - Only for compatible, use the `AesGcm.encrypt` method instead
+         * @deprecated v0.8.0 - Only for compatible, use the `AesGcm.encrypt` method instead
          *
          * @param {string} iv - The initialization vector, 16 bytes string.
          * @param {string} key - The secret key, 32 bytes string.
@@ -61,7 +61,7 @@ export namespace WechatpayAxiosPlugin {
         static encrypt(iv: string, key: string, plaintext: string, aad?: string): string;
         /**
          * Decrypts ciphertext.
-         * @deprecated v1.0.0 - Only for compatible, use the `AesGcm.decrypt` method instead
+         * @deprecated v0.8.0 - Only for compatible, use the `AesGcm.decrypt` method instead
          *
          * @param {string} iv - The initialization vector, 16 bytes string.
          * @param {string} key - The secret key, 32 bytes string.
@@ -633,9 +633,10 @@ export namespace WechatpayAxiosPlugin {
         /**
          * Pushing {@link Multipart#data} into the readable BufferList
          *
+         * @param {boolean} [end = true] - End the writer when the reader ends. Default: true.
          * @returns {Promise<this>} - The Multipart instance
          */
-        flowing(): Promise<this>;
+        flowing(end?: boolean): Promise<this>;
         /**
          * Attaches a Writable stream to the {@link Multipart} instance
          *
@@ -652,25 +653,37 @@ export namespace WechatpayAxiosPlugin {
      */
     class Rsa {
         /**
+         * Alias of the `RSA_PKCS1_OAEP_PADDING` mode
+         */
+        readonly RSA_PKCS1_OAEP_PADDING: Number;
+
+        /**
+         * Alias of the `RSA_PKCS1_PADDING` mode
+         */
+        readonly RSA_PKCS1_PADDING: Number;
+
+        /**
          * Encrypts text with sha256WithRSAEncryption/RSA_PKCS1_OAEP_PADDING.
          * Node Limits >= 12.9.0 (`oaepHash` was added)
          *
          * @param {string} plaintext - Cleartext to encode.
          * @param {string|Buffer} publicKey - A PEM encoded public certificate.
+         * @param {number} padding - Supporting `RSA_PKCS1_OAEP_PADDING` or `RSA_PKCS1_PADDING`, default is `RSA_PKCS1_OAEP_PADDING`.
          *
          * @returns {string} Base64-encoded ciphertext.
          */
-        static encrypt(plaintext: string, publicKey: string | Buffer): string;
+        static encrypt(plaintext: string, publicKey: string | Buffer, padding?: Number): string;
         /**
          * Decrypts base64 encoded string with `privateKey`.
          * Node Limits >= 12.9.0 (`oaepHash` was added)
          *
          * @param {string} ciphertext - Was previously encrypted string using the corresponding public certificate.
          * @param {string|Buffer} privateKey - A PEM encoded private key certificate.
+         * @param {number} padding - Supporting `RSA_PKCS1_OAEP_PADDING` or `RSA_PKCS1_PADDING`, default is `RSA_PKCS1_OAEP_PADDING`.
          *
          * @returns {string} Utf-8 plaintext.
          */
-        static decrypt(ciphertext: string, privateKey: string | Buffer): string;
+        static decrypt(ciphertext: string, privateKey: string | Buffer, padding?: Number): string;
         /**
          * Creates and returns a `Sign` string that uses `sha256WithRSAEncryption`.
          *
