@@ -1,5 +1,8 @@
 # 变更历史
 
+## v0.8.2 (2022-01-16)
+- 优化`Rsa.encrypt`及`Rsa.decrypt`以支持`Java`的`RSA/ECB/PKCS1Padding`填充方案;
+
 ## v0.8.1 (2022-01-09)
 - 补充`Formatter`遗漏的导出函数，感谢 @Nxys PR;
 
