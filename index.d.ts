@@ -204,42 +204,42 @@ export namespace WechatpayAxiosPlugin {
          *
          * - [agency] is available {@since v0.4.3}, [spec]{@link https://work.weixin.qq.com/api/doc/90000/90135/90281}
          *
-         * @param {string|Buffer} thing - The input string.
-         * @param {string} [key] - The secret key string.
+         * @param {BinaryLike} thing - The input string.
+         * @param {BinaryLike|undefined} [key] - The secret key string.
          * @param {boolean|number|string} [agency = false] - The secret **key** is from wework, placed with `true` or better of the `AgentId` value.
          *
          * @return {string} - data signature
          */
-        static md5(thing: string | any, key?: string | undefined, agency?: boolean | number | string | undefined): string;
+        static md5(thing: BinaryLike, key?: BinaryLike | undefined, agency?: boolean | number | string | undefined): string;
         /**
          * Calculate the input string with a secret `key` as of `algorithm` string which is one of the 'sha256', 'sha512' etc.
-         * @param {string|Buffer} thing - The input string.
-         * @param {string} key - The secret key string.
+         * @param {BinaryLike} thing - The input string.
+         * @param {BinaryLike} key - The secret key string.
          * @param {string} [algorithm = sha256] - The algorithm string, default is `sha256`.
          * @return {string} - data signature
          */
-        static hmac(thing: string | any, key: string, algorithm?: string | undefined): string;
+        static hmac(thing: BinaryLike, key: BinaryLike, algorithm?: string | undefined): string;
         /**
          * @deprecated {@since v0.5.5}, instead of by `hmac`
          *
          * Calculate the input string with a secret `key` in HMAC-SHA256
-         * @param {string|Buffer} thing - The input string.
-         * @param {string} key - The secret key string.
+         * @param {BinaryLike} thing - The input string.
+         * @param {BinaryLike} key - The secret key string.
          * @return {string} - data signature
          */
-        static hmacSha256(thing: string | any, key: string): string;
+        static hmacSha256(thing: BinaryLike, key: BinaryLike): string;
         /**
          * Calculate the input in SHA1.
-         * @param {string|Buffer} thing - The input.
+         * @param {BinaryLike} thing - The input.
          * @return {string} - data signature
          */
-        static sha1(thing: string | any): string;
+        static sha1(thing: BinaryLike): string;
         /**
          * Calculate the input in SHA256.
-         * @param {string|Buffer} thing - The input.
+         * @param {BinaryLike} thing - The input.
          * @return {string} - data signature
          */
-        static sha256(thing: string | any): string;
+        static sha256(thing: BinaryLike): string;
         /**
          * Wrapping the builtins `crypto.timingSafeEqual` function.
          * @param {string} known - The string of known length to compare against.
@@ -261,16 +261,16 @@ export namespace WechatpayAxiosPlugin {
      * An Axios customizaton transform.
      */
     class Transformer {
-        static set mchid(arg: any);
+        static set mchid(value: string);
         /**
          * @property {string} mchid - The merchant ID
          */
-        static get mchid(): any;
-        static set secret(arg: any);
+        static get mchid(): string;
+        static set secret(value: BinaryLike);
         /**
-         * @property {string} secret - The merchant secret key string
+         * @property {BinaryLike} secret - The merchant secret key string
          */
-        static get secret(): any;
+        static get secret(): BinaryLike;
         /**
          * Compose the pre-request data signature
          *
@@ -386,7 +386,7 @@ export namespace WechatpayAxiosPlugin {
          *
          * @returns {string} - The joined string.
          */
-        static joinedByLineFeed(pieces: string[]): string;
+        static joinedByLineFeed(...pieces: string[]): string;
         /**
          * Sorts an Object by key.
          *
@@ -407,13 +407,13 @@ export namespace WechatpayAxiosPlugin {
 
     /**
      * @typedef {Object} apiConfig - The wechatpay consumer side configuration
-     * @prop {string|number} mchid - The merchant ID
+     * @prop {string} mchid - The merchant ID
      * @prop {string} serial - The serial number of the merchant certificate
      * @prop {string|Buffer} privateKey - The merchant private key certificate
      * @prop {platformCertificates} certs - The wechatpay provider size configuration, `{serial: publicKey}` pair
      */
     type apiConfig = {
-        mchid: string | number,
+        mchid: string,
         serial: string,
         privateKey: string | Buffer,
         certs: platformCertificates,
@@ -727,7 +727,7 @@ export namespace WechatpayAxiosPlugin {
         * Create an APIv2's client
         *
         * @param {object} config - configuration
-        * @param {string|number} [config[.mchid] - The merchant ID
+        * @param {string} [config.mchid] - The merchant ID
         * @param {string} [config.secret] - The merchant secret key string
         * @param {object} [config.merchant] - The merchant certificates, more @see {import('tls').createSecureContext}
         * @param {string|Buffer} [config.merchant.cert] - The merchant cert chains in PEM format
@@ -738,7 +738,7 @@ export namespace WechatpayAxiosPlugin {
         * @returns {AxiosInstance} - The axios instance
         */
         static xmlBased(config?: {
-            mchid: string | number;
+            mchid: string;
             secret: string;
             merchant: merchantCertificate;
         }): AxiosInstance;
@@ -758,7 +758,7 @@ export namespace WechatpayAxiosPlugin {
         * Create an APIv3's client
         *
         * @param {object} config - configuration
-        * @param {string|number} config.mchid - The merchant ID
+        * @param {string} config.mchid - The merchant ID
         * @param {string} config.serial - The serial number of the merchant certificate
         * @param {string|Buffer} config.privateKey - The merchant private key certificate
         * @param {object} config.certs - The wechatpay provider size configuration, `{serial: publicKey}` pair
@@ -766,7 +766,7 @@ export namespace WechatpayAxiosPlugin {
         * @returns {AxiosInstance} - The axios instance
         */
         static jsonBased(config?: {
-            mchid: string | number;
+            mchid: string;
             serial: string;
             privateKey: string | Buffer;
             certs: platformCertificates;
@@ -774,7 +774,7 @@ export namespace WechatpayAxiosPlugin {
         /**
         * Decorate factory
         * @param {object} config - configuration
-        * @param {string|number} config.mchid - The merchant ID
+        * @param {string} config.mchid - The merchant ID
         * @param {string} config.serial - The serial number of the merchant certificate
         * @param {string|Buffer} config.privateKey - The merchant private key certificate
         * @param {object} config.certs - The wechatpay provider size configuration, `{serial: publicKey}` pair
