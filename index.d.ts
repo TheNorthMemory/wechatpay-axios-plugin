@@ -51,26 +51,26 @@ export namespace WechatpayAxiosPlugin {
          * Encrypts plaintext.
          * @deprecated v0.8.0 - Only for compatible, use the `AesGcm.encrypt` method instead
          *
-         * @param {string} iv - The initialization vector, 16 bytes string.
-         * @param {string} key - The secret key, 32 bytes string.
+         * @param {BinaryLike} iv - The initialization vector, 16 bytes string.
+         * @param {CipherKey} key - The secret key, 32 bytes string.
          * @param {string} plaintext - Text to encode.
          * @param {string} aad - The additional authenticated data, maybe empty string.
          *
          * @returns {string} Base64-encoded ciphertext.
          */
-        static encrypt(iv: string, key: string, plaintext: string, aad?: string): string;
+        static encrypt(iv: BinaryLike, key: CipherKey, plaintext: string, aad?: string): string;
         /**
          * Decrypts ciphertext.
          * @deprecated v0.8.0 - Only for compatible, use the `AesGcm.decrypt` method instead
          *
-         * @param {string} iv - The initialization vector, 16 bytes string.
-         * @param {string} key - The secret key, 32 bytes string.
+         * @param {BinaryLike} iv - The initialization vector, 16 bytes string.
+         * @param {CipherKey} key - The secret key, 32 bytes string.
          * @param {string} ciphertext - Base64-encoded ciphertext.
          * @param {string} aad - The additional authenticated data, maybe empty string.
          *
          * @returns {string} Utf-8 plaintext.
          */
-        static decrypt(iv: string, key: string, ciphertext: string, aad?: string): string;
+        static decrypt(iv: BinaryLike, key: CipherKey, ciphertext: string, aad?: string): string;
         /**
          * @property {object} pkcs7 - The PKCS7 padding/unpadding container
          */
@@ -90,7 +90,7 @@ export namespace WechatpayAxiosPlugin {
              *
              * @return {Buffer} - The PADDING tailed payload
              */
-            padding: (thing: string | any, optional?: boolean | undefined) => any;
+            padding: (thing: string | Buffer, optional?: boolean | undefined) => Buffer;
             /**
              * unpadding
              * @memberof Aes.pkcs7#
@@ -98,7 +98,7 @@ export namespace WechatpayAxiosPlugin {
              * @param  {string|Buffer} thing - The input
              * @return {Buffer} - The PADDING wiped payload
              */
-            unpadding: (thing: string | any) => any;
+            unpadding: (thing: string | Buffer) => Buffer;
         };
     }
 
@@ -324,17 +324,17 @@ export namespace WechatpayAxiosPlugin {
          * Cast the `CSV` line string by the keys named object.
          *
          * @param {string} row - CSV line.
-         * @param {array} keys - CSV headers.
-         * @param {string} skipFirstChar - Skip the first character of the CSV line, default is true.
-         * @param {string} separator - Split separator, default is ',`' (two chars).
+         * @param {array} [keys] - CSV headers.
+         * @param {boolean} [skipFirstChar = true] - Skip the first character of the CSV line, default is true.
+         * @param {string} [separator = ',`'] - Split separator, default is ',`' (two chars).
          *
          * @returns {object} - The casted source line as Object
          */
-        static castCsvLine(row: string, keys?: any[], skipFirstChar?: string, separator?: string): object;
+        static castCsvLine(row: string, keys?: string[], skipFirstChar?: boolean, separator?: string): object;
         /**
          * Generate a Base62 random string aka `nonce`, similar as `crypto.randomBytes`.
          *
-         * @param {number} size - Nonce string length, default is 32 bytes.
+         * @param {number} [size = 32] - Nonce string length, default is 32 bytes.
          *
          * @returns {string} Base62 random string.
          */
@@ -364,7 +364,7 @@ export namespace WechatpayAxiosPlugin {
          * @param {string} uri - Combined string with `URL.pathname` and `URL.search`.
          * @param {string|number} timestamp - The `Unix` timestamp, should be the one used in `authorization`.
          * @param {string} nonce - The `Nonce` string, should be the one used in `authorization`.
-         * @param {string} body - The playload string, HTTP `GET` should be an empty string.
+         * @param {string} [body = ''] - The playload string, HTTP `GET` should be an empty string.
          *
          * @returns {string} - The content for `Rsa.sign`
          */
@@ -374,7 +374,7 @@ export namespace WechatpayAxiosPlugin {
          *
          * @param {string|number} timestamp - The `Unix` timestamp, should be the one from `response.headers[wechatpay-timestamp]`.
          * @param {string} nonce - The `Nonce` string, should be the one from `response.headers[wechatpay-nonce]`.
-         * @param {string} body - The response payload string, HTTP status(`204`) should be an empty string.
+         * @param {string} [body = ''] - The response payload string, HTTP status(`204`) should be an empty string.
          *
          * @returns {string} - The content for `Rsa.verify`
          */
@@ -655,13 +655,11 @@ export namespace WechatpayAxiosPlugin {
         /**
          * Alias of the `RSA_PKCS1_OAEP_PADDING` mode
          */
-        readonly RSA_PKCS1_OAEP_PADDING: Number;
-
+        readonly RSA_PKCS1_OAEP_PADDING: 4;
         /**
          * Alias of the `RSA_PKCS1_PADDING` mode
          */
-        readonly RSA_PKCS1_PADDING: Number;
-
+        readonly RSA_PKCS1_PADDING: 1;
         /**
          * Encrypts text with sha256WithRSAEncryption/RSA_PKCS1_OAEP_PADDING.
          * Node Limits >= 12.9.0 (`oaepHash` was added)
@@ -714,6 +712,11 @@ export namespace WechatpayAxiosPlugin {
         */
         static get defaults(): {
             baseURL: string;
+            headers: {
+                Accept: string,
+                'Content-Type': string,
+                'User-Agent': string,
+            };
         };
         /**
         * Deep merge the input with the defaults
