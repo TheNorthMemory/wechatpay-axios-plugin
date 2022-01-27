@@ -24,6 +24,16 @@ describe('lib/hash', () => {
       Hash.md5('').should.be.String().and.have.length(32);
       Hash.md5('').should.be.String().and.equal('d41d8cd98f00b204e9800998ecf8427e');
     });
+
+    it('method `md5(\'\',\'exposed_your_key_here_have_risks\')` should be equal to `b3d43c8390f26e2030d4d17bd580fbc8`', () => {
+      Hash.md5('', 'exposed_your_key_here_have_risks').should.be.String().and.have.length(32);
+      Hash.md5('', 'exposed_your_key_here_have_risks').should.be.String().and.equal('b3d43c8390f26e2030d4d17bd580fbc8');
+    });
+
+    it('method `md5(\'\',\'exposed_your_key_here_have_risks\', true)` should be equal to `7831c3ff1bde78fd0ac1107e00ac92e6`', () => {
+      Hash.md5('', 'exposed_your_key_here_have_risks', true).should.be.String().and.have.length(32);
+      Hash.md5('', 'exposed_your_key_here_have_risks', true).should.be.String().and.equal('7831c3ff1bde78fd0ac1107e00ac92e6');
+    });
   });
 
   describe('Hash::hmac', () => {
