@@ -196,23 +196,23 @@ Options:
 const { Wechatpay } = require('wechatpay-axios-plugin');
 const { readFileSync } = require('fs');
 
-// 商户号，假定为`1000100`
-const merchantId = '1000100';
-// 商户证书序列号
-// 也可以使用openssl命令行获取证书序列号
-// openssl x509 -in /path/to/merchant/apiclient_cert.pem -noout -serial | awk -F= '{print $2}'
-const merchantCertificateSerial = '可以从商户平台直接获取到';// API证书不重置，商户证书序列号就是个常量
-// 商户私钥，文件路径假定为 `/path/to/merchant/apiclient_key.pem`
+// 商户号，支持「普通商户/特约商户」或「服务商商户」
+const merchantId = '190000****';
+
+// 「商户API证书」的「证书序列号」
+const merchantCertificateSerial = '3775B6A45ACD588826D15E583A95F5DD********';
+
+// 从本地文件中加载「商户API私钥」
 const merchantPrivateKeyFilePath = '/path/to/merchant/apiclient_key.pem';
-// 商户API私钥 PEM格式的文本字符串或者文件buffer
 const merchantPrivateKeyInstance = readFileSync(merchantPrivateKeyFilePath);
-// 平台证书，可由下载器 `wxpay crt -m {商户号} -s {商户证书序列号} -f {商户API私钥文件路径} -k {APIv3密钥(32字节)} -o {保存地址}`
-// 载器生成并假定保存为 `/path/to/wechatpay/cert.pem`
+
+// 「微信支付平台证书」的「证书序列号」，下载器下载后有提示`serial`序列号字段
+const platformCertificateSerial = '7132d72a03e93cddf8c03bbd1f37eedf********';
+
+// 从本地文件中加载「微信支付平台证书」，用来验证微信支付请求响应体的签名
 const platformCertificateFilePath = '/path/to/wechatpay/cert.pem';
 const platformCertificateInstance = readFileSync(platformCertificateFilePath);
-// 平台证书序列号，下载器下载后有提示序列号字段，也可由命令行
-// openssl x509 -in /path/to/wechatpay/cert.pem -noout -serial | awk -F= '{print $2}'
-const platformCertificateSerial = '平台证书序列号';
+
 const wxpay = new Wechatpay({
   mchid: merchantId,
   serial: merchantCertificateSerial,
@@ -231,6 +231,8 @@ const wxpay = new Wechatpay({
   // },
 });
 ```
+
+**注:** 证书序列号（「商户证书」序列号及「平台证书」序列号）均可用`OpenSSL`命令获取到，例如： `openssl x509 -in /path/to/merchant/apiclient_cert.pem -noout -serial | awk -F= '{print $2}'`
 
 初始化字典说明如下：
 
@@ -414,8 +416,6 @@ const {createReadStream} = require('fs')
 
 const imageMeta = {
   filename: 'hellowechatpay.png',
-  // easy calculated by the command `sha256sum hellowechatpay.png` on OSX
-  // or by require('wechatpay-axios-plugin').Hash.sha256(filebuffer)
   sha256: '1a47b1eb40f501457eaeafb1b1417edaddfbe7a4a8f9decec2d330d1b4477fbe',
 }
 
@@ -510,8 +510,6 @@ const {createReadStream} = require('fs')
 
 const videoMeta = {
   filename: 'hellowechatpay.mp4',
-  // easy calculated by the command `sha256sum hellowechatpay.mp4` on OSX
-  // or by require('wechatpay-axios-plugin').Hash.sha256(filebuffer)
   sha256: '1a47b1eb40f501457eaeafb1b1417edaddfbe7a4a8f9decec2d330d1b4477fbe',
 }
 
@@ -578,7 +576,7 @@ wxpay.v2.pay.micropay({
   sign_type: 'HMAC-SHA256',
   body: 'image形象店-深圳腾大-QQ公仔',
   out_trade_no: '1217752501201407033233368018',
-  total_fee: 888,
+  total_fee: '888',
   fee_type: 'CNY',
   spbill_create_ip: '8.8.8.8',
   auth_code: '120061098828009406',
@@ -600,7 +598,7 @@ wxpay.v2.pay.unifiedorder({
   openid: 'oUpF8uMuAJO_M2pxb1Q9zNjWeS6o',
   out_trade_no: '1415659990',
   spbill_create_ip: '14.23.150.211',
-  total_fee: 1,
+  total_fee: '1',
   trade_type: 'MWEB',
   scene_info: JSON.stringify({
     h5_info: {
@@ -620,8 +618,8 @@ wxpay.v2.secapi.pay.refund.post({
   mch_id: '1900000109',
   out_trade_no: '1217752501201407033233368018',
   out_refund_no: '1217752501201407033233368018',
-  total_fee: 100,
-  refund_fee: 100,
+  total_fee: '100',
+  refund_fee: '100',
   refund_fee_type: 'CNY',
   nonce_str: Formatter.nonce(),
 })
@@ -632,15 +630,15 @@ wxpay.v2.secapi.pay.refund.post({
 ### 现金红包
 
 ```js
-wxpay.v2.mmpaymkttransfers.sendredpack.POST({
+wxpay.v2.mmpaymkttransfers.sendredpack.post({
   nonce_str: Formatter.nonce(),
   mch_billno: '10000098201411111234567890',
   mch_id: '10000098',
   wxappid: 'wx8888888888888888',
   send_name: '鹅企支付',
   re_openid: 'oxTWIuGaIt6gTKsQRLau2M0yL16E',
-  total_amount: 1000,
-  total_num: 1,
+  total_amount: '1000',
+  total_num: '1',
   wishing: 'HAPPY BIRTHDAY',
   client_ip: '192.168.0.1',
   act_name: '回馈活动',
@@ -661,10 +659,13 @@ wxpay.v2.mmpaymkttransfers.promotion.transfers({
   openid: 'oxTWIuGaIt6gTKsQRLau2M0yL16E',
   check_name: 'FORCE_CHECK',
   re_user_name: '王小王',
-  amount: 10099,
+  amount: '10099',
   desc: '理赔',
   spbill_create_ip: '192.168.0.1',
   nonce_str: Formatter.nonce(),
+}, {
+  // 返回值无`sign`字段，无需数据校验
+  transformResponse: [Transformer.toObject],
 })
 .then(res => console.info(res.data))
 .catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
@@ -746,7 +747,7 @@ wxpay.v2.mmpaymkttransfers.sendworkwxredpack({
   sender_name: 'XX活动',
   sender_header_media_id: '1G6nrLmr5EC3MMb_-zK1dDdzmd0p7cNliYu9V5w7o8K0',
   re_openid: 'oxTWIuGaIt6gTKsQRLau2M0yL16E',
-  total_amount: 1000,
+  total_amount: '1000',
   wishing: '感谢您参加猜灯谜活动，祝您元宵节快乐！',
   act_name: '猜灯谜抢红包活动',
   remark: '猜越多得越多，快来抢！',
