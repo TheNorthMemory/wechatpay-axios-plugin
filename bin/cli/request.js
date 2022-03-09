@@ -46,7 +46,6 @@ module.exports = {
     const {
       baseURL, uri, config, method, data, params, headers,
     } = argv;
-    config.mchid = `${config.mchid}`
     const responseType = argv.binary && typeof argv.binary === 'boolean' ? 'arraybuffer' : undefined;
     const structure = [{ params, headers, responseType }];
 

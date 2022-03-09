@@ -19,6 +19,8 @@ yargs(hideBin(process.argv))
   })
   .epilog('for more information visit https://github.com/TheNorthMemory/wechatpay-axios-plugin')
   .middleware((argv) => {
+    if (argv.c && argv.c.mchid) { Reflect.set(argv.config, 'mchid', `${argv.config.mchid}`); }
+
     if (argv.c && argv.c.privateKey && argv.c.privateKey !== 'any') {
       Reflect.set(argv.config, 'privateKey', readFileSync(argv.c.privateKey));
     }
