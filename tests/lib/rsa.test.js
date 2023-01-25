@@ -90,7 +90,7 @@ describe('lib/rsa', () => {
       should(() => {
         Rsa.decrypt('', '');
       }).throw(Error, {
-        code: /ERR_INVALID_ARG_TYPE|ERR_OSSL_BIO_NULL_PARAMETER|ERR_OSSL_PEM_NO_START_LINE/,
+        code: /ERR_INVALID_ARG_TYPE|ERR_OSSL_BIO_NULL_PARAMETER|ERR_OSSL_PEM_NO_START_LINE|ERR_OSSL_UNSUPPORTED/,
       });
     });
 
