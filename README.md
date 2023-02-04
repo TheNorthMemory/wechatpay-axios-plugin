@@ -413,7 +413,9 @@ const {Rsa} = require('wechatpay-axios-plugin');
       ],
       transfer_scene_id: '1001',
     }, {
-      'Wechatpay-Serial' => platformCertificateSerial,
+      headers: {
+        'Wechatpay-Serial' => platformCertificateSerial,
+      },
     });
   } catch({response: {status, statusText, data}}) {
     console.error(status, statusText, data)
