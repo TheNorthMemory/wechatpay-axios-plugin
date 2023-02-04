@@ -346,7 +346,7 @@ wxpay.v3.marketing.busifavor.stocks
   } catch({response: {status, statusText, data}}) {
     console.error(status, statusText, data)
   }
-}
+})()
 ```
 
 ### 服务商模式Native下单
@@ -385,7 +385,40 @@ wxpay.v3.marketing.busifavor.stocks
   } catch({response: {status, statusText, data}}) {
     console.error(status, statusText, data)
   }
-}
+})()
+```
+
+### 商家转账到零钱
+
+```js
+const {Rsa} = require('wechatpay-axios-plugin');
+
+;(async () => {
+  try {
+    const res = await wxpay.v3.transfer.batches.post({
+      appid: 'wxf636efh567hg4356',
+      out_batch_no: 'plfk2020042013',
+      batch_name: '2019年1月深圳分部报销单',
+      batch_remark: '2019年1月深圳分部报销单',
+      total_amount: 4000000,
+      total_num: 200,
+      transfer_detail_list: [
+        {
+          out_detail_no: 'x23zy545Bd5436',
+          transfer_amount: 200000,
+          transfer_remark: '2020年4月报销',
+          openid: 'o-MYE42l80oelYMDE34nYD456Xoy',
+          user_name: Rsa.encrypt('张三', platformCertificateInstance),
+        }
+      ],
+      transfer_scene_id: '1001',
+    }, {
+      'Wechatpay-Serial' => platformCertificateSerial,
+    });
+  } catch({response: {status, statusText, data}}) {
+    console.error(status, statusText, data)
+  }
+})()
 ```
 
 ### 商业投诉查询
