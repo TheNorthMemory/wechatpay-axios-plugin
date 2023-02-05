@@ -182,7 +182,7 @@ Options:
 
 1. 请求 `segments` 按照顺序作为级联对象，例如 `v3/pay/transactions/native` 即链接成 `v3.pay.transactions.native`;
 2. 每个 `segments` 所支持的 `HTTP METHOD`，即作为 请求对象的末尾执行方法，例如: `v3.pay.transactions.native.post({})`;
-3. 每个 `segments` 级联对象默认为HTTP`POST`方法，其同时隐式内置`GET/POST/PUT/PATCH/DELETE` 方法链，支持全大写及全小写两种编码方式，说明见`变更历史`;
+3. 每个 `segments` 级联对象默认为HTTP`POST`方法，其同时隐式内置`GET/POST/PUT/PATCH/DELETE` 方法链，小写`verb`格式，说明见`变更历史`;
 4. 每个 `segments` 有中线(dash)分隔符的，可以使用驼峰`camelCase`风格书写，例如: `merchant-service`可写成 `merchantService`，或者字面量属性，如 `v3['merchant-service']`;
 5. 每个 `segments` 中，若有动态参数，例如 `business_code/{business_code}` 可写成 `business_code.$business_code$` 或者字面量属性风格，如 `business_code['{business_code}']`;
 6. 如果 `segments` 以 `v2` 开始，其特殊标识为`APIv2`级联对象开始位，之后串接其他`segments`，如源 `pay/micropay` 即串接成 `v2.pay.micropay` 即以XML形式请求远端接口；
@@ -270,16 +270,25 @@ wxpay.v3.pay.transactions.native
 
 ### 查询订单
 ```js
-wxpay.v3.pay.transactions.id['{transaction_id}']
-  .get({params: {mchid: '1230000109'}, transaction_id: '1217752501201407033233368018'})
+wxpay.v3.pay.transactions.id._transaction_id_ // _placeholder_ 语法糖会转换成 '{placeholder}' 格式
+  .get({
+    params: {
+      mchid: '1230000109'
+    },
+    transaction_id: '1217752501201407033233368018'
+  })
   .then(({data}) => console.info(data))
   .catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
 ```
 
 ### 关闭订单
 ```js
-wxpay.v3.pay.transactions.outTradeNo['1217752501201407033233368018'].close
-  .post({mchid: '1230000109'})
+wxpay.v3.pay.transactions.outTradeNo.$transaction_id$.close // $placeholder$ 语法糖会转换成 '{placeholder}' 格式
+  .post({
+    mchid: '1230000109'
+  }, {
+    transaction_id: '1217752501201407033233368018'
+  })
   .then(({status, statusText}) => console.info(status, statusText))
   .catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
 ```
@@ -574,14 +583,14 @@ const {Hash: {sha1}} = require('wechatpay-axios-plugin')
 
 ;(async () => {
   try {
-    const {data: {download_url, hash_value}} = await wxpay.v3.bill.fundflowbill.GET({
+    const {data: {download_url, hash_value}} = await wxpay.v3.bill.fundflowbill.get({
       params: {
         bill_date: '2020-02-12',
         bill_type: 'BASIC',
         tar_type: 'GZIP',
       }
     })
-    const {data} = await wxpay.v3.billdownload.file.GET({
+    const {data} = await wxpay.v3.billdownload.file.get({
       params: (new URL(download_url)).searchParams,
       responseType: 'arraybuffer', // To prevent the axios:utils.stripBOM feature
       transformResponse: [function csvDigestValidator(data) {
@@ -604,7 +613,7 @@ const {Hash: {sha1}} = require('wechatpay-axios-plugin')
 ### 付款码(刷卡)支付
 
 ```js
-wxpay.v2.pay.micropay({
+wxpay.v2.pay.micropay.post({
   appid: 'wx8888888888888888',
   mch_id: '1900000109',
   nonce_str: Formatter.nonce(),
@@ -623,7 +632,7 @@ wxpay.v2.pay.micropay({
 ### H5支付
 
 ```js
-wxpay.v2.pay.unifiedorder({
+wxpay.v2.pay.unifiedorder.post({
   appid: 'wx2421b1c4370ec43b',
   attach: '支付测试',
   body: 'H5支付测试',
@@ -687,7 +696,7 @@ wxpay.v2.mmpaymkttransfers.sendredpack.post({
 ### 企业付款到零钱
 
 ```js
-wxpay.v2.mmpaymkttransfers.promotion.transfers({
+wxpay.v2.mmpaymkttransfers.promotion.transfers.post({
   mch_appid: 'wx8888888888888888',
   mchid: '1900000109',// 注意这个商户号，key是`mchid`非`mch_id`
   partner_trade_no: '10000098201411111234567890',
@@ -709,7 +718,7 @@ wxpay.v2.mmpaymkttransfers.promotion.transfers({
 ### 企业付款到银行卡-获取RSA公钥
 
 ```js
-wxpay.v2.risk.getpublickey({
+wxpay.v2.risk.getpublickey.post({
   mch_id: '1900000109',
   sign_type: 'MD5',
   nonce_str: Formatter.nonce(),
@@ -725,7 +734,7 @@ wxpay.v2.risk.getpublickey({
 ### 下载交易账单
 
 ```js
-wxpay.v2.pay.downloadbill({
+wxpay.v2.pay.downloadbill.post({
   mch_id,
   nonce_str: fmt.nonce(),
   appid,
@@ -776,7 +785,7 @@ Wechatpay.client.v2.defaults.transformRequest.unshift(function workwxredpack(dat
 ### 发放企业红包
 
 ```js
-wxpay.v2.mmpaymkttransfers.sendworkwxredpack({
+wxpay.v2.mmpaymkttransfers.sendworkwxredpack.post({
   mch_billno: '123456',
   wxappid: 'wx8888888888888888',
   sender_name: 'XX活动',
@@ -816,7 +825,7 @@ Wechatpay.client.v2.defaults.transformRequest.unshift(function wwsptrans2pocket(
 ### 向员工付款
 
 ```js
-wxpay.v2.mmpaymkttransfers.promotion.paywwsptrans2pocket({
+wxpay.v2.mmpaymkttransfers.promotion.paywwsptrans2pocket.post({
   appid: 'wxe062425f740c8888',
   device_info: '013467007045764',
   partner_trade_no: '100000982017072019616',
