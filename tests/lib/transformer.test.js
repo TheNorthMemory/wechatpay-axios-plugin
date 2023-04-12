@@ -172,7 +172,9 @@ describe('lib/transformer', () => {
 
     it('method `toObject` should returns `{mch_id: \'10000100\'}` while a `<xml><mch_id>10000100</mch_id></xml>` string passed in', () => {
       /* eslint-disable-next-line camelcase */
-      should(Transformer.toObject('<xml><mch_id>10000100</mch_id></xml>')).be.eql({ mch_id: '10000100' });
+      should(Transformer.toObject('<xml><mch_id>10000100</mch_id></xml>')).be.eql(Object.assign(Object.create(null), { mch_id: '10000100' }));
+      /* eslint-disable-next-line camelcase */
+      should(JSON.stringify(Transformer.toObject('<xml><mch_id>10000100</mch_id></xml>'))).be.eql(JSON.stringify({ mch_id: '10000100' }));
     });
 
     it('method `toObject` should returns `null` while a `Buffer.from([])` passed in', () => {
