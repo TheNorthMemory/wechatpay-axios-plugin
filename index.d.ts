@@ -1,6 +1,7 @@
 /// <reference types="node" />
 import { ReadStream } from "fs";
 import { Readable } from "stream";
+import { AgentOptions } from "https";
 import { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 import { CipherKey, BinaryLike } from 'crypto'
 
@@ -406,39 +407,35 @@ export namespace WechatpayAxiosPlugin {
     }
 
     /**
-     * @typedef {Object} apiConfig - The wechatpay consumer side configuration
-     * @prop {string} mchid - The merchant ID
-     * @prop {string} serial - The serial number of the merchant certificate
-     * @prop {string|Buffer} privateKey - The merchant private key certificate
-     * @prop {platformCertificates} certs - The wechatpay provider size configuration, `{serial: publicKey}` pair
+     * This SDK mandatory configuration
      */
     type apiConfig = {
+        /** The merchant ID */
         mchid: string,
+        /** The serial number of the merchant certificate, only for APIv3 */
         serial: string,
+        /** The merchant private key certificat, only for APIv3e */
         privateKey: string | Buffer,
+        /** The wechatpay platform certificates in {serial: publicKey} format, only for APIv3 */
         certs: platformCertificates,
+        /** The merchant secret key string, only for APIv2 */
         secret?: string,
-        merchant?: merchantCertificate
+        /** The merchant private key and certificate configuration for APIv2, while there were required in secure communication. */
+        merchant?: merchantCertificate & AgentOptions
     }
 
-    /**
-     * @typedef {Object} merchantCertificate - The merchant certification for APIv2
-     * @prop {string|Buffer} key - The merchant private key certificate as PEM format
-     * @prop {string|Buffer} cert - The merchant certificate as PEM format
-     * @prop {string|Buffer} pfx - The merchant private key and certificates as PKCS12 format
-     * @prop {string} passphase - The merchant PKCS12 certificates' passphase
-     */
+    /** @deprecated - use {@link AgentOptions} directly */
     type merchantCertificate = {
+        /** The merchant private key certificate as PEM format */
         key?: string | Buffer,
+        /** The merchant certificate as PEM format */
         cert?: string | Buffer,
+        /** The merchant private key and certificate buffer in PKCS12 format */
         pfx?: Buffer,
-        passphase?: string
+        /** The merchant private key and certificate's passphrase */
+        passphrase?: string
     }
 
-    /**
-     * @typedef {Object} platformCertificates - The wechatpay provider side configuration
-     * @prop {string} key - The serial number of the wechatpay certificate
-     */
     type platformCertificates = {
         [key: string]: string | Buffer
     }
@@ -732,7 +729,7 @@ export namespace WechatpayAxiosPlugin {
         * @param {object} config - configuration
         * @param {string} [config.mchid] - The merchant ID
         * @param {string} [config.secret] - The merchant secret key string
-        * @param {object} [config.merchant] - The merchant certificates, more @see {import('tls').createSecureContext}
+        * @param {object} [config.merchant] - The merchant private key and certificate AKA {@link AgentOptions} for APIv2, while there were required in secure communication.
         * @param {string|Buffer} [config.merchant.cert] - The merchant cert chains in PEM format
         * @param {string|Buffer} [config.merchant.key] - The merchant private keys in PEM format
         * @param {string|Buffer} [config.merchant.pfx] - The merchant PFX or PKCS12 encoded private key and certificate chain.
@@ -782,7 +779,7 @@ export namespace WechatpayAxiosPlugin {
         * @param {string|Buffer} config.privateKey - The merchant private key certificate
         * @param {object} config.certs - The wechatpay provider size configuration, `{serial: publicKey}` pair
         * @param {string} [config.secret] - The merchant secret key string
-        * @param {object} [config.merchant] - The merchant certificates, more @see {import('tls').createSecureContext}
+        * @param {object} [config.merchant] - The merchant private key and certificate AKA {@link AgentOptions} for APIv2, while there were required in secure communication.
         * @param {string|Buffer} [config.merchant.cert] - The merchant cert chains in PEM format
         * @param {string|Buffer} [config.merchant.key] - The merchant private keys in PEM format
         * @param {string|Buffer} [config.merchant.pfx] - The merchant PFX or PKCS12 encoded private key and certificate chain.

@@ -4,11 +4,11 @@ The WeChatPay OpenAPI v2&v3' Smart Development Kit
 
 [![GitHub actions](https://github.com/TheNorthMemory/wechatpay-axios-plugin/workflows/npm%20test/badge.svg)](https://github.com/TheNorthMemory/wechatpay-axios-plugin/actions)
 [![GitHub release](https://img.shields.io/npm/v/wechatpay-axios-plugin)](https://github.com/TheNorthMemory/wechatpay-axios-plugin/releases)
-[![Vulnerabilities](https://img.shields.io/snyk/vulnerabilities/npm/wechatpay-axios-plugin?label=snyk.io)](https://snyk.io/advisor/npm-package/wechatpay-axios-plugin)
+[![Vulnerabilities](https://snyk.io/advisor/npm-package/tmc.js/badge.svg)](https://snyk.io/advisor/npm-package/wechatpay-axios-plugin)
 [![types](https://img.shields.io/badge/types-included-blue)](https://www.npmjs.com/package/wechatpay-axios-plugin)
 [![Node](https://img.shields.io/node/v/wechatpay-axios-plugin)](https://www.npmjs.com/package/wechatpay-axios-plugin)
 [![NPM downloads per month](https://img.shields.io/npm/dm/wechatpay-axios-plugin)](https://www.npmjs.com/package/wechatpay-axios-plugin)
-[![NPM license](https://img.shields.io/npm/l/wechatpay-axios-plugin?color=blue)](https://www.npmjs.com/package/wechatpay-axios-plugin)
+[![NPM license](https://img.shields.io/npm/l/wechatpay-axios-plugin)](https://www.npmjs.com/package/wechatpay-axios-plugin)
 
 ## 主要功能
 
