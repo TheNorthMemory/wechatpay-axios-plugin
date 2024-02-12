@@ -38,11 +38,6 @@ describe('lib/utils', () => {
     should(utils.merge).be.a.Function();
   });
 
-  it('should have `extend` property and be a function', () => {
-    utils.should.have.property('extend');
-    should(utils.extend).be.a.Function();
-  });
-
   describe('utils::isProcessEnv', () => {
     it('method `isProcessEnv` should be function', () => {
       should(utils.isProcessEnv).be.a.Function();
