@@ -414,7 +414,7 @@ export namespace WechatpayAxiosPlugin {
         mchid: string,
         /** The serial number of the merchant certificate, only for APIv3 */
         serial: string,
-        /** The merchant private key certificat, only for APIv3e */
+        /** The merchant private key, only for APIv3 */
         privateKey: string | Buffer,
         /** The wechatpay platform certificates in {serial: publicKey} format, only for APIv3 */
         certs: platformCertificates,
@@ -424,7 +424,7 @@ export namespace WechatpayAxiosPlugin {
         merchant?: merchantCertificate & AgentOptions
     }
 
-    /** @deprecated - use {@link AgentOptions} directly */
+    /** @deprecated - {@since v0.8.8}, use {@link AgentOptions} directly */
     type merchantCertificate = {
         /** The merchant private key certificate as PEM format */
         key?: string | Buffer,

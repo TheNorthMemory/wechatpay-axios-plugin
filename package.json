@@ -21,6 +21,7 @@
     "test": "mocha --check-leaks ./tests/*.test.js ./tests/**/*.test.js",
     "lint": "eslint --ext \".js\" index.js lib tests bin"
   },
+  "homepage": "https://wechatpay.js.org",
   "bugs": {
     "url": "https://github.com/TheNorthMemory/wechatpay-axios-plugin/issues"
   },
