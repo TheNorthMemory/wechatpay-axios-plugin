@@ -206,29 +206,29 @@ export namespace WechatpayAxiosPlugin {
          * - [agency] is available {@since v0.4.3}, [spec]{@link https://work.weixin.qq.com/api/doc/90000/90135/90281}
          *
          * @param {BinaryLike} thing - The input string.
-         * @param {BinaryLike|undefined} [key] - The secret key string.
+         * @param {CipherKey | undefined} [key] - The secret key string.
          * @param {boolean|number|string} [agency = false] - The secret **key** is from wework, placed with `true` or better of the `AgentId` value.
          *
          * @return {string} - data signature
          */
-        static md5(thing: BinaryLike, key?: BinaryLike | undefined, agency?: boolean | number | string | undefined): string;
+        static md5(thing: BinaryLike, key?: CipherKey | undefined, agency?: boolean | number | string | undefined): string;
         /**
          * Calculate the input string with a secret `key` as of `algorithm` string which is one of the 'sha256', 'sha512' etc.
          * @param {BinaryLike} thing - The input string.
-         * @param {BinaryLike} key - The secret key string.
+         * @param {CipherKey} key - The secret key string.
          * @param {string} [algorithm = sha256] - The algorithm string, default is `sha256`.
          * @return {string} - data signature
          */
-        static hmac(thing: BinaryLike, key: BinaryLike, algorithm?: string | undefined): string;
+        static hmac(thing: BinaryLike, key: CipherKey, algorithm?: string | undefined): string;
         /**
          * @deprecated {@since v0.5.5}, instead of by `hmac`
          *
          * Calculate the input string with a secret `key` in HMAC-SHA256
          * @param {BinaryLike} thing - The input string.
-         * @param {BinaryLike} key - The secret key string.
+         * @param {CipherKey} key - The secret key string.
          * @return {string} - data signature
          */
-        static hmacSha256(thing: BinaryLike, key: BinaryLike): string;
+        static hmacSha256(thing: BinaryLike, key: CipherKey): string;
         /**
          * Calculate the input in SHA1.
          * @param {BinaryLike} thing - The input.
@@ -243,19 +243,19 @@ export namespace WechatpayAxiosPlugin {
         static sha256(thing: BinaryLike): string;
         /**
          * Wrapping the builtins `crypto.timingSafeEqual` function.
-         * @param {string} known - The string of known length to compare against.
-         * @param {string?} [user] - The user-supplied string.
+         * @param {BinaryLike} known - The string of known length to compare against.
+         * @param {BinaryLike?} [user] - The user-supplied string.
          * @return {boolean} - Returns true when the two are equal, false otherwise.
          */
-        static equals(known: string, user?: string|undefined|null): boolean;
+        static equals(known: BinaryLike, user?: BinaryLike | undefined | null): boolean;
         /**
          * Utils of the data signature calculation.
          * @param {string} type - The sign type, one of the MD5 or HMAC-SHA256.
          * @param {object} data - The input data.
-         * @param {string} key - The secret key string.
+         * @param {CipherKey} key - The secret key string.
          * @return {string} - The data signature.
          */
-        static sign(type: string, data: object, key: string): object;
+        static sign(type: string, data: object, key: CipherKey): string;
     }
 
     /**
