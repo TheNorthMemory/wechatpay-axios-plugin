@@ -1,6 +1,6 @@
 # 微信支付 OpenAPI SDK
 
-The WeChatPay OpenAPI v2&v3' Smart Development Kit
+Promise based and chained WeChatPay OpenAPI client SDK for NodeJS
 
 [![GitHub actions](https://github.com/TheNorthMemory/wechatpay-axios-plugin/workflows/npm%20test/badge.svg)](https://github.com/TheNorthMemory/wechatpay-axios-plugin/actions)
 [![GitHub release](https://img.shields.io/npm/v/wechatpay-axios-plugin)](https://github.com/TheNorthMemory/wechatpay-axios-plugin/releases)
