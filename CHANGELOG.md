@@ -1,5 +1,9 @@
 # 变更历史
 
+## v0.8.12 (2024-03-09)
+- 修正 `Transformer.toObject` 类型标注错误;
+- [动态`uri_template`参数](https://github.com/TheNorthMemory/wechatpay-axios-plugin/issues/57)类型标注，感谢 @taoliujun 报告此问题；
+
 ## v0.8.11 (2024-03-01)
 
 - 最后一版支持**node10**环境;

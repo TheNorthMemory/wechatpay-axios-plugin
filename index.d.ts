@@ -296,7 +296,7 @@ export namespace WechatpayAxiosPlugin {
          * @param {string} xml - XML string
          * @return {object} - Parsed as object
          */
-        static toObject(xml: object): string;
+        static toObject(xml: string): object;
         /**
          * Validation the response data with the `sign` string.
          * @param {object} data - The API response data
@@ -439,6 +439,11 @@ export namespace WechatpayAxiosPlugin {
     type platformCertificates = {
         [key: string]: string | Buffer
     }
+
+    /**
+     * Signature for the extra request config such as the `uri_template` parameter(s).
+     */
+    type ExtraRequestConfig<T> = Omit<T, keyof AxiosRequestConfig>;
 
     /**
      * Simple and lite of `multipart/form-data` implementation, most similar to `form-data`.
@@ -809,7 +814,7 @@ export namespace WechatpayAxiosPlugin {
         *
         * @returns {PromiseLike} - The `AxiosPromise`
         */
-        request<T = any, R = AxiosResponse<T>>(pathname?: string | undefined, method?: string | undefined, data?: object | any, config?: AxiosRequestConfig): PromiseLike<R>;
+        request<T = any, R = AxiosResponse<T>, D = any>(pathname?: string | undefined, method?: string | undefined, data?: object | any, config?: ExtraRequestConfig<D> & AxiosRequestConfig): PromiseLike<R>;
     }
 
     /**
@@ -882,7 +887,7 @@ export namespace WechatpayAxiosPlugin {
          * @returns {PromiseLike} - The `AxiosPromise`
          */
         // @ts-ignore: FIXEME, needs contributing
-        GET<T = any, R = AxiosResponse<T>>(config?: AxiosRequestConfig): Promise<R>;
+        GET<T = any, R = AxiosResponse<T>>(config?: ExtraRequestConfig & AxiosRequestConfig): Promise<R>;
 
         /**
          * @property {function} POST - The alias of the HTTP `POST` request
@@ -891,7 +896,7 @@ export namespace WechatpayAxiosPlugin {
          * @returns {PromiseLike} - The `AxiosPromise`
          */
         // @ts-ignore: FIXEME, needs contributing
-        POST<T = any, R = AxiosResponse<T>>(data?: any, config?: AxiosRequestConfig): Promise<R>;
+        POST<T = any, R = AxiosResponse<T>>(data?: any, config?: ExtraRequestConfig & AxiosRequestConfig): Promise<R>;
 
         /**
          * @property {function} PUT - The alias of the HTTP 'PUT' request
@@ -900,7 +905,7 @@ export namespace WechatpayAxiosPlugin {
          * @returns {PromiseLike} - The `AxiosPromise`
          */
         // @ts-ignore: FIXEME, needs contributing
-        PUT<T = any, R = AxiosResponse<T>>(data?: any, config?: AxiosRequestConfig): Promise<R>;
+        PUT<T = any, R = AxiosResponse<T>>(data?: any, config?: ExtraRequestConfig & AxiosRequestConfig): Promise<R>;
 
         /**
          * @property {function} PATCH - The alias of the HTTP 'PATCH' request
@@ -909,7 +914,7 @@ export namespace WechatpayAxiosPlugin {
          * @returns {PromiseLike} - The `AxiosPromise`
          */
         // @ts-ignore: FIXEME, needs contributing
-        PATCH<T = any, R = AxiosResponse<T>>(data?: any, config?: AxiosRequestConfig): Promise<R>;
+        PATCH<T = any, R = AxiosResponse<T>>(data?: any, config?: ExtraRequestConfig & AxiosRequestConfig): Promise<R>;
 
         /**
          * @property {function} DELETE - The alias of the HTTP 'DELETE' request
@@ -917,7 +922,7 @@ export namespace WechatpayAxiosPlugin {
          * @returns {PromiseLike} - The `AxiosPromise`
          */
         // @ts-ignore: FIXEME, needs contributing
-        DELETE<T = any, R = AxiosResponse<T>>(config?: AxiosRequestConfig): Promise<R>;
+        DELETE<T = any, R = AxiosResponse<T>>(config?: ExtraRequestConfig & AxiosRequestConfig): Promise<R>;
 
         /**
          * @property {function} get - The alias of the HTTP `GET` request
@@ -926,7 +931,7 @@ export namespace WechatpayAxiosPlugin {
          * @returns {PromiseLike} - The `AxiosPromise`
          */
         // @ts-ignore: FIXEME, needs contributing
-        get<T = any, R = AxiosResponse<T>>(config?: AxiosRequestConfig): Promise<R>;
+        get<T = any, R = AxiosResponse<T>>(config?: ExtraRequestConfig & AxiosRequestConfig): Promise<R>;
 
         /**
          * @property {function} post - The alias of the HTTP `POST` request
@@ -935,7 +940,7 @@ export namespace WechatpayAxiosPlugin {
          * @returns {PromiseLike} - The `AxiosPromise`
          */
         // @ts-ignore: FIXEME, needs contributing
-        post<T = any, R = AxiosResponse<T>>(data?: any, config?: AxiosRequestConfig): Promise<R>;
+        post<T = any, R = AxiosResponse<T>>(data?: any, config?: ExtraRequestConfig & AxiosRequestConfig): Promise<R>;
 
         /**
          * @property {function} put - The alias of the HTTP 'PUT' request
@@ -944,7 +949,7 @@ export namespace WechatpayAxiosPlugin {
          * @returns {PromiseLike} - The `AxiosPromise`
          */
         // @ts-ignore: FIXEME, needs contributing
-        put<T = any, R = AxiosResponse<T>>(data?: any, config?: AxiosRequestConfig): Promise<R>;
+        put<T = any, R = AxiosResponse<T>>(data?: any, config?: ExtraRequestConfig & AxiosRequestConfig): Promise<R>;
 
         /**
          * @property {function} patch - The alias of the HTTP 'PATCH' request
@@ -953,7 +958,7 @@ export namespace WechatpayAxiosPlugin {
          * @returns {PromiseLike} - The `AxiosPromise`
          */
         // @ts-ignore: FIXEME, needs contributing
-        patch<T = any, R = AxiosResponse<T>>(data?: any, config?: AxiosRequestConfig): Promise<R>;
+        patch<T = any, R = AxiosResponse<T>>(data?: any, config?: ExtraRequestConfig & AxiosRequestConfig): Promise<R>;
 
         /**
          * @property {function} delete - The alias of the HTTP 'DELETE' request
@@ -961,7 +966,7 @@ export namespace WechatpayAxiosPlugin {
          * @returns {PromiseLike} - The `AxiosPromise`
          */
         // @ts-ignore: FIXEME, needs contributing
-        delete<T = any, R = AxiosResponse<T>>(config?: AxiosRequestConfig): Promise<R>;
+        delete<T = any, R = AxiosResponse<T>>(config?: ExtraRequestConfig & AxiosRequestConfig): Promise<R>;
 
         [key: string]: this
     }
