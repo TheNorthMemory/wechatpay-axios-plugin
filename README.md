@@ -83,6 +83,9 @@ You may confirm the above infos again even if this library already did(by Rsa.ve
 **注：** 提供必选参数且运行后，屏幕即打印出如上信息，提示`证书序列号`及`起、止格林威治(GMT)时间`及证书下载保存位置。
 </details>
 
+> [!WARNING] 重要提示
+> 当下载证书后，屏显有几条证书信息，就在应用中配置**certs**几条，尤其是在[新旧平台证书交替灰度时](https://pay.weixin.qq.com/docs/merchant/development/interface-rules/wechatpay-certificates-rotation.html)，需要把新旧证书都配上，应用才不会出现事故。
+
 ### 命令行请求
 
 命令行工具可用来做快速接入体验，用法如下:
@@ -217,7 +220,11 @@ const wxpay = new Wechatpay({
   mchid: merchantId,
   serial: merchantCertificateSerial,
   privateKey: merchantPrivateKeyInstance,
-  certs: { [platformCertificateSerial]: platformCertificateInstance, },
+  certs: {
+    // 这里设计成Key/Value结构，是为了支持多「微信支付平台证书」
+    // 尤其是在「新旧平台证书交替灰度时」需要把新旧证书都配上。
+    [platformCertificateSerial]: platformCertificateInstance,
+  },
   // 使用APIv2时，需要至少设置 `secret`字段，示例代码未开启
   // APIv2密钥(32字节)
   // secret: 'your_merchant_secret_key_string',
