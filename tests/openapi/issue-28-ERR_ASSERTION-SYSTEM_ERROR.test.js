@@ -1,6 +1,6 @@
 const { readFileSync } = require('fs');
 const { join } = require('path');
-const { AssertionError } = require('assert');
+const { AxiosError } = require('axios');
 
 require('should');
 const nock = require('nock');
@@ -11,10 +11,12 @@ describe('Issue #28 jsapi 请求路径有误', () => {
   let scope;
   let instance;
 
-  const mocks = () => JSON.stringify({
+  const message = {
     code: 'SYSTEM_ERROR',
     message: '系统繁忙，请稍后重试',
-  });
+  };
+
+  const mocks = () => JSON.stringify(message);
 
   beforeEach(() => {
     // {@link ../../fixtures/README.md}
@@ -40,10 +42,10 @@ describe('Issue #28 jsapi 请求路径有误', () => {
     it('post onto the `/v3/combine-transactions/jsapi` got a `500` SYSTEM_ERROR', async () => {
       scope.post('/v3/combine-transactions/jsapi').reply(500, mocks);
       await instance.v3.combineTransactions.jsapi.post({}).catch((resp) => {
-        resp.should.instanceOf(AssertionError);
+        resp.should.instanceOf(AxiosError);
         resp.response.should.be.Object().and.have.keys('headers', 'data');
         resp.response.headers.should.be.Object().and.not.have.keys('Wechatpay-Timestamp');
-        resp.response.data.should.be.String().and.match(/"SYSTEM_ERROR"/);
+        resp.response.data.should.be.eql(message);
       });
     });
   });
@@ -52,10 +54,10 @@ describe('Issue #28 jsapi 请求路径有误', () => {
     it('post onto the `/v3/pay/transactions/jsapi` got a `500` SYSTEM_ERROR', async () => {
       scope.post('/v3/pay/transactions/jsapi').reply(500, mocks);
       await instance.v3.pay.transactions.jsapi.post({}).catch((resp) => {
-        resp.should.instanceOf(AssertionError);
+        resp.should.instanceOf(AxiosError);
         resp.response.should.be.Object().and.have.keys('headers', 'data');
         resp.response.headers.should.be.Object().and.not.have.keys('Wechatpay-Timestamp');
-        resp.response.data.should.be.String().and.match(/"SYSTEM_ERROR"/);
+        resp.response.data.should.be.eql(message);
       });
     });
   });
