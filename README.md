@@ -290,11 +290,11 @@ wxpay.v3.pay.transactions.id._transaction_id_ // _placeholder_ 语法糖会转�
 
 ### 关闭订单
 ```js
-wxpay.v3.pay.transactions.outTradeNo.$transaction_id$.close // $placeholder$ 语法糖会转换成 '{placeholder}' 格式
+wxpay.v3.pay.transactions.outTradeNo.$out_trade_no$.close // $placeholder$ 语法糖会转换成 '{placeholder}' 格式
   .post({
     mchid: '1230000109'
   }, {
-    transaction_id: '1217752501201407033233368018'
+    out_trade_no: 'P1217752501201407033233368018' //当商户订单号有大写字符时，只能这样参数化传递
   })
   .then(({status, statusText}) => console.info(status, statusText))
   .catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
