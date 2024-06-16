@@ -232,7 +232,7 @@ const wxpay = new Wechatpay({
   // merchant: {
   //   cert: readFileSync('/path/to/merchant/apiclient_cert.pem'),
   //   key: merchantPrivateKeyInstance,
-  //   // or
+  //   // {cert,key}或者{passphrase,pfx}格式，两组组合任选其一
   //   // passphrase: 'your_merchant_id',
   //   // pfx: fs.readFileSync('/your/merchant/cert/apiclient_cert.p12'),
   // },
