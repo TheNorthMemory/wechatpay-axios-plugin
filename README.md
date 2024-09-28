@@ -251,7 +251,7 @@ const wxpay = new Wechatpay({
 - `merchant.cert` 为你的商户证书,一般是文件名为`apiclient_cert.pem`文件，支持纯字符串或者文件流`buffer`格式
 - `merchant.key` 为你的商户API私钥，一般是通过官方证书生成工具生成的文件名是`apiclient_key.pem`文件，支持纯字符串或者文件流`buffer`格式
 - `merchant.passphrase` 一般为你的商户号
-- `merchant.pfx` 为你的商户`PKCS12`格式的证书，文件名一般为`apiclient_cert.p12`，支持二进制文件流`buffer`格式
+- `merchant.pfx` 为你的商户`PKCS12`格式的证书，文件名一般为`apiclient_cert.p12`，支持二进制文件流`buffer`格式(**注**: Node17.1开始使用OpenSSL3,老的p12文件需要额外格式转换)
 
 **注：** APIv2&APIv3以及Axios初始参数，均融合在一个型参上，APIv2已不推荐使用，推荐优先使用APIv3。
 
