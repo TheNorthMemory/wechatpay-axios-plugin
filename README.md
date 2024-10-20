@@ -209,12 +209,12 @@ const merchantCertificateSerial = '3775B6A45ACD588826D15E583A95F5DD********';
 const merchantPrivateKeyFilePath = '/path/to/merchant/apiclient_key.pem';
 const merchantPrivateKeyInstance = readFileSync(merchantPrivateKeyFilePath);
 
-// 「微信支付平台证书」的「证书序列号」，下载器下载后有提示`serial`序列号字段
-const platformCertificateSerial = '7132d72a03e93cddf8c03bbd1f37eedf********';
+// 「微信支付平台证书」的「证书序列号」，下载器下载后有提示`serial`序列号字段，或者是「微信支付平台公钥」模式的公钥ID
+const platformCertificateSerialOrPublicKeyId = '7132d72a03e93cddf8c03bbd1f37eedf********';
 
-// 从本地文件中加载「微信支付平台证书」，用来验证微信支付请求响应体的签名
-const platformCertificateFilePath = '/path/to/wechatpay/cert.pem';
-const platformCertificateInstance = readFileSync(platformCertificateFilePath);
+// 从本地加载「微信支付平台证书」或者「微信支付平台公钥」文件，用来验证微信支付请求响应体的签名
+const platformCertificateOrPublicKeyFilePath = '/path/to/wechatpay/cert.pem';
+const platformCertificateOrPublicKeyInstance = readFileSync(platformCertificateOrPublicKeyFilePath);
 
 const wxpay = new Wechatpay({
   mchid: merchantId,
@@ -223,7 +223,7 @@ const wxpay = new Wechatpay({
   certs: {
     // 这里设计成Key/Value结构，是为了支持多「微信支付平台证书」
     // 尤其是在「新旧平台证书交替灰度时」需要把新旧证书都配上。
-    [platformCertificateSerial]: platformCertificateInstance,
+    [platformCertificateSerialOrPublicKeyId]: platformCertificateOrPublicKeyInstance,
   },
   // 使用APIv2时，需要至少设置 `secret`字段，示例代码未开启
   // APIv2密钥(32字节)
@@ -424,7 +424,7 @@ const {Rsa} = require('wechatpay-axios-plugin');
           transfer_amount: 200000,
           transfer_remark: '2020年4月报销',
           openid: 'o-MYE42l80oelYMDE34nYD456Xoy',
-          user_name: Rsa.encrypt('张三', platformCertificateInstance),
+          user_name: Rsa.encrypt('张三', platformCertificateOrPublicKeyInstance),
         }
       ],
       transfer_scene_id: '1001',
