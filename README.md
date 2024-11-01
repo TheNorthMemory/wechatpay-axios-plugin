@@ -35,6 +35,11 @@ NodeJs >= 10.15.0
 
 ## 起步
 
+### v3平台公钥
+
+> ![NOTICE]
+> 2024年Q3，微信支付官方开启了「平台公钥」平替「平台证书」方案，初始化所需的参数仅需配置上 **平台公钥ID** 及 **平台公钥** 即完全兼容支持，CLI/API下载 **平台证书** 已不是一个必要步骤，可略过。
+
 ### v3平台证书
 
 微信支付APIv3使用 (RESTful API with JSON over HTTP）接口设计，数据交换采用非对称（`RSA-OAEP`）加/解密方案。
@@ -209,21 +214,22 @@ const merchantCertificateSerial = '3775B6A45ACD588826D15E583A95F5DD********';
 const merchantPrivateKeyFilePath = '/path/to/merchant/apiclient_key.pem';
 const merchantPrivateKeyInstance = readFileSync(merchantPrivateKeyFilePath);
 
-// 「微信支付平台证书」的「证书序列号」，下载器下载后有提示`serial`序列号字段，或者是「微信支付平台公钥」模式的公钥ID
+// 「微信支付平台证书」的「证书序列号」或者是「微信支付平台公钥ID」
+// 「平台证书序列号」及/或「平台公钥ID」可以从 商户平台 -> 账户中心 -> API安全 直接查询到
 const platformCertificateSerialOrPublicKeyId = '7132d72a03e93cddf8c03bbd1f37eedf********';
 
-// 从本地加载「微信支付平台证书」或者「微信支付平台公钥」文件，用来验证微信支付请求响应体的签名
-const platformCertificateOrPublicKeyFilePath = '/path/to/wechatpay/cert.pem';
-const platformCertificateOrPublicKeyInstance = readFileSync(platformCertificateOrPublicKeyFilePath);
+// 从本地文件中加载「微信支付平台证书」或者「微信支付平台公钥」，用来验证微信支付应答的签名
+const platformCertificateOrPublicKeyFilePath = '/path/to/wechatpay/certificate_or_publickey.pem';
+const platformPublicKeyInstance = readFileSync(platformCertificateOrPublicKeyFilePath);
 
 const wxpay = new Wechatpay({
   mchid: merchantId,
   serial: merchantCertificateSerial,
   privateKey: merchantPrivateKeyInstance,
   certs: {
-    // 这里设计成Key/Value结构，是为了支持多「微信支付平台证书」
-    // 尤其是在「新旧平台证书交替灰度时」需要把新旧证书都配上。
-    [platformCertificateSerialOrPublicKeyId]: platformCertificateOrPublicKeyInstance,
+    // 当「微信支付平台证书」有多份时，填入多份 key/value 对象，
+    // 当「微信支付平台证书」及「微信支付平台公钥」同时存在时，填入 key =「平台公钥」, value= 「平台公钥」实例即支持
+    [platformCertificateSerialOrPublicKeyId]: platformPublicKeyInstance,
   },
   // 使用APIv2时，需要至少设置 `secret`字段，示例代码未开启
   // APIv2密钥(32字节)
@@ -246,7 +252,7 @@ const wxpay = new Wechatpay({
 - `mchid` 为你的商户号，一般是10字节纯数字
 - `serial` 为你的商户证书序列号，一般是40字节字符串
 - `privateKey` 为你的商户API私钥，一般是通过官方证书生成工具生成的文件名是`apiclient_key.pem`文件，支持纯字符串或者文件流`buffer`格式
-- `certs{[serial_number]:string}` 为通过下载工具下载的平台证书`key/value`键值对，键为平台证书序列号，值为平台证书pem格式的纯字符串或者文件流`buffer`格式
+- `certs{[serial_number]:string}` 为通过下载工具下载的平台证书`key/value`键值对，键为平台证书序列号/平台公钥ID，值为平台证书/平台公钥pem格式的纯字符串或者文件流`buffer`格式
 - `secret` 为APIv2版的`密钥`，商户平台上设置的32字节字符串
 - `merchant.cert` 为你的商户证书,一般是文件名为`apiclient_cert.pem`文件，支持纯字符串或者文件流`buffer`格式
 - `merchant.key` 为你的商户API私钥，一般是通过官方证书生成工具生成的文件名是`apiclient_key.pem`文件，支持纯字符串或者文件流`buffer`格式
@@ -424,7 +430,7 @@ const {Rsa} = require('wechatpay-axios-plugin');
           transfer_amount: 200000,
           transfer_remark: '2020年4月报销',
           openid: 'o-MYE42l80oelYMDE34nYD456Xoy',
-          user_name: Rsa.encrypt('张三', platformCertificateOrPublicKeyInstance),
+          user_name: Rsa.encrypt('张三', platformPublicKeyInstance),
         }
       ],
       transfer_scene_id: '1001',
