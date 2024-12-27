@@ -35,13 +35,13 @@ NodeJs >= 10.15.0
 
 ## 起步
 
-### v3平台公钥
+### 微信支付公钥
 
 > [!NOTE]
-> 2024年Q3，微信支付官方开启了「平台公钥」平替「平台证书」方案，初始化所需的参数仅需配置上 **平台公钥ID** 及 **平台公钥** 即完全兼容支持，CLI/API下载 **平台证书** 已不是一个必要步骤，可略过。
+> 2024年Q3，微信支付官方开启了「微信支付公钥」平替「平台证书」方案，初始化所需的参数仅需配置上 **微信支付公钥ID** 及 **微信支付公钥** 即完全兼容支持，CLI/API下载 **平台证书** 已不是一个必要步骤，可略过。
 > **平台公钥ID** 及 **平台公钥** 均可在 [微信支付商户平台](https://pay.weixin.qq.com/) -> 账户中心 -> API安全 查看及/或下载。
 
-### v3平台证书
+### 平台证书
 
 微信支付APIv3使用 (RESTful API with JSON over HTTP）接口设计，数据交换采用非对称（`RSA-OAEP`）加/解密方案。
 API上行所需的`商户API私钥`，可以由商户官方专用证书生成工具生成，
@@ -90,7 +90,7 @@ You may confirm the above infos again even if this library already did(by Rsa.ve
 </details>
 
 > [!IMPORTANT]
-> 当下载证书后，屏显有几条证书信息，就在应用中配置**certs**几条，尤其是在[新旧平台证书交替灰度时](https://pay.weixin.qq.com/docs/merchant/development/interface-rules/wechatpay-certificates-rotation.html)，需要把新旧证书都配上，应用才不会出现事故。
+> 当下载证书后，屏显有几条证书信息，就在应用中配置**certs**几条，尤其是在[新旧平台证书交替灰度时](https://pay.weixin.qq.com/doc/v3/merchant/4012068829)，需要把新旧证书都配上，应用才不会出现事故。
 
 ### 命令行请求
 
@@ -215,8 +215,8 @@ const merchantCertificateSerial = '3775B6A45ACD588826D15E583A95F5DD********';
 const merchantPrivateKeyFilePath = '/path/to/merchant/apiclient_key.pem';
 const merchantPrivateKeyInstance = readFileSync(merchantPrivateKeyFilePath);
 
-// 「微信支付平台证书」的「平台证书序列号」
-// 可以从「微信支付平台证书」文件解析，也可以在 商户平台 -> 账户中心 -> API安全 查询到
+// 「平台证书」的「证书序列号」
+// 可以从「平台证书」文件解析，也可以在 商户平台 -> 账户中心 -> API安全 查询到
 const platformCertificateSerial = '7132d72a03e93cddf8c03bbd1f37eedf********';
 
 // 从本地文件中加载「微信支付平台证书」，可由内置的CLI工具下载到，用来验证微信支付应答的签名
