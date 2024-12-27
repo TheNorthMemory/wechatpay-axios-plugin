@@ -211,38 +211,45 @@ const merchantId = '190000****';
 // 「商户API证书」的「证书序列号」
 const merchantCertificateSerial = '3775B6A45ACD588826D15E583A95F5DD********';
 
-// 从本地文件中加载「商户API私钥」
+// 从本地文件中加载「商户API私钥」，用于生成请求的签名
 const merchantPrivateKeyFilePath = '/path/to/merchant/apiclient_key.pem';
 const merchantPrivateKeyInstance = readFileSync(merchantPrivateKeyFilePath);
 
-// 「微信支付平台证书」的「证书序列号」或者是「微信支付平台公钥ID」
-// 「平台证书序列号」及/或「平台公钥ID」可以从 商户平台 -> 账户中心 -> API安全 直接查询到
-const platformCertificateSerialOrPublicKeyId = '7132d72a03e93cddf8c03bbd1f37eedf********';
+// 「微信支付平台证书」的「平台证书序列号」
+// 可以从「微信支付平台证书」文件解析，也可以在 商户平台 -> 账户中心 -> API安全 查询到
+const platformCertificateSerial = '7132d72a03e93cddf8c03bbd1f37eedf********';
 
-// 从本地文件中加载「微信支付平台证书」或者「微信支付平台公钥」，用来验证微信支付应答的签名
-const platformCertificateOrPublicKeyFilePath = '/path/to/wechatpay/certificate_or_publickey.pem';
-const platformPublicKeyInstance = readFileSync(platformCertificateOrPublicKeyFilePath);
+// 从本地文件中加载「微信支付平台证书」，可由内置的CLI工具下载到，用来验证微信支付应答的签名
+const platformCertificateFilePath  = '/path/to/wechatpay/certificate.pem';
+const onePlatformPublicKeyInstance = readFileSync(platformCertificateFilePath);
 
+// 从本地文件中加载「微信支付公钥」，用来验证微信支付应答的签名
+const platformPublicKeyFilePath    = '/path/to/wechatpay/publickey.pem';
+const twoPlatformPublicKeyInstance = readFileSync(platformPublicKeyFilePath);
+
+// 「微信支付公钥」的「微信支付公钥ID」
+// 需要在 商户平台 -> 账户中心 -> API安全 查询
+const platformPublicKeyId = 'PUB_KEY_ID_01142321349124100000000000********';
+
+// 构造一个 APIv2 & APIv3 客户端实例
 const wxpay = new Wechatpay({
   mchid: merchantId,
   serial: merchantCertificateSerial,
   privateKey: merchantPrivateKeyInstance,
   certs: {
-    // 当「微信支付平台证书」有多份时，填入多份 key/value 对象，
-    // 当「微信支付平台证书」及「微信支付平台公钥」同时存在时，填入 key =「平台公钥」, value= 「平台公钥」实例即支持
-    [platformCertificateSerialOrPublicKeyId]: platformPublicKeyInstance,
+    [platformCertificateSerial]: onePlatformPublicKeyInstance,
+    [platformPublicKeyId]: twoPlatformPublicKeyInstance,
   },
-  // 使用APIv2时，需要至少设置 `secret`字段，示例代码未开启
-  // APIv2密钥(32字节)
-  // secret: 'your_merchant_secret_key_string',
-  // // 接口不要求证书情形，例如仅收款merchant对象参数可选
-  // merchant: {
-  //   cert: readFileSync('/path/to/merchant/apiclient_cert.pem'),
-  //   key: merchantPrivateKeyInstance,
-  //   // {cert,key}或者{passphrase,pfx}格式，两组组合任选其一
-  //   // passphrase: 'your_merchant_id',
-  //   // pfx: fs.readFileSync('/your/merchant/cert/apiclient_cert.p12'),
-  // },
+  // 使用APIv2(密钥32字节)时，需要至少设置 `secret`字段
+  secret: 'your_merchant_secret_key_string',
+  // 接口不要求证书情形，例如仅收款merchant对象参数可选
+  merchant: {
+    cert: readFileSync('/path/to/merchant/apiclient_cert.pem'),
+    key: merchantPrivateKeyInstance,
+    // 或者配置如下配置项，**注**: Node17.1开始使用OpenSSL3,老的p12文件需要额外格式转换
+    // passphrase: 'your_merchant_id',
+    // pfx: fs.readFileSync('/your/merchant/cert/apiclient_cert.p12'),
+  },
 });
 ```
 
@@ -253,7 +260,7 @@ const wxpay = new Wechatpay({
 - `mchid` 为你的商户号，一般是10字节纯数字
 - `serial` 为你的商户证书序列号，一般是40字节字符串
 - `privateKey` 为你的商户API私钥，一般是通过官方证书生成工具生成的文件名是`apiclient_key.pem`文件，支持纯字符串或者文件流`buffer`格式
-- `certs{[serial_number]:string}` 为通过下载工具下载的平台证书`key/value`键值对，键为平台证书序列号/平台公钥ID，值为平台证书/平台公钥pem格式的纯字符串或者文件流`buffer`格式
+- `certs{[serial_number]:string}` 为通过下载工具下载的平台证书`key/value`键值对，键为平台证书序列号/微信支付公钥ID，值为平台证书/微信支付公钥pem格式的纯字符串或者文件流`buffer`格式
 - `secret` 为APIv2版的`密钥`，商户平台上设置的32字节字符串
 - `merchant.cert` 为你的商户证书,一般是文件名为`apiclient_cert.pem`文件，支持纯字符串或者文件流`buffer`格式
 - `merchant.key` 为你的商户API私钥，一般是通过官方证书生成工具生成的文件名是`apiclient_key.pem`文件，支持纯字符串或者文件流`buffer`格式
