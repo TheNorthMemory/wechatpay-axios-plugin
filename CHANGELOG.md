@@ -1,5 +1,8 @@
 # 变更历史
 
+## v0.8.14 (2025-01-01)
+- 优化README增加`微信支付公钥`相关说明，备注`pfx`格式的商户API密钥在高版本`nodejs`上的额外转换说明;
+
 ## v0.8.13 (2024-03-27)
 - 针对`APIv3`返回的HTTP status code非20x场景，不再尝试去验签，异常类型从`AssertionError`回退为`AxiosError`;
 
