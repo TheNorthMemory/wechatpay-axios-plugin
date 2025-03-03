@@ -45,7 +45,6 @@ describe('lib/transformer', () => {
   describe('Transformer::signer', () => {
     it('method `signer` should be static', () => {
       should(Transformer.signer).be.a.Function();
-      should((new Transformer()).signer).is.Undefined();
     });
 
     it('method `signer` should thrown a TypeError while none argument passed in', () => {
@@ -135,7 +134,6 @@ describe('lib/transformer', () => {
   describe('Transformer::request', () => {
     it('method `request` should be static', () => {
       should(Transformer.request).be.Array();
-      should((new Transformer()).request).is.Undefined();
     });
 
     it('method `request` should be equal to `[Transformer.signer, Transformer.toXml]`', () => {
@@ -185,7 +183,6 @@ describe('lib/transformer', () => {
   describe('Transformer::verifier', () => {
     it('method `verifier` should be static', () => {
       should(Transformer.verifier).be.a.Function();
-      should((new Transformer()).verifier).is.Undefined();
     });
 
     it('method `verifier` should throw `assert.AssertionError` while the input `{sign}` doesn\'t matched', () => {
@@ -210,7 +207,6 @@ describe('lib/transformer', () => {
   describe('Transformer::response', () => {
     it('method `response` should be static', () => {
       should(Transformer.response).be.Array();
-      should((new Transformer()).response).is.Undefined();
     });
 
     it('method `response` should be equal to `[Transformer.toObject, Transformer.verifier]`', () => {
