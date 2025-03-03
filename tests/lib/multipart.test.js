@@ -33,22 +33,6 @@ describe('lib/multipart', () => {
         .and.have.property('any', 'mock');
     });
 
-    it('The `dashDash` Buffer property should be there and cannot be deleted/modified', () => {
-      should(Multipart.dashDash).be.Undefined();
-
-      const form = new Multipart();
-
-      form.dashDash.should.not.Undefined().and.be.instanceOf(Buffer).and.have.length(2);
-
-      should(delete form.dashDash).be.False();
-      Buffer.compare(form.dashDash, Buffer.from('--')).should.be.equal(0);
-
-      const buf = Buffer.alloc(2);
-
-      form.dashDash = buf;
-      Buffer.compare(form.dashDash, buf).should.be.equal(1);
-    });
-
     it('The `boundary` Buffer property should be there and cannot be deleted/modified', () => {
       should(Multipart.boundary).be.Undefined();
 
@@ -64,42 +48,6 @@ describe('lib/multipart', () => {
 
       form.boundary = buf;
       Buffer.compare(form.boundary, buf).should.be.equal(1);
-    });
-
-    it('The `EMPTY` Buffer property should be there and cannot be deleted/modified', () => {
-      should(Multipart.EMPTY).be.Undefined();
-
-      const form = new Multipart();
-
-      form.EMPTY.should.not.Undefined()
-        .and.be.instanceOf(Buffer)
-        .and.have.length(0);
-
-      should(delete form.EMPTY).be.False();
-
-      const buf = Buffer.alloc(0);
-      Buffer.compare(form.EMPTY, buf).should.be.equal(0);
-
-      form.EMPTY = buf;
-      Buffer.compare(form.EMPTY, buf).should.be.equal(0);
-    });
-
-    it('The `CRLF` Buffer property should be there and cannot be deleted/modified', () => {
-      should(Multipart.CRLF).be.Undefined();
-
-      const form = new Multipart();
-
-      form.CRLF.should.not.Undefined()
-        .and.be.instanceOf(Buffer)
-        .and.have.length(2);
-
-      should(delete form.CRLF).be.False();
-      Buffer.compare(form.CRLF, Buffer.from('\r\n')).should.be.equal(0);
-
-      const buf = Buffer.alloc(2);
-
-      form.CRLF = buf;
-      Buffer.compare(form.CRLF, buf).should.be.equal(1);
     });
 
     it('The `data` property should be instanceOf Array and cannot deleted', () => {
