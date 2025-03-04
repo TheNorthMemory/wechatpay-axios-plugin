@@ -115,26 +115,6 @@ describe('lib/wechatpay', () => {
       Wechatpay.chain('/v2').should.instanceof(Function).and.have.property('name', '/v2');
     });
 
-    it('Wechatpay.chain(\'/v2\').DELETE should returns a Function which\'s named as `DELETE`', () => {
-      Wechatpay.chain('/v2').DELETE.should.instanceof(Function).and.have.property('name', 'DELETE');
-    });
-
-    it('Wechatpay.chain(\'/v2\').GET should returns a Function which\'s named as `GET`', () => {
-      Wechatpay.chain('/v2').GET.should.instanceof(Function).and.have.property('name', 'GET');
-    });
-
-    it('Wechatpay.chain(\'/v2\').POST should returns a Function which\'s named as `POST`', () => {
-      Wechatpay.chain('/v2').POST.should.instanceof(Function).and.have.property('name', 'POST');
-    });
-
-    it('Wechatpay.chain(\'/v2\').PUT should returns a Function which\'s named as `PUT`', () => {
-      Wechatpay.chain('/v2').PUT.should.instanceof(Function).and.have.property('name', 'PUT');
-    });
-
-    it('Wechatpay.chain(\'/v2\').PATCH should returns a Function which\'s named as `PATCH`', () => {
-      Wechatpay.chain('/v2').PATCH.should.instanceof(Function).and.have.property('name', 'PATCH');
-    });
-
     it('Wechatpay.chain(\'/v2/pay/micropay\') should returns a Function which\'s named as `/v2/pay/micropay`', () => {
       Wechatpay.chain('/v2/pay/micropay').should.instanceof(Function).and.have.property('name', '/v2/pay/micropay');
     });

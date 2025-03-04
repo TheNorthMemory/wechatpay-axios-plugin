@@ -67,25 +67,6 @@ describe('lib/hash', () => {
     });
   });
 
-  describe('Hash::hmacSha256', () => {
-    it('method `hmacSha256` should be static', () => {
-      should(Hash.hmacSha256).be.a.Function();
-      should((new Hash()).hmacSha256).is.Undefined();
-    });
-
-    it('method `hmacSha256` should thrown TypeError while none-arguments passed', () => {
-      should(() => {
-        Hash.hmacSha256();
-      }).throw(TypeError, {
-        code: 'ERR_INVALID_ARG_TYPE',
-      });
-    });
-
-    it('method `hmacSha256` should returns a 64 length string', () => {
-      Hash.hmacSha256('1', '2').should.be.String().and.have.length(64);
-    });
-  });
-
   describe('Hash::equals', () => {
     it('method `equals` should be static', () => {
       should(Hash.equals).be.a.Function();

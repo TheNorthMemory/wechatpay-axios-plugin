@@ -27,9 +27,7 @@ Promise based and chained WeChatPay OpenAPI client SDK for NodeJS
 
 ## 系统要求
 
-NodeJs >= 10.15.0
-
-注: `axios@1.x` 仅能在`Node12`以上运行，`Node10`环境需要手动指定`axios@0.x`版本，本开发包预计在`2025Q2`结束对`Node10`的支持。
+NodeJs >= 12
 
 ## 安装
 

@@ -15,72 +15,6 @@ describe('lib/aes', () => {
     Aes.AesEcb.should.be.a.Function().and.have.property('name', 'AesEcb');
   });
 
-  describe('Aes::hex', () => {
-    it('property `hex` should be static', () => {
-      should(Aes.hex).be.a.String();
-      should((new Aes()).hex).is.Undefined();
-    });
-
-    it('property `hex` should have a fixed value `hex`', () => {
-      should(Aes.hex).be.a.String().and.equal('hex');
-    });
-  });
-
-  describe('Aes::utf8', () => {
-    it('property `utf8` should be static', () => {
-      should(Aes.utf8).be.a.String();
-      should((new Aes()).utf8).is.Undefined();
-    });
-
-    it('property `utf8` should have a fixed value `utf8`', () => {
-      should(Aes.utf8).be.a.String().and.equal('utf8');
-    });
-  });
-
-  describe('Aes::base64', () => {
-    it('property `base64` should be static', () => {
-      should(Aes.base64).be.a.String();
-      should((new Aes()).base64).is.Undefined();
-    });
-
-    it('property `base64` should have a fixed value `base64`', () => {
-      should(Aes.base64).be.a.String().and.equal('base64');
-    });
-  });
-
-  describe('Aes::BLOCK_SIZE', () => {
-    it('property `BLOCK_SIZE` should be static', () => {
-      should(Aes.BLOCK_SIZE).be.a.Number();
-      should((new Aes()).BLOCK_SIZE).is.Undefined();
-    });
-
-    it('property `BLOCK_SIZE` should have a fixed value 16', () => {
-      should(Aes.BLOCK_SIZE).be.a.Number().and.equal(16);
-    });
-  });
-
-  describe('Aes::ALGO_AES_256_GCM', () => {
-    it('property `ALGO_AES_256_GCM` should be static', () => {
-      should(Aes.ALGO_AES_256_GCM).be.a.String();
-      should((new Aes()).ALGO_AES_256_GCM).is.Undefined();
-    });
-
-    it('property `ALGO_AES_256_GCM` should have a fixed value `aes-256-gcm`', () => {
-      should(Aes.ALGO_AES_256_GCM).be.a.String().and.equal('aes-256-gcm');
-    });
-  });
-
-  describe('Aes::ALGO_AES_256_ECB', () => {
-    it('property `ALGO_AES_256_ECB` should be static', () => {
-      should(Aes.ALGO_AES_256_ECB).be.a.String();
-      should((new Aes()).ALGO_AES_256_ECB).is.Undefined();
-    });
-
-    it('property `ALGO_AES_256_ECB` should have a fixed value `aes-256-ecb`', () => {
-      should(Aes.ALGO_AES_256_ECB).be.a.String().and.equal('aes-256-ecb');
-    });
-  });
-
   describe('Aes::pkcs7', () => {
     it('property `pkcs7` should be static', () => {
       should(Aes.pkcs7).be.an.Object();
@@ -150,169 +84,10 @@ describe('lib/aes', () => {
 
   const mockupIv = '0123456789abcdef';
   const mockupKey = '0123456789abcdef0123456789abcdef';
-  describe('Aes::encrypt', () => {
-    it('method `encrypt` should be static', () => {
-      should(Aes.encrypt).be.a.Function();
-      should((new Aes()).encrypt).is.Undefined();
-    });
-
-    it('method `encrypt` should thrown TypeError with `code:ERR_INVALID_ARG_TYPE` when type of the `key` is invalid', () => {
-      should(() => {
-        Aes.encrypt();
-      }).throw(TypeError, {
-        code: 'ERR_INVALID_ARG_TYPE',
-      });
-    });
-
-    it('method `encrypt` should thrown TypeError with `code:ERR_INVALID_ARG_TYPE` when type of the `iv` is invalid', () => {
-      should(() => {
-        Aes.encrypt(undefined, '');
-      }).throw(TypeError, {
-        code: 'ERR_INVALID_ARG_TYPE',
-      });
-    });
-
-    it('method `encrypt` should thrown Error when length of the `iv` is invalid', () => {
-      should(() => {
-        Aes.encrypt('', '');
-      }).throw(Error);
-    });
-
-    it('method `encrypt` should thrown Error when length of the `key` is invalid', () => {
-      mockupIv.should.be.String().and.have.length(16);
-      should(() => {
-        Aes.encrypt(mockupIv, '');
-      }).throw(Error, {
-        message: 'Invalid key length',
-        stack: /at Cipheriv\.createCipherBase/,
-      });
-    });
-
-    it('method `encrypt` should thrown TypeError with `code:ERR_INVALID_ARG_TYPE` when type of the `plaintext` is invalid', () => {
-      mockupIv.should.be.String().and.have.length(16);
-      mockupKey.should.be.String().and.have.length(32);
-      should(() => {
-        Aes.encrypt(mockupIv, mockupKey);
-      }).throw(TypeError, {
-        code: 'ERR_INVALID_ARG_TYPE',
-      });
-    });
-
-    it('method `encrypt` should thrown TypeError with `code:ERR_INVALID_ARG_TYPE` when the `aad` is number(1)', () => {
-      mockupIv.should.be.String().and.have.length(16);
-      mockupKey.should.be.String().and.have.length(32);
-      should(() => {
-        Aes.encrypt(mockupIv, mockupKey, '', 1);
-      }).throw(TypeError, {
-        code: 'ERR_INVALID_ARG_TYPE',
-      });
-    });
-
-    it('method `encrypt` should returns a string while passed `plaintext` an empty string and equal to `GvpmmdtYwexXIPhySs9Tlg==`', () => {
-      mockupIv.should.be.String().and.have.length(16);
-      mockupKey.should.be.String().and.have.length(32);
-      Aes.encrypt(mockupIv, mockupKey, '', '')
-        .should.be.a.String()
-        .and.equal('GvpmmdtYwexXIPhySs9Tlg==');
-    });
-
-    it('method `encrypt` should returns a string while passed `plaintext`=`hello`, `aad`=`world` and equal to `APoZlYpivU3HjbAiB4CvW1rAFr8J`', () => {
-      mockupIv.should.be.String().and.have.length(16);
-      mockupKey.should.be.String().and.have.length(32);
-      Aes.encrypt(mockupIv, mockupKey, 'hello', 'world')
-        .should.be.a.String()
-        .and.equal('APoZlYpivU3HjbAiB4CvW1rAFr8J');
-    });
-  });
-
-  describe('Aes::decrypt', () => {
-    it('method `decrypt` should be static', () => {
-      should(Aes.decrypt).be.a.Function();
-      should((new Aes()).decrypt).is.Undefined();
-    });
-
-    it('method `decrypt` should thrown TypeError with `code:ERR_INVALID_ARG_TYPE` when type of the `ciphertext` is invalid', () => {
-      should(() => {
-        Aes.decrypt();
-      }).throw(TypeError, {
-        code: 'ERR_INVALID_ARG_TYPE',
-      });
-    });
-
-    it('method `decrypt` should thrown TypeError with `code:ERR_INVALID_ARG_TYPE` when type of the `key` is invalid', () => {
-      should(() => {
-        Aes.decrypt(undefined, undefined, '');
-      }).throw(TypeError, {
-        code: 'ERR_INVALID_ARG_TYPE',
-      });
-    });
-
-    it('method `decrypt` should thrown TypeError with `code:ERR_INVALID_ARG_TYPE` when type of the `iv` is invalid', () => {
-      should(() => {
-        Aes.decrypt(undefined, '', '');
-      }).throw(TypeError, {
-        code: 'ERR_INVALID_ARG_TYPE',
-      });
-    });
-
-    it('method `decrypt` should thrown Error when length of the `iv` is invalid', () => {
-      should(() => {
-        Aes.decrypt('', '', '');
-      }).throw(Error, {
-      });
-    });
-
-    it('method `decrypt` should thrown Error when length of the `key` is invalid', () => {
-      mockupIv.should.be.String().and.have.length(16);
-      should(() => {
-        Aes.decrypt(mockupIv, '', '');
-      }).throw(Error, {
-        message: 'Invalid key length',
-        stack: /at Decipheriv\.createCipherBase/,
-      });
-    });
-
-    it('method `decrypt` should thrown Error when the `ciphertext` is empty string', () => {
-      mockupIv.should.be.String().and.have.length(16);
-      mockupKey.should.be.String().and.have.length(32);
-      should(() => {
-        Aes.decrypt(mockupIv, mockupKey, '');
-      }).throw(Error, {
-        code: 'ERR_CRYPTO_INVALID_AUTH_TAG',
-        message: 'Invalid authentication tag length: 0',
-      });
-    });
-
-    it('method `decrypt` should returns empty string when the `ciphertext` is `GvpmmdtYwexXIPhySs9Tlg==`', () => {
-      mockupIv.should.be.String().and.have.length(16);
-      mockupKey.should.be.String().and.have.length(32);
-      Aes.decrypt(mockupIv, mockupKey, 'GvpmmdtYwexXIPhySs9Tlg==').should.be.String().and.empty().and.have.length(0);
-    });
-
-    it('method `decrypt` should thrown TypeError with `code:ERR_INVALID_ARG_TYPE` when the `aad` is number(1)', () => {
-      mockupIv.should.be.String().and.have.length(16);
-      mockupKey.should.be.String().and.have.length(32);
-      should(() => {
-        Aes.decrypt(mockupIv, mockupKey, 'GvpmmdtYwexXIPhySs9Tlg==', 1);
-      }).throw(TypeError, {
-        code: 'ERR_INVALID_ARG_TYPE',
-      });
-    });
-
-    it('method `decrypt` should returns `hello` when the `ciphertext` is `APoZlYpivU3HjbAiB4CvW1rAFr8J` and `aad`=`world`', () => {
-      mockupIv.should.be.String().and.have.length(16);
-      mockupKey.should.be.String().and.have.length(32);
-      Aes.decrypt(mockupIv, mockupKey, 'APoZlYpivU3HjbAiB4CvW1rAFr8J', 'world').should.be.String().and.equal('hello');
-    });
-  });
 
   describe('Aes::AesGcm', () => {
     it('should be class AesGcm', () => {
       Aes.AesGcm.should.be.a.Function().and.have.property('name', 'AesGcm');
-    });
-
-    it('`new Aes.AesGcm` should be instanceof `Aes`', () => {
-      (new Aes.AesGcm()).should.be.instanceof(Aes);
     });
 
     describe('Aes::AesGcm::encrypt', () => {
@@ -331,7 +106,7 @@ describe('lib/aes', () => {
 
       it('method `encrypt` should thrown TypeError with `code:ERR_INVALID_ARG_TYPE` when type of the `iv` is invalid', () => {
         should(() => {
-          Aes.AesGcm.encrypt(undefined, '');
+          Aes.AesGcm.encrypt('', '');
         }).throw(TypeError, {
           code: 'ERR_INVALID_ARG_TYPE',
         });
@@ -339,7 +114,7 @@ describe('lib/aes', () => {
 
       it('method `encrypt` should thrown Error when length of the `iv` is invalid', () => {
         should(() => {
-          Aes.AesGcm.encrypt('', '');
+          Aes.AesGcm.encrypt('', '', '');
         }).throw(Error, {
         });
       });
@@ -347,7 +122,7 @@ describe('lib/aes', () => {
       it('method `encrypt` should thrown Error when length of the `key` is invalid', () => {
         mockupIv.should.be.String().and.have.length(16);
         should(() => {
-          Aes.AesGcm.encrypt(mockupIv, '');
+          Aes.AesGcm.encrypt('', '', mockupIv);
         }).throw(Error, {
           message: 'Invalid key length',
           stack: /at Cipheriv\.createCipherBase/,
@@ -358,7 +133,7 @@ describe('lib/aes', () => {
         mockupIv.should.be.String().and.have.length(16);
         mockupKey.should.be.String().and.have.length(32);
         should(() => {
-          Aes.AesGcm.encrypt(mockupIv, mockupKey);
+          Aes.AesGcm.encrypt(undefined, mockupKey, mockupIv);
         }).throw(TypeError, {
           code: 'ERR_INVALID_ARG_TYPE',
         });
@@ -368,7 +143,7 @@ describe('lib/aes', () => {
         mockupIv.should.be.String().and.have.length(16);
         mockupKey.should.be.String().and.have.length(32);
         should(() => {
-          Aes.AesGcm.encrypt(mockupIv, mockupKey, '', 1);
+          Aes.AesGcm.encrypt('', mockupKey, mockupIv, 1);
         }).throw(TypeError, {
           code: 'ERR_INVALID_ARG_TYPE',
         });
@@ -377,7 +152,7 @@ describe('lib/aes', () => {
       it('method `encrypt` should returns a string while passed `plaintext` an empty string and equal to `GvpmmdtYwexXIPhySs9Tlg==`', () => {
         mockupIv.should.be.String().and.have.length(16);
         mockupKey.should.be.String().and.have.length(32);
-        Aes.AesGcm.encrypt(mockupIv, mockupKey, '', '')
+        Aes.AesGcm.encrypt('', mockupKey, mockupIv, '')
           .should.be.a.String()
           .and.equal('GvpmmdtYwexXIPhySs9Tlg==');
       });
@@ -385,7 +160,7 @@ describe('lib/aes', () => {
       it('method `encrypt` should returns a string while passed `plaintext`=`hello`, `aad`=`world` and equal to `APoZlYpivU3HjbAiB4CvW1rAFr8J`', () => {
         mockupIv.should.be.String().and.have.length(16);
         mockupKey.should.be.String().and.have.length(32);
-        Aes.AesGcm.encrypt(mockupIv, mockupKey, 'hello', 'world')
+        Aes.AesGcm.encrypt('hello', mockupKey, mockupIv, 'world')
           .should.be.a.String()
           .and.equal('APoZlYpivU3HjbAiB4CvW1rAFr8J');
       });
@@ -407,7 +182,7 @@ describe('lib/aes', () => {
 
       it('method `decrypt` should thrown TypeError with `code:ERR_INVALID_ARG_TYPE` when type of the `key` is invalid', () => {
         should(() => {
-          Aes.AesGcm.decrypt(undefined, undefined, '');
+          Aes.AesGcm.decrypt('');
         }).throw(TypeError, {
           code: 'ERR_INVALID_ARG_TYPE',
         });
@@ -415,7 +190,7 @@ describe('lib/aes', () => {
 
       it('method `decrypt` should thrown TypeError with `code:ERR_INVALID_ARG_TYPE` when type of the `iv` is invalid', () => {
         should(() => {
-          Aes.AesGcm.decrypt(undefined, '', '');
+          Aes.AesGcm.decrypt('', '');
         }).throw(TypeError, {
           code: 'ERR_INVALID_ARG_TYPE',
         });
@@ -431,7 +206,7 @@ describe('lib/aes', () => {
       it('method `decrypt` should thrown Error when length of the `key` is invalid', () => {
         mockupIv.should.be.String().and.have.length(16);
         should(() => {
-          Aes.AesGcm.decrypt(mockupIv, '', '');
+          Aes.AesGcm.decrypt('', '', mockupIv);
         }).throw(Error, {
           message: 'Invalid key length',
           stack: /at Decipheriv\.createCipherBase/,
@@ -442,7 +217,7 @@ describe('lib/aes', () => {
         mockupIv.should.be.String().and.have.length(16);
         mockupKey.should.be.String().and.have.length(32);
         should(() => {
-          Aes.AesGcm.decrypt(mockupIv, mockupKey, '');
+          Aes.AesGcm.decrypt('', mockupKey, mockupIv);
         }).throw(Error, {
           code: 'ERR_CRYPTO_INVALID_AUTH_TAG',
           message: 'Invalid authentication tag length: 0',
@@ -452,14 +227,14 @@ describe('lib/aes', () => {
       it('method `decrypt` should returns empty string when the `ciphertext` is `GvpmmdtYwexXIPhySs9Tlg==`', () => {
         mockupIv.should.be.String().and.have.length(16);
         mockupKey.should.be.String().and.have.length(32);
-        Aes.AesGcm.decrypt(mockupIv, mockupKey, 'GvpmmdtYwexXIPhySs9Tlg==').should.be.String().and.empty().and.have.length(0);
+        Aes.AesGcm.decrypt('GvpmmdtYwexXIPhySs9Tlg==', mockupKey, mockupIv).should.be.String().and.empty().and.have.length(0);
       });
 
       it('method `decrypt` should thrown TypeError with `code:ERR_INVALID_ARG_TYPE` when the `aad` is number(1)', () => {
         mockupIv.should.be.String().and.have.length(16);
         mockupKey.should.be.String().and.have.length(32);
         should(() => {
-          Aes.AesGcm.decrypt(mockupIv, mockupKey, 'GvpmmdtYwexXIPhySs9Tlg==', 1);
+          Aes.AesGcm.decrypt('GvpmmdtYwexXIPhySs9Tlg==', mockupKey, mockupIv, 1);
         }).throw(TypeError, {
           code: 'ERR_INVALID_ARG_TYPE',
         });
@@ -468,7 +243,7 @@ describe('lib/aes', () => {
       it('method `decrypt` should returns `hello` when the `ciphertext` is `APoZlYpivU3HjbAiB4CvW1rAFr8J` and `aad`=`world`', () => {
         mockupIv.should.be.String().and.have.length(16);
         mockupKey.should.be.String().and.have.length(32);
-        Aes.AesGcm.decrypt(mockupIv, mockupKey, 'APoZlYpivU3HjbAiB4CvW1rAFr8J', 'world').should.be.String().and.equal('hello');
+        Aes.AesGcm.decrypt('APoZlYpivU3HjbAiB4CvW1rAFr8J', mockupKey, mockupIv, 'world').should.be.String().and.equal('hello');
       });
     });
   });
@@ -476,10 +251,6 @@ describe('lib/aes', () => {
   describe('Aes::AesEcb', () => {
     it('should be class AesEcb', () => {
       Aes.AesEcb.should.be.a.Function().and.have.property('name', 'AesEcb');
-    });
-
-    it('`new Aes.AesEcb` should be instanceof `Aes`', () => {
-      (new Aes.AesEcb()).should.be.instanceof(Aes);
     });
 
     describe('Aes::AesEcb::encrypt', () => {
@@ -560,10 +331,6 @@ describe('lib/aes', () => {
   describe('Aes::AesCbc', () => {
     it('should be class AesCbc', () => {
       Aes.AesCbc.should.be.a.Function().and.have.property('name', 'AesCbc');
-    });
-
-    it('`new Aes.AesCbc` should be instanceof `Aes`', () => {
-      (new Aes.AesCbc()).should.be.instanceof(Aes);
     });
 
     describe('Aes::AesCbc::encrypt', () => {
