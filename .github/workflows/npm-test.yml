@@ -28,5 +28,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           architecture: 'x64'
       - run: npm install
+      - run: npm install axios@~0.29.0 --no-save
+        if: matrix.node-version == 10.15
       - run: npm run lint
       - run: npm test
