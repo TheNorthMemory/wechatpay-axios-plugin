@@ -20,7 +20,7 @@ Promise based and chained WeChatPay OpenAPI client SDK for NodeJS
 - 支持微信支付APIv3的帐单下载及解析功能，示例代码如下
 - 支持微信支付APIv2 & APIv3面向对象编程模式，示例代码如下
 - 支持 `Typescript`
-- 支持微信支付XML风格的接口(通常所说v2)调用，依赖 [node-xml2js](https://github.com/Leonidas-from-XIV/node-xml2js), 示例代码如下
+- 支持微信支付XML风格的接口(通常所说v2)调用，由 [fast-xml-parser](https://github.com/NaturalIntelligence/fast-xml-parser) 提供编解XML支持, 示例代码如下
 - 支持微信支付APIv2版的 `AES-256-ECB/PKCS7PADDING` 通知消息加/解密
 - 微信支付APIv2 & APIv3 与微信交互的各种数据签名用法示例
 - 支持 企业微信-企业支付-企业红包/向员工付款 功能，示例用法及代码如下
@@ -28,6 +28,8 @@ Promise based and chained WeChatPay OpenAPI client SDK for NodeJS
 ## 系统要求
 
 NodeJs >= 10.15.0
+
+注: `axios@1.x` 仅能在`Node12`以上运行，`Node10`环境需要手动指定`axios@0.x`版本，本开发包预计在`2025Q2`结束对`Node10`的支持。
 
 ## 安装
 
@@ -73,7 +75,7 @@ Options:
 
 </details>
 
-<details>
+<details open>
   <summary>$ <b>./node_modules/.bin/wxpay crt</b> -m N -s S -f F.pem -k K -o .</summary>
 
 ```
