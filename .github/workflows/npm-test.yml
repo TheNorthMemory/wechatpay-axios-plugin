@@ -28,10 +28,5 @@ jobs:
           node-version: ${{ matrix.node-version }}
           architecture: 'x64'
       - run: npm install
-      - run: npm install axios@~0.29.0 yargs@^16.1.2 --no-save
-        if: matrix.node-version == 10.15
-      - run: npm install yargs@^17.1.1 --no-save
-        if: matrix.node-version != 10.15
-      - run: npm ls -depth 0
       - run: npm run lint
       - run: npm test
