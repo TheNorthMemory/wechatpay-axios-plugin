@@ -1,6 +1,6 @@
 const { readFileSync } = require('fs');
 const { join } = require('path');
-const { AssertionError } = require('assert');
+const { AxiosError } = require('axios');
 
 require('should');
 const nock = require('nock');
@@ -69,17 +69,17 @@ describe('Issue #30 v3/pay/transcations/h5', () => {
       });
     });
 
-    it('post onto the `v3/pay/transactions/h5` with better `AssertionError`: Headers incomplete', async () => {
+    it('post onto the `v3/pay/transactions/h5` with an `AxiosError` response, which is caused by the Headers incomplete', async () => {
       scope.post('/v3/pay/transactions/h5').reply(200, mocks);
       await instance.v3.pay.transactions.h5.post({}).catch((resp) => {
-        resp.should.instanceOf(AssertionError);
+        resp.should.instanceOf(AxiosError);
         resp.message.should.be.String().and.match(/Headers incomplete/);
         resp.response.should.be.Object().and.have.keys('headers', 'data');
         resp.response.headers.should.be.Object().and.not.have.keys('Wechatpay-Nonce', 'Wechatpay-Serial', 'Wechatpay-Signature', 'Wechatpay-Timestamp');
       });
     });
 
-    it('post onto the `v3/pay/transactions/h5` with better `AssertionError`: `Wechatpay-Timestamp`', async () => {
+    it('post onto the `v3/pay/transactions/h5` with an `AxiosError` response, which is caused by the bad `Wechatpay-Timestamp` value', async () => {
       scope.post('/v3/pay/transactions/h5').reply(200, mocks, {
         'Wechatpay-Nonce': 'mock',
         'Wechatpay-Serial': 'mock',
@@ -87,7 +87,7 @@ describe('Issue #30 v3/pay/transcations/h5', () => {
         'Wechatpay-Timestamp': '1624692495',
       });
       await instance.v3.pay.transactions.h5.post({}).catch((resp) => {
-        resp.should.instanceOf(AssertionError);
+        resp.should.instanceOf(AxiosError);
         resp.message.should.be.String().and.match(/Wechatpay-Timestamp/);
         resp.response.should.be.Object().and.have.keys('headers', 'data');
         resp.response.headers.should.be.Object();
@@ -96,7 +96,7 @@ describe('Issue #30 v3/pay/transcations/h5', () => {
       });
     });
 
-    it('post onto the `v3/pay/transactions/h5` with better `AssertionError`: `Wechatpay-Serial`', async () => {
+    it('post onto the `v3/pay/transactions/h5` with an `AxiosError` response, which is caused by the bad `Wechatpay-Serial` value', async () => {
       scope.post('/v3/pay/transactions/h5').reply(200, mocks, {
         'Wechatpay-Nonce': 'mock',
         'Wechatpay-Serial': 'fake',
@@ -104,7 +104,7 @@ describe('Issue #30 v3/pay/transcations/h5', () => {
         'Wechatpay-Timestamp': Math.floor((+new Date()) / 1000),
       });
       await instance.v3.pay.transactions.h5.post({}).catch((resp) => {
-        resp.should.instanceOf(AssertionError);
+        resp.should.instanceOf(AxiosError);
         resp.message.should.be.String().and.match(/Wechatpay-Serial/);
         resp.response.should.be.Object().and.have.keys('headers', 'data');
         resp.response.headers.should.be.Object();

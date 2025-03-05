@@ -89,16 +89,4 @@ describe('lib/utils', () => {
       utils.isStream(new Multipart.FormData()).should.be.a.Boolean().and.be.True();
     });
   });
-
-  describe('utils::implicityReturnValues', () => {
-    it('method `implicityReturnValues` should be function', () => {
-      should(utils.implicityReturnValues).be.a.Function();
-    });
-
-    it('method `implicityReturnValues` should returns an Error instance with `response` property', () => {
-      const err = utils.implicityReturnValues();
-      err.should.be.instanceof(Error).and.have.property('code', 'ERR_ASSERTION');
-      err.should.have.property('response');
-    });
-  });
 });
