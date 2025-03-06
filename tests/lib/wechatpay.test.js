@@ -30,16 +30,19 @@ describe('lib/wechatpay', () => {
   });
 
   describe('Wechatpay::client', () => {
+    const wxpay = new Wechatpay({
+      mchid: '', serial: '', privateKey: '', certs: { any: undefined },
+    });
     it('method `client` should be instanceof `Decorator` after initialized', () => {
-      Wechatpay.client.should.be.instanceof(Decorator);
+      wxpay.client.should.be.instanceof(Decorator);
     });
 
     it('method `client.v2` should be `Function` after initialized', () => {
-      Wechatpay.client.v2.should.be.an.Function();
+      wxpay.client.v2.should.be.an.Function();
     });
 
     it('method `client.v3` should be `Function` after initialized', () => {
-      Wechatpay.client.v3.should.be.an.Function();
+      wxpay.client.v3.should.be.an.Function();
     });
   });
 
@@ -74,79 +77,48 @@ describe('lib/wechatpay', () => {
     });
   });
 
-  describe('Wechatpay::compose', () => {
-    it('method `compose` should be static', () => {
-      should(Wechatpay.compose).be.a.Function();
-    });
-
-    it('Wechatpay.compose() should returns an `anonymous` Function while none-arguments or empty-arguments given', () => {
-      Wechatpay.compose().should.instanceof(Function).and.have.property('name', '');
-      Wechatpay.compose('').should.instanceof(Function).and.have.property('name', '');
-      Wechatpay.compose('', '').should.instanceof(Function).and.have.property('name', '');
-    });
-
-    it('Wechatpay.compose(\'v2\') should returns a Function which\'s named as empty', () => {
-      Wechatpay.compose('v2').should.instanceof(Function).and.have.property('name', '');
-    });
-
-    it('Wechatpay.compose(\'\', \'v2\') should returns a Function which\'s named as `v2`', () => {
-      Wechatpay.compose('', 'v2').should.instanceof(Function).and.have.property('name', 'v2');
-    });
-
-    it('Wechatpay.compose(\'\', \'v3\') should returns a Function which\'s named as `v3`', () => {
-      Wechatpay.compose('', 'v3').should.instanceof(Function).and.have.property('name', 'v3');
-    });
-
-    it('Wechatpay.compose(\'\', \'payscore\') should returns a Function which\'s named as `payscore`', () => {
-      Wechatpay.compose('', 'payscore').should.instanceof(Function).and.have.property('name', 'payscore');
-    });
-  });
-
   describe('Wechatpay::chain', () => {
-    it('method `chain` should be static', () => {
-      should(Wechatpay.chain).be.a.Function();
+    const wxpay = new Wechatpay({
+      mchid: '', serial: '', privateKey: '', certs: { any: undefined },
+    });
+    it('`.chain` should be an instance function', () => {
+      should(wxpay.chain).be.a.Function();
     });
 
-    it('Wechatpay.chain(\'\') should returns an `anonymous` named Function while empty-arguments given', () => {
-      Wechatpay.chain('').should.instanceof(Function).and.have.property('name', '');
+    it('.chain(\'\') should returns an `anonymous` named Function while empty-arguments given', () => {
+      wxpay.chain('').should.instanceof(Function).and.have.property('name', '');
     });
 
-    it('Wechatpay.chain(\'/v2\') should returns a Function which\'s named as `/v2`', () => {
-      Wechatpay.chain('/v2').should.instanceof(Function).and.have.property('name', '/v2');
+    it('.chain(\'/v2\') should returns a Function which\'s named as `/v2`', () => {
+      wxpay.chain('/v2').should.instanceof(Function).and.have.property('name', '/v2');
     });
 
-    it('Wechatpay.chain(\'/v2/pay/micropay\') should returns a Function which\'s named as `/v2/pay/micropay`', () => {
-      Wechatpay.chain('/v2/pay/micropay').should.instanceof(Function).and.have.property('name', '/v2/pay/micropay');
+    it('.chain(\'/v2/pay/micropay\') should returns a Function which\'s named as `/v2/pay/micropay`', () => {
+      wxpay.chain('/v2/pay/micropay').should.instanceof(Function).and.have.property('name', '/v2/pay/micropay');
     });
 
-    it('Wechatpay.chain(\'/v3\').delete should returns a Function which\'s named as `delete`', () => {
-      Wechatpay.chain('/v3').delete.should.instanceof(Function).and.have.property('name', 'delete');
+    it('.chain(\'/v3\').delete should returns a Function which\'s named as `delete`', () => {
+      wxpay.chain('/v3').delete.should.instanceof(Function).and.have.property('name', 'delete');
     });
 
-    it('Wechatpay.chain(\'/v3\').get should returns a Function which\'s named as `get`', () => {
-      Wechatpay.chain('/v3').get.should.instanceof(Function).and.have.property('name', 'get');
+    it('.chain(\'/v3\').get should returns a Function which\'s named as `get`', () => {
+      wxpay.chain('/v3').get.should.instanceof(Function).and.have.property('name', 'get');
     });
 
-    it('Wechatpay.chain(\'/v3\').post should returns a Function which\'s named as `post`', () => {
-      Wechatpay.chain('/v3').post.should.instanceof(Function).and.have.property('name', 'post');
+    it('.chain(\'/v3\').post should returns a Function which\'s named as `post`', () => {
+      wxpay.chain('/v3').post.should.instanceof(Function).and.have.property('name', 'post');
     });
 
-    it('Wechatpay.chain(\'/v3\').put should returns a Function which\'s named as `put`', () => {
-      Wechatpay.chain('/v3').put.should.instanceof(Function).and.have.property('name', 'put');
+    it('.chain(\'/v3\').put should returns a Function which\'s named as `put`', () => {
+      wxpay.chain('/v3').put.should.instanceof(Function).and.have.property('name', 'put');
     });
 
-    it('Wechatpay.chain(\'/v3\').patch should returns a Function which\'s named as `patch`', () => {
-      Wechatpay.chain('/v3').patch.should.instanceof(Function).and.have.property('name', 'patch');
+    it('.chain(\'/v3\').patch should returns a Function which\'s named as `patch`', () => {
+      wxpay.chain('/v3').patch.should.instanceof(Function).and.have.property('name', 'patch');
     });
 
-    it('Wechatpay.chain(\'/v3/combine-transactions/{combin_out_trade_no}\') should returns a Function which\'s named as `/v3/combine-transactions/{combin_out_trade_no}`', () => {
-      Wechatpay.chain('/v3/combine-transactions/{combin_out_trade_no}').should.instanceof(Function).and.have.property('name', '/v3/combine-transactions/{combin_out_trade_no}');
-    });
-  });
-
-  describe('Wechatpay::handler', () => {
-    it('Getter `handler` should be static and returns an object[get: [Function: get]]', () => {
-      should(Wechatpay.handler).be.an.Object().and.have.property('get');
+    it('.chain(\'/v3/combine-transactions/{combin_out_trade_no}\') should returns a Function which\'s named as `/v3/combine-transactions/{combin_out_trade_no}`', () => {
+      wxpay.chain('/v3/combine-transactions/{combin_out_trade_no}').should.instanceof(Function).and.have.property('name', '/v3/combine-transactions/{combin_out_trade_no}');
     });
   });
 });

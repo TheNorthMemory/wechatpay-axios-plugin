@@ -786,7 +786,7 @@ const {Hash} = require('wechatpay-axios-plugin')
 ### 企业红包-注入签名规则
 
 ```js
-Wechatpay.client.v2.defaults.transformRequest.unshift(function workwxredpack(data, headers) {
+wxpay.client.v2.defaults.transformRequest.unshift(function workwxredpack(data, headers) {
   const {act_name, mch_billno, mch_id, nonce_str, re_openid, total_amount, wxappid} = data
 
   if (!(act_name && mch_billno && mch_id && nonce_str && re_openid && total_amount && wxappid)) {
@@ -826,7 +826,7 @@ wxpay.v2.mmpaymkttransfers.sendworkwxredpack.post({
 ### 向员工付款-注入签名规则
 
 ```js
-Wechatpay.client.v2.defaults.transformRequest.unshift(function wwsptrans2pocket(data, headers) {
+wxpay.client.v2.defaults.transformRequest.unshift(function wwsptrans2pocket(data, headers) {
   const {amount, appid, desc, mch_id, nonce_str, openid, partner_trade_no, ww_msg_type} = data
 
   if (!(amount && appid && desc && mch_id && nonce_str && openid && partner_trade_no && ww_msg_type)) {
@@ -869,11 +869,11 @@ wxpay.v2.mmpaymkttransfers.promotion.paywwsptrans2pocket.post({
 
 ```js
 // APIv2 日志
-Wechatpay.client.v2.defaults.transformRequest.push(data => (console.log(data), data))
-Wechatpay.client.v2.defaults.transformResponse.unshift(data => (console.log(data), data))
+wxpay.client.v2.defaults.transformRequest.push(data => (console.log(data), data))
+wxpay.client.v2.defaults.transformResponse.unshift(data => (console.log(data), data))
 // APIv3 日志
-Wechatpay.client.v3.defaults.transformRequest.push((data, headers) => (console.log(data, headers), data))
-Wechatpay.client.v3.defaults.transformResponse.unshift((data, headers) => (console.log(data, headers), data))
+wxpay.client.v3.defaults.transformRequest.push((data, headers) => (console.log(data, headers), data))
+wxpay.client.v3.defaults.transformResponse.unshift((data, headers) => (console.log(data, headers), data))
 ```
 
 ## 获取RSA公钥
@@ -881,7 +881,7 @@ Wechatpay.client.v3.defaults.transformResponse.unshift((data, headers) => (conso
 非标准接口地址，也可以这样调用
 
 ```js
-Wechatpay.client.v2.post('https://fraud.mch.weixin.qq.com/risk/getpublickey', {
+wxpay.client.v2.post('https://fraud.mch.weixin.qq.com/risk/getpublickey', {
   mch_id: '1900000109',
   nonce_str: Formatter.nonce(),
   sign_type: 'HMAC-SHA256',
