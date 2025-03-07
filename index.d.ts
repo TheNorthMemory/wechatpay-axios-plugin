@@ -1,6 +1,6 @@
 /// <reference types="node" />
 import { AgentOptions } from "https";
-import { CipherKey, BinaryLike, KeyLike } from 'crypto'
+import { CipherKey, BinaryLike, KeyLike, KeyObject } from 'crypto'
 import { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 import { default as Base } from '@thenorthmemory/multipart';
 
@@ -132,6 +132,14 @@ export namespace WechatpayAxiosPlugin {
      * Crypto hash functions utils.
      */
     class Hash {
+        static ALGO_MD5: 'MD5';
+
+        static ALGO_HMAC_SHA256: 'HMAC-SHA256';
+
+        static isKeyObject(thing: any): boolean;
+
+        static keyObjectFrom(thing: Buffer): KeyObject;
+
         /**
          * Calculate the input string with an optional secret `key` in MD5,
          * when the `key` is Falsey, this method works as normal `MD5`.
@@ -429,11 +437,26 @@ export namespace WechatpayAxiosPlugin {
         /**
          * Alias of the `RSA_PKCS1_OAEP_PADDING` mode
          */
-        readonly RSA_PKCS1_OAEP_PADDING: 4;
+        static RSA_PKCS1_OAEP_PADDING: 4;
         /**
          * Alias of the `RSA_PKCS1_PADDING` mode
          */
-        readonly RSA_PKCS1_PADDING: 1;
+        static RSA_PKCS1_PADDING: 1;
+
+        static KEY_TYPE_PUBLIC: 'public';
+
+        static KEY_TYPE_PRIVATE: 'private';
+
+        static isKeyObject(thing: any): boolean;
+
+        static fromPkcs8(str: string): KeyObject;
+
+        static fromPkcs1(str: string, type: 'public' | 'private'): KeyObject;
+
+        static fromSpki(str: string): KeyObject;
+
+        static from(thing: KeyLike, type: 'public' | 'private'): KeyObject;
+
         /**
          * Encrypts text with sha256WithRSAEncryption/RSA_PKCS1_OAEP_PADDING.
          * Node Limits >= 12.9.0 (`oaepHash` was added)
