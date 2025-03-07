@@ -10,21 +10,6 @@ Promise based and chained WeChatPay OpenAPI client SDK for NodeJS
 [![NPM downloads per month](https://img.shields.io/npm/dm/wechatpay-axios-plugin)](https://www.npmjs.com/package/wechatpay-axios-plugin)
 [![NPM license](https://img.shields.io/npm/l/wechatpay-axios-plugin)](https://www.npmjs.com/package/wechatpay-axios-plugin)
 
-## 主要功能
-
-- 使用Node原生`crypto`实现微信支付APIv3的AES加/解密功能(`aes-256-gcm` with `aad`)
-- 使用Node原生`crypto`实现微信支付APIv3的RSA加/解密、签名、验签功能(`sha256WithRSAEncryption` with `RSA_PKCS1_OAEP_PADDING`)
-- 支持微信支付APIv3的HTTP GET/POST/PUT/PATCH/DELETE多方法链式操作，依赖 [Axios](https://github.com/axios/axios), 示例代码如下
-- 支持微信支付APIv3的媒体文件上传(图片/视频)功能，由内置 `Multipart` 类驱动，示例代码如下
-- 支持微信支付APIv3的平台证书下载功能，需手动安装 [yargs](https://github.com/yargs/yargs), 使用手册如下
-- 支持微信支付APIv3的帐单下载及解析功能，示例代码如下
-- 支持微信支付APIv2 & APIv3面向对象编程模式，示例代码如下
-- 支持 `Typescript`
-- 支持微信支付XML风格的接口(通常所说v2)调用，由 [fast-xml-parser](https://github.com/NaturalIntelligence/fast-xml-parser) 提供编解XML支持, 示例代码如下
-- 支持微信支付APIv2版的 `AES-256-ECB/PKCS7PADDING` 通知消息加/解密
-- 微信支付APIv2 & APIv3 与微信交互的各种数据签名用法示例
-- 支持 企业微信-企业支付-企业红包/向员工付款 功能，示例用法及代码如下
-
 ## 系统要求
 
 NodeJs >= 12
@@ -33,173 +18,7 @@ NodeJs >= 12
 
 `$ npm install wechatpay-axios-plugin`
 
-## 起步
-
-### 微信支付公钥
-
-> [!NOTE]
-> 2024年Q3，微信支付官方开启了「微信支付公钥」平替「平台证书」方案，初始化所需的参数仅需配置上 **微信支付公钥ID** 及 **微信支付公钥** 即完全兼容支持，CLI/API下载 **平台证书** 已不是一个必要步骤，可略过。
-> **微信支付公钥ID** 及 **微信支付公钥** 均可在 [微信支付商户平台](https://pay.weixin.qq.com/) -> 账户中心 -> API安全 查看及/或下载。
-
-### 平台证书
-
-微信支付APIv3使用 (RESTful API with JSON over HTTP）接口设计，数据交换采用非对称（`RSA-OAEP`）加/解密方案。
-API上行所需的`商户API私钥`，可以由商户官方专用证书生成工具生成，
-API下行所需的`平台证书`须从`v3/certificates`接口获取（应答证书还经过了对称`AES-GCM`加密，须采用`APIv3密钥`才能解密）。
-本项目也提供了命令行下载工具，使用手册如下：
-
-<details>
-  <summary>$ <b>./node_modules/.bin/wxpay crt --help</b> (点击显示)</summary>
-
-```
-wxpay crt
-
-The WeChatPay APIv3's Certificate Downloader
-
-cert
-  -m, --mchid       The merchant's ID, aka mchid.  [string] [required]
-  -s, --serialno    The serial number of the merchant's certificate aka serialno.  [string] [required]
-  -f, --privatekey  The path of the merchant's private key certificate aka privatekey.  [string] [required]
-  -k, --key         The secret key string of the merchant's APIv3 aka key.  [string] [required]
-  -o, --output      Path to output the downloaded WeChatPay's platform certificate(s)  [string] [default: "/tmp"]
-
-Options:
-      --version  Show version number  [boolean]
-      --help     Show help  [boolean]
-  -u, --baseURL  The baseURL  [string] [default: "https://api.mch.weixin.qq.com/"]
-```
-
-**注：** 像其他通用命令行工具一样，`--help` 均会打印出帮助手册，说明档里的`[required]`指 必选参数； `[string]`指 字符串类型，`[default]`指默认值
-
-</details>
-
-<details open>
-  <summary>$ <b>./node_modules/.bin/wxpay crt</b> -m N -s S -f F.pem -k K -o .</summary>
-
-```
-The WeChatPay Platform Certificate#0
-  serial=HEXADECIAL
-  notBefore=Wed, 22 Apr 2020 01:43:19 GMT
-  notAfter=Mon, 21 Apr 2025 01:43:19 GMT
-  Saved to: wechatpay_HEXADECIAL.pem
-You may confirm the above infos again even if this library already did(by Rsa.verify):
-    openssl x509 -in wechatpay_HEXADECIAL.pem -noout -serial -dates
-
-```
-**注：** 提供必选参数且运行后，屏幕即打印出如上信息，提示`证书序列号`及`起、止格林威治(GMT)时间`及证书下载保存位置。
-</details>
-
-> [!IMPORTANT]
-> 当下载证书后，屏显有几条证书信息，就在应用中配置**certs**几条，尤其是在[新旧平台证书交替灰度时](https://pay.weixin.qq.com/doc/v3/merchant/4012068829)，需要把新旧证书都配上，应用才不会出现事故。
-
-### 命令行请求
-
-命令行工具可用来做快速接入体验，用法如下:
-
-#### 帮助信息
-
-<details>
-  <summary>$ <b>./node_modules/.bin/wxpay req --help</b></summary>
-
-```
-wxpay req <uri>
-
-Play the WeChatPay OpenAPI requests over command line
-
-<uri>
-  -c, --config   The configuration  [required]
-  -b, --binary   True for the `arraybuffer` response, two for without-verifier-response, otherwise for showing the origin
-  -m, --method   The request HTTP verb  [choices: "DELETE", "GET", "POST", "PUT", "PATCH", "delete", "get", "post", "put", "patch"] [default: "POST"]
-  -h, --headers  The request HTTP header(s)
-  -d, --data     The request HTTP body
-  -p, --params   The request HTTP query parameter(s)
-
-Options:
-      --version  Show version number  [boolean]
-      --help     Show help  [boolean]
-  -u, --baseURL  The baseURL  [string] [default: "https://api.mch.weixin.qq.com/"]
-```
-</details>
-
-#### v3版Native付
-<details>
-  <summary>$ <b>./node_modules/.bin/wxpay v3.pay.transactions.native</b></summary>
-
-```
-./node_modules/.bin/wxpay v3.pay.transactions.native \
-  -c.mchid 1230000109 \
-  -c.serial MCHSERIAL \
-  -c.privateKey /path/your/merchant/mchid.key \
-  -c.certs.PLATSERIAL /path/the/platform/certificates/HEXADECIAL.pem \
-  -d.appid wxd678efh567hg6787 \
-  -d.mchid 1230000109 \
-  -d.description 'Image形象店-深圳腾大-QQ公仔' \
-  -d.out_trade_no '1217752501201407033233368018' \
-  -d.notify_url 'https://www.weixin.qq.com/wxpay/pay.php' \
-  -d.amount.total 100 \
-  -d.amount.currency CNY
-```
-</details>
-
-#### v2版付款码付
-
-<details>
-  <summary>$ <b>./node_modules/.bin/wxpay v2.pay.micropay</b></summary>
-
-```
-./node_modules/.bin/wxpay v2.pay.micropay \
-  -c.mchid 1230000109 \
-  -c.serial nop \
-  -c.privateKey any \
-  -c.certs.any \
-  -c.secret your_merchant_secret_key_string \
-  -d.appid wxd678efh567hg6787 \
-  -d.mch_id 1230000109 \
-  -d.device_info 013467007045764 \
-  -d.nonce_str 5K8264ILTKCH16CQ2502SI8ZNMTM67VS \
-  -d.detail 'Image形象店-深圳腾大-QQ公仔' \
-  -d.spbill_create_ip 8.8.8.8 \
-  -d.out_trade_no '1217752501201407033233368018' \
-  -d.total_fee 100 \
-  -d.fee_type CNY \
-  -d.auth_code 120061098828009406
-```
-</details>
-
-#### v2版付款码查询openid
-
-<details>
-  <summary>$ <b>./node_modules/.bin/wxpay v2/tools/authcodetoopenid</b></summary>
-
-```
-./node_modules/.bin/wxpay v2/tools/authcodetoopenid \
-  -c.mchid 1230000109 \
-  -c.serial nop \
-  -c.privateKey any \
-  -c.certs.any \
-  -c.secret your_merchant_secret_key_string \
-  -d.appid wxd678efh567hg6787 \
-  -d.mch_id 1230000109 \
-  -d.nonce_str 5K8264ILTKCH16CQ2502SI8ZNMTM67VS \
-  -d.auth_code 120061098828009406
-```
-</details>
-
-## 面向对象模式
-
-本类库是把 `URL.pathname` 以`/`做切分，取出 `segments` 映射成实例对象属性，同时支持`APIv2`的实例对象属性映射，编码书写方式有如下约定：
-
-1. 请求 `segments` 按照顺序作为级联对象，例如 `v3/pay/transactions/native` 即链接成 `v3.pay.transactions.native`;
-2. 每个 `segments` 所支持的 `HTTP METHOD`，即作为 请求对象的末尾执行方法，例如: `v3.pay.transactions.native.post({})`;
-3. 每个 `segments` 级联对象默认为HTTP`POST`方法，其同时隐式内置`GET/POST/PUT/PATCH/DELETE` 方法链，小写`verb`格式，说明见`变更历史`;
-4. 每个 `segments` 有中线(dash)分隔符的，可以使用驼峰`camelCase`风格书写，例如: `merchant-service`可写成 `merchantService`，或者字面量属性，如 `v3['merchant-service']`;
-5. 每个 `segments` 中，若有动态参数，例如 `business_code/{business_code}` 可写成 `business_code.$business_code$` 或者字面量属性风格，如 `business_code['{business_code}']`;
-6. 如果 `segments` 以 `v2` 开始，其特殊标识为`APIv2`级联对象开始位，之后串接其他`segments`，如源 `pay/micropay` 即串接成 `v2.pay.micropay` 即以XML形式请求远端接口；
-7. 建议 `segments` 按照 `PascalCase` 风格书写, `TS Definition` 已在路上(还有若干问题没解决)，将是这种风格，代码提示将会很自然;
-
-以下示例用法，均以`Promise`或`Async/Await`结合此种编码模式展开。
-
-## 初始化
+## [初始化](https://wechatpay.js.org/guide/getting-started#init)
 
 ```js
 const { Wechatpay } = require('wechatpay-axios-plugin');
@@ -237,7 +56,9 @@ const wxpay = new Wechatpay({
   serial: merchantCertificateSerial,
   privateKey: merchantPrivateKeyInstance,
   certs: {
+    // 「微信支付平台证书」 模式，则下面必填，多张证书时需配置多行
     [platformCertificateSerial]: onePlatformPublicKeyInstance,
+    // 「微信支付公钥」 模式，则下面必填
     [platformPublicKeyId]: twoPlatformPublicKeyInstance,
   },
   // 使用APIv2(密钥32字节)时，需要至少设置 `secret`字段
@@ -253,25 +74,26 @@ const wxpay = new Wechatpay({
 });
 ```
 
-**注:** 证书序列号（「商户证书」序列号及「平台证书」序列号）均可用`OpenSSL`命令获取到，例如： `openssl x509 -in /path/to/merchant/apiclient_cert.pem -noout -serial | awk -F= '{print $2}'`
-
 初始化字典说明如下：
 
 - `mchid` 为你的商户号，一般是10字节纯数字
 - `serial` 为你的商户证书序列号，一般是40字节字符串
 - `privateKey` 为你的商户API私钥，一般是通过官方证书生成工具生成的文件名是`apiclient_key.pem`文件，支持纯字符串或者文件流`buffer`格式
-- `certs{[serial_number]:string}` 为通过下载工具下载的平台证书`key/value`键值对，键为平台证书序列号/微信支付公钥ID，值为平台证书/微信支付公钥pem格式的纯字符串或者文件流`buffer`格式
+- `certs{[serial_number]:string}` 为`key/value`键值对，键为平台证书序列号/微信支付公钥ID，值为平台证书/微信支付公钥pem格式的纯字符串或者文件流`buffer`格式
 - `secret` 为APIv2版的`密钥`，商户平台上设置的32字节字符串
 - `merchant.cert` 为你的商户证书,一般是文件名为`apiclient_cert.pem`文件，支持纯字符串或者文件流`buffer`格式
 - `merchant.key` 为你的商户API私钥，一般是通过官方证书生成工具生成的文件名是`apiclient_key.pem`文件，支持纯字符串或者文件流`buffer`格式
 - `merchant.passphrase` 一般为你的商户号
 - `merchant.pfx` 为你的商户`PKCS12`格式的证书，文件名一般为`apiclient_cert.p12`，支持二进制文件流`buffer`格式(**注**: Node17.1开始使用OpenSSL3,老的p12文件需要额外格式转换)
 
-**注：** APIv2&APIv3以及Axios初始参数，均融合在一个型参上，APIv2已不推荐使用，推荐优先使用APIv3。
+**注：** APIv2&APIv3以及Axios初始参数，均融合在一个型参上。
 
 ## APIv3
 
-### Native下单
+### [Native下单](https://wechatpay.js.org/openapi/v3/pay/transactions/native)
+
+<details><summary>示例代码</summary>
+
 ```js
 wxpay.v3.pay.transactions.native
   .post({
@@ -286,52 +108,90 @@ wxpay.v3.pay.transactions.native
     },
   })
   .then(({data: {code_url}}) => console.info(code_url))
-  .catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
+  .catch(({response: {
+    status,
+    statusText,
+    data
+  } }) => console.error(status, statusText, data))
 ```
+</details>
 
-### 查询订单
+### [查询订单](https://wechatpay.js.org/openapi/v3/pay/transactions/id/{transaction_id})
+
+<details><summary>示例代码</summary>
+
 ```js
-wxpay.v3.pay.transactions.id._transaction_id_ // _placeholder_ 语法糖会转换成 '{placeholder}' 格式
+// _placeholder_ 语法糖会转换成 '{placeholder}' 格式
+wxpay.v3.pay.transactions.id._transaction_id_
   .get({
     params: {
       mchid: '1230000109'
     },
+    //当商户订单号有大写字符时，只能这样参数化传递
     transaction_id: '1217752501201407033233368018'
   })
   .then(({data}) => console.info(data))
-  .catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
+  .catch(({response: {
+    status,
+    statusText,
+    data
+  } }) => console.error(status, statusText, data))
 ```
+</details>
 
-### 关闭订单
+### [关闭订单](https://wechatpay.js.org/openapi/v3/pay/transactions/out-trade-no/{out_trade_no}/close)
+
+<details><summary>示例代码</summary>
+
 ```js
-wxpay.v3.pay.transactions.outTradeNo.$out_trade_no$.close // $placeholder$ 语法糖会转换成 '{placeholder}' 格式
+// $placeholder$ 语法糖会转换成 '{placeholder}' 格式
+wxpay.v3.pay.transactions.outTradeNo.$out_trade_no$.close
   .post({
     mchid: '1230000109'
   }, {
-    out_trade_no: 'P1217752501201407033233368018' //当商户订单号有大写字符时，只能这样参数化传递
+    //当商户订单号有大写字符时，只能这样参数化传递
+    out_trade_no: 'P1217752501201407033233368018'
   })
   .then(({status, statusText}) => console.info(status, statusText))
-  .catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
+  .catch(({response: {
+    status,
+    statusText,
+    data
+  } }) => console.error(status, statusText, data))
 ```
+</details>
 
-### 合单支付下单
+### [合单JSAPI下单](https://wechatpay.js.org/openapi/v3/combine-transactions/jsapi)
+
+<details><summary>示例代码</summary>
 
 ```js
 wxpay.v3.combineTransactions.jsapi
   .post({/*文档参数放这里就好*/})
   .then(res => console.info(res.data))
-  .catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
+  .catch(({response: {
+    status,
+    statusText,
+    data
+  } }) => console.error(status, statusText, data))
 ```
+</details>
 
-### H5下单
+### [H5下单](https://wechatpay.js.org/openapi/v3/pay/transactions/h5)
+
+<details><summary>示例代码</summary>
+
 ```js
 wxpay.v3.pay.transactions.h5
   .post({/*文档参数放这里就好*/})
   .then(({data: {h5_url}}) => console.info(h5_url))
   .catch(console.error)
 ```
+</details>
 
-### 对账单下载及解析
+### [交易账单下载及解析](https://wechatpay.js.org/openapi/v3/bill/tradebill)
+
+<details><summary>示例代码</summary>
 
 ```js
 const assert = require('assert')
@@ -355,16 +215,27 @@ wxpay.v3.bill.tradebill.get({
   console.error(error)
 })
 ```
+</details>
 
-### 创建商家券
+### [创建商家券](https://wechatpay.js.org/openapi/v3/marketing/busifavor/stocks)
+
+<details><summary>示例代码</summary>
+
 ```js
 wxpay.v3.marketing.busifavor.stocks
   .post({/*商家券创建条件*/})
   .then(({data}) => console.info(data))
-  .catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
+  .catch(({response: {
+    status,
+    statusText,
+    data
+  } }) => console.error(status, statusText, data))
 ```
+</details>
 
-### 查询用户单张券详情
+### [查询用户单张券详情](https://wechatpay.js.org/openapi/v3/marketing/busifavor/users/{openid}/coupons/{coupon_code}/appids/{appid})
+
+<details><summary>示例代码</summary>
 
 ```js
 ;(async () => {
@@ -378,8 +249,11 @@ wxpay.v3.marketing.busifavor.stocks
   }
 })()
 ```
+</details>
 
-### 服务商模式Native下单
+### [服务商模式Native下单](https://wechatpay.js.org/openapi/v3/pay/partner/transactions/native)
+
+<details><summary>示例代码</summary>
 
 ```js
 ;(async () => {
@@ -403,8 +277,11 @@ wxpay.v3.marketing.busifavor.stocks
   }
 })()
 ```
+</details>
 
-### 支付即服务
+### [支付即服务](https://wechatpay.js.org/openapi/v3/smartguide/guides/{guide_id}/assign)
+
+<details><summary>示例代码</summary>
 
 ```js
 ;(async () => {
@@ -417,8 +294,11 @@ wxpay.v3.marketing.busifavor.stocks
   }
 })()
 ```
+</details>
 
-### 商家转账到零钱
+### [商家转账到零钱](https://wechatpay.js.org/openapi/v3/transfer/batches)
+
+<details><summary>示例代码</summary>
 
 ```js
 const {Rsa} = require('wechatpay-axios-plugin');
@@ -452,8 +332,11 @@ const {Rsa} = require('wechatpay-axios-plugin');
   }
 })()
 ```
+</details>
 
-### 商业投诉查询
+### [商业投诉查询](https://wechatpay.js.org/openapi/v3/merchant-service/complaints-v2)
+
+<details><summary>示例代码</summary>
 
 ```js
 ;(async () => {
@@ -472,8 +355,11 @@ const {Rsa} = require('wechatpay-axios-plugin');
   }
 })()
 ```
+</details>
 
-### 图片上传
+### [图片上传](https://wechatpay.js.org/openapi/v3/marketing/favor/media/image-upload)
+
+<details><summary>示例代码</summary>
 
 ```js
 const { Multipart } = require('wechatpay-axios-plugin')
@@ -500,8 +386,11 @@ imageData.append('file', createReadStream('./hellowechatpay.png'), 'hellowechatp
   }
 })()
 ```
+</details>
 
-### 查询优惠券详情
+### [查询优惠券详情](https://wechatpay.js.org/openapi/v3/marketing/favor/stocks/{stock_id})
+
+<details><summary>示例代码</summary>
 
 ```js
 ;(async () => {
@@ -518,8 +407,11 @@ imageData.append('file', createReadStream('./hellowechatpay.png'), 'hellowechatp
   }
 })()
 ```
+</details>
 
-### 优惠券委托营销
+### [优惠券委托营销](https://wechatpay.js.org/openapi/v3/marketing/partnerships/build)
+
+<details><summary>示例代码</summary>
 
 ```js
 (async () => {
@@ -544,8 +436,11 @@ imageData.append('file', createReadStream('./hellowechatpay.png'), 'hellowechatp
   }
 })()
 ```
+</details>
 
-### 优惠券核销记录下载
+### [优惠券核销记录下载](https://wechatpay.js.org/openapi/v3/marketing/favor/stocks/{stock_id}/use-flow)
+
+<details><summary>示例代码</summary>
 
 ```js
 (async () => {
@@ -566,8 +461,11 @@ imageData.append('file', createReadStream('./hellowechatpay.png'), 'hellowechatp
   }
 })()
 ```
+</details>
 
-### 视频文件上传
+### [视频文件上传](https://wechatpay.js.org/openapi/v3/merchant/media/video_upload)
+
+<details><summary>示例代码</summary>
 
 ```js
 const { Multipart } = require('wechatpay-axios-plugin')
@@ -594,8 +492,11 @@ videoData.append('file', createReadStream('./hellowechatpay.mp4'), 'hellowechatp
   }
 })()
 ```
+</details>
 
-### GZIP下载资金账单
+### [GZIP下载资金账单](https://wechatpay.js.org/openapi/v3/bill/fundflowbill)
+
+<details><summary>示例代码</summary>
 
 ```js
 const {unzipSync} = require('zlib')
@@ -628,10 +529,13 @@ const {Hash: {sha1}} = require('wechatpay-axios-plugin')
   }
 })()
 ```
+</details>
 
 ## APIv2
 
-### 付款码(刷卡)支付
+### [付款码(刷卡)支付](https://wechatpay.js.org/openapi/v2/pay/micropay)
+
+<details><summary>示例代码</summary>
 
 ```js
 wxpay.v2.pay.micropay.post({
@@ -649,8 +553,11 @@ wxpay.v2.pay.micropay.post({
 .then(res => console.info(res.data))
 .catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
 ```
+</details>
 
-### H5支付
+### [H5支付](https://wechatpay.js.org/openapi/v2/pay/unifiedorder)
+
+<details><summary>示例代码</summary>
 
 ```js
 wxpay.v2.pay.unifiedorder.post({
@@ -674,8 +581,11 @@ wxpay.v2.pay.unifiedorder.post({
   }),
 }).then(({data: {mweb_url}}) => console.info(mweb_url)).catch(console.error);
 ```
+</details>
 
-### 申请退款
+### [申请退款](https://wechatpay.js.org/openapi/v2/secapi/pay/refund)
+
+<details><summary>示例代码</summary>
 
 ```js
 wxpay.v2.secapi.pay.refund.post({
@@ -691,8 +601,11 @@ wxpay.v2.secapi.pay.refund.post({
 .then(res => console.info(res.data))
 .catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
 ```
+</details>
 
-### 现金红包
+### [现金红包](https://wechatpay.js.org/openapi/v2/mmpaymkttransfers/sendredpack)
+
+<details><summary>示例代码</summary>
 
 ```js
 wxpay.v2.mmpaymkttransfers.sendredpack.post({
@@ -713,8 +626,11 @@ wxpay.v2.mmpaymkttransfers.sendredpack.post({
 .then(res => console.info(res.data))
 .catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
 ```
+</details>
 
-### 企业付款到零钱
+### [企业付款到零钱](https://wechatpay.js.org/openapi/v2/mmpaymkttransfers/promotion/transfers)
+
+<details><summary>示例代码</summary>
 
 ```js
 wxpay.v2.mmpaymkttransfers.promotion.transfers.post({
@@ -735,8 +651,11 @@ wxpay.v2.mmpaymkttransfers.promotion.transfers.post({
 .then(res => console.info(res.data))
 .catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
 ```
+</details>
 
-### 企业付款到银行卡-获取RSA公钥
+### [企业付款到银行卡-获取RSA公钥](https://wechatpay.js.org/openapi/v2/risk/getpublickey)
+
+<details><summary>示例代码</summary>
 
 ```js
 wxpay.v2.risk.getpublickey.post({
@@ -751,8 +670,11 @@ wxpay.v2.risk.getpublickey.post({
 .then(res => console.info(res.data))
 .catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
 ```
+</details>
 
-### 下载交易账单
+### [下载交易账单](https://wechatpay.js.org/openapi/v2/pay/downloadbill)
+
+<details><summary>示例代码</summary>
 
 ```js
 wxpay.v2.pay.downloadbill.post({
@@ -772,6 +694,7 @@ wxpay.v2.pay.downloadbill.post({
 .then(res => console.info(res.data.summary))
 .catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
 ```
+</details>
 
 ## 企业微信
 
@@ -784,6 +707,8 @@ const {Hash} = require('wechatpay-axios-plugin')
 ```
 
 ### 企业红包-注入签名规则
+
+<details><summary>示例代码</summary>
 
 ```js
 wxpay.client.v2.defaults.transformRequest.unshift(function workwxredpack(data, headers) {
@@ -802,8 +727,11 @@ wxpay.client.v2.defaults.transformRequest.unshift(function workwxredpack(data, h
   return data
 })
 ```
+</details>
 
 ### 发放企业红包
+
+<details><summary>示例代码</summary>
 
 ```js
 wxpay.v2.mmpaymkttransfers.sendworkwxredpack.post({
@@ -822,8 +750,11 @@ wxpay.v2.mmpaymkttransfers.sendworkwxredpack.post({
 .then(res => console.info(res.data))
 .catch(console.error)
 ```
+</details>
 
 ### 向员工付款-注入签名规则
+
+<details><summary>示例代码</summary>
 
 ```js
 wxpay.client.v2.defaults.transformRequest.unshift(function wwsptrans2pocket(data, headers) {
@@ -842,8 +773,11 @@ wxpay.client.v2.defaults.transformRequest.unshift(function wwsptrans2pocket(data
   return data
 })
 ```
+</details>
 
 ### 向员工付款
+
+<details><summary>示例代码</summary>
 
 ```js
 wxpay.v2.mmpaymkttransfers.promotion.paywwsptrans2pocket.post({
@@ -864,6 +798,7 @@ wxpay.v2.mmpaymkttransfers.promotion.paywwsptrans2pocket.post({
 .then(res => console.info(res.data))
 .catch(console.error)
 ```
+</details>
 
 ## 自定义打印日志
 
@@ -876,9 +811,11 @@ wxpay.client.v3.defaults.transformRequest.push((data, headers) => (console.log(d
 wxpay.client.v3.defaults.transformResponse.unshift((data, headers) => (console.log(data, headers), data))
 ```
 
-## 获取RSA公钥
+## [获取加密用RSA公钥](https://wechatpay.js.org/openapi/v2/risk/getpublickey)
 
 非标准接口地址，也可以这样调用
+
+<details><summary>示例代码</summary>
 
 ```js
 wxpay.client.v2.post('https://fraud.mch.weixin.qq.com/risk/getpublickey', {
@@ -892,6 +829,7 @@ wxpay.client.v2.post('https://fraud.mch.weixin.qq.com/risk/getpublickey', {
 .then(({data}) => console.info(data))
 .catch(({response}) => console.error(response))
 ```
+</details>
 
 ## XML形式通知应答
 
@@ -909,6 +847,8 @@ console.info(xml)
 
 ### 解密
 
+<details><summary>示例代码</summary>
+
 ```js
 const {Aes: {AesEcb}, Transformer, Hash} = require('wechatpay-axios-plugin')
 const secret = 'exposed_your_key_here_have_risks'
@@ -918,8 +858,11 @@ const res = AesEcb.decrypt(obj.req_info, Hash.md5(secret))
 obj.req_info = Transformer.toObject(res)
 console.info(obj)
 ```
+</details>
 
 ### 加密
+
+<details><summary>示例代码</summary>
 
 ```js
 const obj = Transformer.toObject(xml)
@@ -929,10 +872,13 @@ console.assert(
   `The notify hash digest should be matched the local one`
 )
 ```
+</details>
 
 ## APIv2数据签名
 
 ### JSAPI
+
+<details><summary>示例代码</summary>
 
 ```js
 const {Hash, Formatter} = require('wechatpay-axios-plugin')
@@ -948,8 +894,11 @@ params.paySign = Hash.sign(params.signType, params, v2Secret)
 
 console.info(params)
 ```
+</details>
 
 ### APP
+
+<details><summary>示例代码</summary>
 
 ```js
 const {Hash, Formatter} = require('wechatpay-axios-plugin')
@@ -966,10 +915,13 @@ params.sign = Hash.sign('MD5', params, v2Secret)
 
 console.info(params)
 ```
+</details>
 
 ## APIv3数据签名
 
 ### JSAPI
+
+<details><summary>示例代码</summary>
 
 ```js
 const {Rsa, Formatter} = require('wechatpay-axios-plugin')
@@ -988,8 +940,11 @@ params.paySign = Rsa.sign(Formatter.joinedByLineFeed(
 
 console.info(params)
 ```
+</details>
 
 ### 商家券-小程序发券v2版签名规则
+
+<details><summary>示例代码</summary>
 
 ```js
 const {Hash, Formatter} = require('wechatpay-axios-plugin')
@@ -1018,8 +973,11 @@ busiFavor.sign = Hash.sign('HMAC-SHA256', busiFavorFlat(busiFavor), v2Secret)
 
 console.info(busiFavor)
 ```
+</details>
 
 ### 商家券-H5发券v2版签名规则
+
+<details><summary>示例代码</summary>
 
 ```js
 const {Hash, Formatter} = require('wechatpay-axios-plugin')
@@ -1035,6 +993,7 @@ params.sign = Hash.sign('HMAC-SHA256', params, v2Secret)
 
 console.info(params)
 ```
+</details>
 
 ## 常见问题
 
