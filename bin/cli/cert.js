@@ -1,7 +1,7 @@
 /**
  * Downloading the WeChatPay platform certificate(s)
  *
- * @link https://wechatpay-api.gitbook.io/wechatpay-api-v3/qian-ming-zhi-nan-1/zheng-shu-he-hui-tiao-bao-wen-jie-mi
+ * @link https://wechatpay.js.org/openapi/v3/certificates
  */
 const { tmpdir } = require('os');
 const { readFileSync, writeFileSync } = require('fs');
@@ -69,7 +69,9 @@ module.exports = {
       return response;
     };
 
-    const wxpay = new Wechatpay({ baseURL, mchid, serial, privateKey, certs, });
+    const wxpay = new Wechatpay({
+      baseURL, mchid, serial, privateKey, certs,
+    });
 
     wxpay.v3.certificates.get({
       transformResponse: [injector, ...wxpay.client.v3.defaults.transformResponse],
