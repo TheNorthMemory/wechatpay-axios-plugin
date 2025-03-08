@@ -63,16 +63,16 @@ module.exports = {
       (JSON.parse(response).data || []).forEach(({
         serial_no: serialNo, encrypt_certificate: { nonce, associated_data: aad, ciphertext },
       }) => {
-        Object.assign(certs, { [serialNo]: AesGcm.decrypt(nonce, secret, ciphertext, aad) });
+        Object.assign(certs, { [serialNo]: AesGcm.decrypt(ciphertext, secret, nonce, aad) });
       });
 
       return response;
     };
 
-    (new Wechatpay({
-      baseURL, mchid, serial, privateKey, certs,
-    })).v3.certificates.get({
-      transformResponse: [injector, ...Wechatpay.client.v3.defaults.transformResponse],
+    const wxpay = new Wechatpay({ baseURL, mchid, serial, privateKey, certs, });
+
+    wxpay.v3.certificates.get({
+      transformResponse: [injector, ...wxpay.client.v3.defaults.transformResponse],
     }).then(({ data: { data = [] } }) => {
       data.forEach(({
         effective_time: notBefore, expire_time: notAfter, serial_no: serialNo,
@@ -97,7 +97,7 @@ module.exports = {
       });
     }).catch((thing) => {
       /* eslint-disable-next-line no-console */
-      console.info(thing.response || thing);
+      console.error(thing.response || thing);
     });
   },
 };

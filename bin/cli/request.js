@@ -22,8 +22,8 @@ module.exports = {
     method: {
       alias: 'm',
       describe: 'The request HTTP verb',
-      choices: ['DELETE', 'GET', 'POST', 'PUT', 'PATCH', 'delete', 'get', 'post', 'put', 'patch'],
-      default: 'POST',
+      choices: ['delete', 'get', 'post', 'put', 'patch'],
+      default: 'post',
       group: '<uri>',
     },
     headers: {

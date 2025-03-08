@@ -17,7 +17,7 @@ yargs(hideBin(process.argv))
     default: 'https://api.mch.weixin.qq.com/',
     describe: 'The baseURL',
   })
-  .epilog('for more information visit https://github.com/TheNorthMemory/wechatpay-axios-plugin')
+  .epilog('for more information visit https://wechatpay.js.org/')
   .middleware((argv) => {
     if (argv.c && argv.c.mchid) { Reflect.set(argv.config, 'mchid', `${argv.config.mchid}`); }
 
