@@ -1,5 +1,43 @@
 # 变更历史
 
+## v0.9.0 (2025-03-xx)
+
+- 调整`node`最低版本要求至`12`，不再支持`node10`；
+- 调整依赖 `@thenorthmemory/multipart` 及 `fast-xml-parser`；
+- 调整依赖 `axios` 版本到 `>= 0.28 < 1 || >= 1.7.4`；
+- 废弃并删除`Aes.encrypt`、`Aes.decrypt`方法；
+- 废弃并删除其他标记`@deprecated`的方法及属性；
+- 调整`Aes.AesGcm.encrypt`、`Aes.AesGcm.decrypt`参数顺序，遵循`里式代换原则`;
+- 调整`APIv2`上已知`请求无nonce_str`及`返回无sign`内置化判断，优化`return_code`及/或`result_code`非`SUCCESS`时无需验签；
+- 调整`APIv2`及`APIv3`接口请求返回异常时，`Promise.reject`从`AssertError`改成标准`AxiosError`，便于调试追踪问题；
+- 调整`new Wechatpay()`从单例到实例，并显式露出`async [get|post|put|patch|delete]`方法，便于多商户实例应用使用；
+- 新增`wxpay.chain()`实例方法，便于源`URI`末尾是`delete`单词的另类链构型；
+- 新增`Hash.isKeyObject`、`Hash.keyObjectFrom`、`Rsa.isKeyObject`、`Rsa.from[Pkcs8|Pkcs1|Spki]`静态方法；
+- 新增`Rsa.from('file://', 'private'|'public')`方式加载本地RSA公/私文件；
+- 优化`AxiosConfig<'secret'|privateKey'|'certs'>`在实例后类型从`BinaryLike`调整成`KeyObject`，增强安全性；
+
+---
+
+**注意：破坏性更新**
+
+从`0.8`几乎无需过多调整代码即可升级到`0.9`，仅在以下几个点上不兼容：
+
+- OpenAPI`chainable`链末尾的大写`GET`/`POST`/`PUT`/`PATCH`/`DELETE`方法均已删除，请使用小写;
+
+- 标记为`@deprecated`的方法及属性均已删除，请参照之前的废弃提示用同等`原值`代替；
+
+- `AesGcm`加解密，参数顺序进行了调整，微信支付官方的`webhook`通知解密时需要格外注意，例如：
+ ```diff
+ - AesGcm.decrypt(nonce, secret, ciphertext, aad);
+ + AesGcm.decrypt(ciphertext, secret, nonce, aad);
+ ```
+
+- 单例模式注册转换器打印日志方式，调整为实例方式，并且`.client` Getter仅在根级实例有效，例如：
+ ```diff
+ - Wechatpay.client.v2.defaults.transformRequest.push(data => (console.log(data), data))
+ + wxpay.client.v2.defaults.transformRequest.push(data => (console.log(data), data))
+ ```
+
 ## v0.8.14 (2025-01-01)
 - 优化README增加`微信支付公钥`相关说明，备注`pfx`格式的商户API密钥在高版本`nodejs`上的额外转换说明;
 
