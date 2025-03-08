@@ -55,9 +55,9 @@ const wxpay = new Wechatpay({
   serial: merchantCertificateSerial,
   privateKey: merchantPrivateKeyFilePath,
   certs: {
-    // 「平台证书」 模式，则下面的 platformCertificate* 行必填，多证书时配多行
+    // 「平台证书」 模式，则 platformCertificate* 行必填，多证书时配多行
     [platformCertificateSerial]: platformCertificateFilePath,
-    // 「微信支付公钥」 模式，则下面的 platformPublicKey* 必填
+    // 「微信支付公钥」 模式，则 platformPublicKey* 必填
     [platformPublicKeyId]: platformPublicKeyFilePath,
   },
   // 使用APIv2(密钥32字节)时，需要至少设置 `secret`字段
@@ -66,8 +66,9 @@ const wxpay = new Wechatpay({
   merchant: {
     cert: readFileSync('/path/to/merchant/apiclient_cert.pem'),
     key: readFileSync(merchantPrivateKeyFilePath.slice(7)),
-    // 或者配置如下配置项，**注**: Node17.1开始使用OpenSSL3,老的p12文件需要额外格式转换
+    // 或者配置如下`passphrase`及`pfx`配置项
     // passphrase: 'your_merchant_id',
+    // **注**: Node17.1开始使用OpenSSL3,老的p12文件需要额外格式转换
     // pfx: readFileSync('/your/merchant/cert/apiclient_cert.p12'),
   },
 });
@@ -700,7 +701,7 @@ wxpay.v2.pay.downloadbill.post({
 企业微信的企业支付，数据请求包需要额外的签名，仅需做如下简单扩展适配，即可支持；以下签名注入函数所需的两个参数`agentId` `agentSecret`来自企业微信工作台，以下为示例值。
 
 ```js
-const agentId = 1001001
+const agentId = '0'
 const agentSecret = 'from_wework_agent_special_string'
 const {Hash} = require('wechatpay-axios-plugin')
 ```
@@ -801,6 +802,8 @@ wxpay.v2.mmpaymkttransfers.promotion.paywwsptrans2pocket.post({
 
 ## 自定义打印日志
 
+<details><summary>示例代码</summary>
+
 ```js
 // APIv2 日志
 wxpay.client.v2.defaults.transformRequest.push(data => (console.log(data), data))
@@ -809,28 +812,11 @@ wxpay.client.v2.defaults.transformResponse.unshift(data => (console.log(data), d
 wxpay.client.v3.defaults.transformRequest.push((data, headers) => (console.log(data, headers), data))
 wxpay.client.v3.defaults.transformResponse.unshift((data, headers) => (console.log(data, headers), data))
 ```
-
-## [获取加密用RSA公钥](https://wechatpay.js.org/openapi/v2/risk/getpublickey)
-
-非标准接口地址，也可以这样调用
-
-<details><summary>示例代码</summary>
-
-```js
-wxpay.client.v2.post('https://fraud.mch.weixin.qq.com/risk/getpublickey', {
-  mch_id: '1900000109',
-  nonce_str: Formatter.nonce(),
-  sign_type: 'HMAC-SHA256',
-}, {
-  // 返回值无`sign`字段，无需数据校验
-  transformResponse: [Transformer.toObject],
-})
-.then(({data}) => console.info(data))
-.catch(({response}) => console.error(response))
-```
 </details>
 
 ## XML形式通知应答
+
+<details><summary>示例代码</summary>
 
 ```js
 const {Transformer} = require('wechatpay-axios-plugin')
@@ -841,6 +827,7 @@ const xml = Transformer.toXml({
 
 console.info(xml)
 ```
+</details>
 
 ## aes-256-ecb/pcks7padding
 

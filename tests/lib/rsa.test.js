@@ -35,7 +35,7 @@ describe('lib/rsa', () => {
       });
     });
 
-    it('method `encrypt` should thrown TypeError when `publicCertificate` argument is not given', () => {
+    it('method `encrypt` should thrown TypeError when the `publicKey` argument is not given', () => {
       should(() => {
         Rsa.encrypt('');
       }).throw(TypeError, {
@@ -43,21 +43,21 @@ describe('lib/rsa', () => {
       });
     });
 
-    it('method `encrypt` should thrown Error when `publicCertificate` is invalid', () => {
+    it('method `encrypt` should thrown Error when the `publicKey` is invalid', () => {
       should(() => {
         Rsa.encrypt('', '');
       }).throw(Error, {
       });
     });
 
-    it('method `encrypt` should returns a String when read the `publicCertificate` from `pem` file', () => {
+    it('method `encrypt` should returns a String when read the `publicKey` from `pem` file', () => {
       const cert = readFileSync(join(__dirname, '../fixtures/apiserver_cert.pem'));
 
       cert.should.be.instanceof(Buffer);
       Rsa.encrypt('', cert).should.be.a.String().and.not.empty();
     });
 
-    it('method `encrypt` should returns a String when passs the `publicCertificate` a string', () => {
+    it('method `encrypt` should returns a String when passs the `publicKey` as string', () => {
       const cert = readFileSync(join(__dirname, '../fixtures/apiserver_cert.pem')).toString();
       cert.should.be.a.String().and.startWith('-----BEGIN CERTIFICATE-----').and.match(/-----END CERTIFICATE-----\r?\n?$/);
       Rsa.encrypt('', cert).should.be.a.String().and.not.empty();
@@ -78,7 +78,7 @@ describe('lib/rsa', () => {
       });
     });
 
-    it('method `decrypt` should thrown TypeError when `privateKeyCertificate` argument is not given', () => {
+    it('method `decrypt` should thrown TypeError when the `privateKey` argument is not given', () => {
       should(() => {
         Rsa.decrypt('');
       }).throw(TypeError, {
@@ -86,7 +86,7 @@ describe('lib/rsa', () => {
       });
     });
 
-    it('method `decrypt` should thrown Error when `privateKeyCertificate` is invalid', () => {
+    it('method `decrypt` should thrown Error when the `privateKey` is invalid', () => {
       should(() => {
         Rsa.decrypt('', '');
       }).throw(Error, {
@@ -94,7 +94,7 @@ describe('lib/rsa', () => {
       });
     });
 
-    it('method `decrypt` should thrown Error when the `privateKeyCertificate` is valid but the `ciphertext` is empty string', () => {
+    it('method `decrypt` should thrown Error when the `privateKey` is valid but the `ciphertext` is empty string', () => {
       const privateKey = readFileSync(join(__dirname, '../fixtures/apiclient_key.pem'));
 
       privateKey.should.be.instanceof(Buffer);
@@ -105,7 +105,7 @@ describe('lib/rsa', () => {
       });
     });
 
-    it('method `decrypt` should returns an empty string when `ciphertext` is the input via `Rsa.encrypt` and `privateKeyCertificate` is a `pem` buffer', () => {
+    it('method `decrypt` should returns an empty string when the `ciphertext` is the input via `Rsa.encrypt` and the `privateKey` is a `pem` buffer', () => {
       const cert = readFileSync(join(__dirname, '../fixtures/apiserver_cert.pem'));
 
       cert.should.be.instanceof(Buffer);
@@ -120,7 +120,7 @@ describe('lib/rsa', () => {
       Rsa.decrypt(ciphertext, privateKey).should.be.a.String().and.empty();
     });
 
-    it('method `decrypt` should returns an empty string when `ciphertext` is the input via `Rsa.encrypt` and `privateKeyCertificate` is a pkcs8 `pem` String', () => {
+    it('method `decrypt` should returns an empty string when the `ciphertext` is the input via `Rsa.encrypt` and the `privateKey` is a pkcs8 `pem` String', () => {
       const cert = readFileSync(join(__dirname, '../fixtures/apiserver_cert.pem'));
 
       cert.should.be.instanceof(Buffer);
@@ -150,7 +150,7 @@ describe('lib/rsa', () => {
       });
     });
 
-    it('method `sign` should thrown TypeError when `privateKeyCertificate` argument is not given', () => {
+    it('method `sign` should thrown TypeError when the `privateKey` argument is not given', () => {
       should(() => {
         Rsa.sign('');
       }).throw(Error, {
@@ -159,7 +159,7 @@ describe('lib/rsa', () => {
       });
     });
 
-    it('method `sign` should thrown Error when `privateKeyCertificate` is invalid', () => {
+    it('method `sign` should thrown Error when the `privateKey` is invalid', () => {
       should(() => {
         Rsa.sign('', '');
       }).throw(Error, {
@@ -168,14 +168,14 @@ describe('lib/rsa', () => {
       });
     });
 
-    it('method `sign` should returns a `String` when the `ciphertext` is empty string and the `privateKeyCertificate` is `pem` buffer', () => {
+    it('method `sign` should returns a `String` when the `ciphertext` is empty string and the `privateKey` is `pem` buffer', () => {
       const privateKey = readFileSync(join(__dirname, '../fixtures/apiclient_key.pem'));
 
       privateKey.should.be.instanceof(Buffer);
       Rsa.sign('', privateKey).should.be.String().and.not.be.empty();
     });
 
-    it('method `sign` should returns a `string` when the `ciphertext` is empty string and `privateKeyCertificate` is a pkcs8 `pem` string', () => {
+    it('method `sign` should returns a `string` when the `ciphertext` is empty string and the `privateKey` is a pkcs8 `pem` string', () => {
       const privateKey = readFileSync(join(__dirname, '../fixtures/apiclient_key.pem')).toString();
 
       privateKey.should.be.a.String().and.startWith('-----BEGIN PRIVATE KEY-----').and.match(/-----END PRIVATE KEY-----\r?\n?$/);
@@ -197,14 +197,14 @@ describe('lib/rsa', () => {
       });
     });
 
-    it('method `verify` should thrown TypeError when the `publicCertificate` argument is not given', () => {
+    it('method `verify` should thrown TypeError when the `publicKey` argument is not given', () => {
       should(() => {
         Rsa.verify('');
       }).throw(TypeError, {
       });
     });
 
-    it('method `verify` should thrown TypeError when the `publicCertificate` argument is is invalid', () => {
+    it('method `verify` should thrown TypeError when the `publicKey` argument is is invalid', () => {
       should(() => {
         Rsa.verify('', '');
       }).throw(TypeError, {
@@ -229,7 +229,7 @@ describe('lib/rsa', () => {
       Rsa.verify('', '', cert).should.be.Boolean().and.be.False();
     });
 
-    it('method `verify` should returns Boolean `True` when given then `publicCertificate` `pem` Buffer and the `signature` as the result of the `Rsa.sign` an empty string', () => {
+    it('method `verify` should returns Boolean `True` when given the `publicKey` as a `pem` Buffer and the `signature` as the result of the `Rsa.sign` an empty string', () => {
       const privateKey = readFileSync(join(__dirname, '../fixtures/apiclient_key.pem'));
 
       privateKey.should.be.instanceof(Buffer);
@@ -244,7 +244,7 @@ describe('lib/rsa', () => {
       Rsa.verify('', signature, cert).should.be.Boolean().and.be.True();
     });
 
-    it('method `verify` should returns Boolean `True` when given then `publicCertificate` `pem` String and the `signature` as the result of the `Rsa.sign` an empty string', () => {
+    it('method `verify` should returns Boolean `True` when given the `publicKey` as a `pem` String and the `signature` as the result of the `Rsa.sign` an empty string', () => {
       const privateKey = readFileSync(join(__dirname, '../fixtures/apiclient_key.pem'));
 
       privateKey.should.be.instanceof(Buffer);

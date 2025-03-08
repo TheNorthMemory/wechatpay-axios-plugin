@@ -20,20 +20,20 @@ export namespace WechatpayAxiosPlugin {
              * padding, 32 bytes/256 bits `secret key` may optional need the last block.
              * @memberof Aes.pkcs7#
              *
-             * @param {string|Buffer} thing - The input
+             * @param {BinaryLike} thing - The input
              * @param {boolean} [optional = true] - The flag for the last padding, default `true`
              *
              * @return {Buffer} - The PADDING tailed payload
              */
-            padding: (thing: string | Buffer, optional?: boolean | undefined) => Buffer;
+            padding(thing: BinaryLike, optional?: boolean): Buffer;
             /**
              * unpadding
              * @memberof Aes.pkcs7#
              *
-             * @param  {string|Buffer} thing - The input
+             * @param  {BinaryLike} thing - The input
              * @return {Buffer} - The PADDING wiped payload
              */
-            unpadding: (thing: string | Buffer) => Buffer;
+            unpadding(thing: BinaryLike): Buffer;
         };
     }
 
@@ -49,8 +49,8 @@ export namespace WechatpayAxiosPlugin {
              * Encrypts plaintext.
              *
              * @param {string} plaintext - Text to encode.
-             * @param {CipherKey} key - The secret key, 32 bytes.
-             * @param {BinaryLike} iv - The initialization vector, 16 bytes.
+             * @param {CipherKey} key - The secret key.
+             * @param {BinaryLike} iv - The initialization vector.
              * @param {string} aad - The additional authenticated data, maybe empty string.
              *
              * @returns {string} Base64-encoded ciphertext.
@@ -60,8 +60,8 @@ export namespace WechatpayAxiosPlugin {
              * Decrypts ciphertext.
              *
              * @param {string} ciphertext - Base64-encoded ciphertext.
-             * @param {CipherKey} key - The secret key, 32 bytes.
-             * @param {BinaryLike} iv - The initialization vector, 16 bytes.
+             * @param {CipherKey} key - The secret key.
+             * @param {BinaryLike} iv - The initialization vector.
              * @param {string} aad - The additional authenticated data, maybe empty string.
              *
              * @returns {string} Utf-8 plaintext.
@@ -77,25 +77,20 @@ export namespace WechatpayAxiosPlugin {
              * Encrypts plaintext.
              *
              * @param {string} plaintext - Text to encode.
-             * @param {CipherKey} key - The secret key, 32 bytes.
-             * @param {BinaryLike} iv - The initialization vector.
+             * @param {CipherKey} key - The secret key.
              *
              * @returns {string} Base64-encoded ciphertext.
              */
-            static encrypt(plaintext: string, key: CipherKey, iv?: BinaryLike): string;
+            static encrypt(plaintext: string, key: CipherKey): string;
             /**
              * Decrypts ciphertext.
-             * Notes here: While turns the `setAutoPadding(true)`, it works well.
-             *             Beause the `pkcs5padding` is a subset of `pkcs7padding`.
-             *             Let's `unpadding` self.
              *
              * @param {string} ciphertext - Base64-encoded ciphertext.
-             * @param {CipherKey} key - The secret key, 32 bytes.
-             * @param {BinaryLike} iv - The initialization vector.
+             * @param {CipherKey} key - The secret key.
              *
              * @returns {string} Utf-8 plaintext.
              */
-            static decrypt(ciphertext: string, key: CipherKey, iv?: BinaryLike): string;
+            static decrypt(ciphertext: string, key: CipherKey): string;
         }
 
         /**
@@ -106,21 +101,18 @@ export namespace WechatpayAxiosPlugin {
              * Encrypts plaintext.
              *
              * @param {string} plaintext - Text to encode.
-             * @param {CipherKey} key - The secret key, 16 bytes.
-             * @param {BinaryLike} [iv] - The initialization vector, 16 bytes.
+             * @param {CipherKey} key - The secret key.
+             * @param {BinaryLike} [iv] - The initialization vector.
              *
              * @returns {string} Base64-encoded ciphertext.
              */
             static encrypt(plaintext: string, key: CipherKey, iv: BinaryLike): string;
             /**
              * Decrypts ciphertext.
-             * Notes here: While turns the `setAutoPadding(true)`, it works well.
-             *             Beause the `pkcs5padding` is a subset of `pkcs7padding`.
-             *             Let's `unpadding` self.
              *
              * @param {string} ciphertext - Base64-encoded ciphertext.
-             * @param {CipherKey} key - The secret key, 16 bytes.
-             * @param {BinaryLike} [iv] - The initialization vector, 16 bytes.
+             * @param {CipherKey} key - The secret key.
+             * @param {BinaryLike} [iv] - The initialization vector.
              *
              * @returns {string} Utf-8 plaintext.
              */
@@ -144,21 +136,21 @@ export namespace WechatpayAxiosPlugin {
          * Calculate the input string with an optional secret `key` in MD5,
          * when the `key` is Falsey, this method works as normal `MD5`.
          *
-         * @param {BinaryLike} thing - The input string.
-         * @param {CipherKey | undefined} [key] - The secret key string.
+         * @param {BinaryLike} thing - The input.
+         * @param {CipherKey} [key] - The secret key.
          * @param {boolean|number|string} [agency = false] - `true` or better of the `AgentId` value.
          *
          * @return {string} - data signature
          */
-        static md5(thing: BinaryLike, key?: CipherKey | undefined, agency?: boolean | number | string | undefined): string;
+        static md5(thing: BinaryLike, key?: CipherKey, agency?: boolean | number | string): string;
         /**
          * Calculate the input string with a secret `key` as of `algorithm` string which is one of the 'sha256', 'sha512' etc.
-         * @param {BinaryLike} thing - The input string.
-         * @param {CipherKey} key - The secret key string.
-         * @param {string} [algorithm = sha256] - The algorithm string, default is `sha256`.
+         * @param {BinaryLike} thing - The input.
+         * @param {CipherKey} key - The secret key.
+         * @param {string} [algorithm = 'sha256'] - The algorithm string, default is `sha256`.
          * @return {string} - data signature
          */
-        static hmac(thing: BinaryLike, key: CipherKey, algorithm?: string | undefined): string;
+        static hmac(thing: BinaryLike, key: CipherKey, algorithm?: string): string;
         /**
          * Calculate the input in SHA1.
          * @param {BinaryLike} thing - The input.
@@ -174,18 +166,18 @@ export namespace WechatpayAxiosPlugin {
         /**
          * Wrapping the builtins `crypto.timingSafeEqual` function.
          * @param {BinaryLike} known - The string of known length to compare against.
-         * @param {BinaryLike?} [user] - The user-supplied string.
+         * @param {BinaryLike} [user] - The user-supplied string.
          * @return {boolean} - Returns true when the two are equal, false otherwise.
          */
-        static equals(known: BinaryLike, user?: BinaryLike | undefined | null): boolean;
+        static equals(known: BinaryLike, user?: BinaryLike): boolean;
         /**
          * Utils of the data signature calculation.
-         * @param {string} type - The sign type, one of the MD5 or HMAC-SHA256.
+         * @param {'MD5'|'HMAC-SHA256'} type - The sign type, one of the MD5 or HMAC-SHA256.
          * @param {object} data - The input data.
          * @param {CipherKey} key - The secret key string.
          * @return {string} - The data signature.
          */
-        static sign(type: string, data: object, key: CipherKey): string;
+        static sign(type: 'MD5' | 'HMAC-SHA256', data: object, key: CipherKey): string;
     }
 
     /**
@@ -346,7 +338,7 @@ export namespace WechatpayAxiosPlugin {
     }
 
     type platformCertificates = {
-        [key: string]: string | Buffer
+        [key: string]: KeyLike
     }
 
     /**
@@ -462,42 +454,42 @@ export namespace WechatpayAxiosPlugin {
          * Node Limits >= 12.9.0 (`oaepHash` was added)
          *
          * @param {string} plaintext - Cleartext to encode.
-         * @param {string|Buffer} publicKey - A PEM encoded public certificate.
-         * @param {number} padding - Supporting `RSA_PKCS1_OAEP_PADDING` or `RSA_PKCS1_PADDING`, default is `RSA_PKCS1_OAEP_PADDING`.
+         * @param {KeyLike} publicKey - A public key.
+         * @param {number} [padding] - Supporting `RSA_PKCS1_OAEP_PADDING` or `RSA_PKCS1_PADDING`, default is `RSA_PKCS1_OAEP_PADDING`.
          *
          * @returns {string} Base64-encoded ciphertext.
          */
-        static encrypt(plaintext: string, publicKey: string | Buffer, padding?: Number): string;
+        static encrypt(plaintext: string, publicKey: KeyLike, padding?: number): string;
         /**
          * Decrypts base64 encoded string with `privateKey`.
          * Node Limits >= 12.9.0 (`oaepHash` was added)
          *
          * @param {string} ciphertext - Was previously encrypted string using the corresponding public certificate.
-         * @param {string|Buffer} privateKey - A PEM encoded private key certificate.
-         * @param {number} padding - Supporting `RSA_PKCS1_OAEP_PADDING` or `RSA_PKCS1_PADDING`, default is `RSA_PKCS1_OAEP_PADDING`.
+         * @param {KeyLike} privateKey - A public key.
+         * @param {number} [padding] - Supporting `RSA_PKCS1_OAEP_PADDING` or `RSA_PKCS1_PADDING`, default is `RSA_PKCS1_OAEP_PADDING`.
          *
          * @returns {string} Utf-8 plaintext.
          */
-        static decrypt(ciphertext: string, privateKey: string | Buffer, padding?: Number): string;
+        static decrypt(ciphertext: string, privateKey: KeyLike, padding?: number): string;
         /**
          * Creates and returns a `Sign` string that uses `sha256WithRSAEncryption`.
          *
          * @param {string} message - Content will be `crypto.Sign`.
-         * @param {string|Buffer} privateKey - A PEM encoded private key certificate.
+         * @param {KeyLike} privateKey - A PEM encoded private key certificate.
          *
          * @returns {string} Base64-encoded signature.
          */
-        static sign(message: string, privateKey: string | Buffer): string;
+        static sign(message: string, privateKey: KeyLike): string;
         /**
          * Verifying the `message` with given `signature` string that uses `sha256WithRSAEncryption`.
          *
          * @param {string} message - Content will be `crypto.Verify`.
          * @param {string} signature - The base64-encoded ciphertext.
-         * @param {string|Buffer} publicKey - A PEM encoded public certificate.
+         * @param {KeyLike} publicKey - A PEM encoded public certificate.
          *
          * @returns {boolean} True is passed, false is failed.
          */
-        static verify(message: string, signature: string, publicKey: string | Buffer): boolean;
+        static verify(message: string, signature: string, publicKey: KeyLike): boolean;
     }
 
     /**
@@ -528,12 +520,12 @@ export namespace WechatpayAxiosPlugin {
         *
         * @param {object} config - configuration
         * @param {string} [config.mchid] - The merchant ID
-        * @param {string} [config.secret] - The merchant secret key string
+        * @param {KeyLike} [config.secret] - The merchant secret key string
         * @param {object} [config.merchant] - The merchant private key and certificate AKA {@link AgentOptions} for APIv2, while there were required in secure communication.
-        * @param {string|Buffer} [config.merchant.cert] - The merchant cert chains in PEM format
-        * @param {string|Buffer} [config.merchant.key] - The merchant private keys in PEM format
-        * @param {string|Buffer} [config.merchant.pfx] - The merchant PFX or PKCS12 encoded private key and certificate chain.
-        * @param {string|Buffer} [config.merchant.passphrase] - The merchant shared passphrase used for a single private key and/or a PFX.
+        * @param {BinaryLike} [config.merchant.cert] - The merchant cert chains in PEM format
+        * @param {BinaryLike} [config.merchant.key] - The merchant private keys in PEM format
+        * @param {BinaryLike} [config.merchant.pfx] - The merchant PFX or PKCS12 encoded private key and certificate chain.
+        * @param {BinaryLike} [config.merchant.passphrase] - The merchant shared passphrase used for a single private key and/or a PFX.
         *
         * @returns {AxiosInstance} - The axios instance
         */
@@ -560,7 +552,7 @@ export namespace WechatpayAxiosPlugin {
         * @param {object} config - configuration
         * @param {string} config.mchid - The merchant ID
         * @param {string} config.serial - The serial number of the merchant certificate
-        * @param {string|Buffer} config.privateKey - The merchant private key certificate
+        * @param {KeyLike} config.privateKey - The merchant private key certificate
         * @param {object} config.certs - The wechatpay provider size configuration, `{serial: publicKey}` pair
         *
         * @returns {AxiosInstance} - The axios instance
@@ -576,14 +568,14 @@ export namespace WechatpayAxiosPlugin {
         * @param {object} config - configuration
         * @param {string} config.mchid - The merchant ID
         * @param {string} config.serial - The serial number of the merchant certificate
-        * @param {string|Buffer} config.privateKey - The merchant private key certificate
+        * @param {KeyLike} config.privateKey - The merchant private key certificate
         * @param {object} config.certs - The wechatpay provider size configuration, `{serial: publicKey}` pair
-        * @param {string} [config.secret] - The merchant secret key string
+        * @param {KeyLike} [config.secret] - The merchant secret key for APIv2
         * @param {object} [config.merchant] - The merchant private key and certificate AKA {@link AgentOptions} for APIv2, while there were required in secure communication.
-        * @param {string|Buffer} [config.merchant.cert] - The merchant cert chains in PEM format
-        * @param {string|Buffer} [config.merchant.key] - The merchant private keys in PEM format
-        * @param {string|Buffer} [config.merchant.pfx] - The merchant PFX or PKCS12 encoded private key and certificate chain.
-        * @param {string|Buffer} [config.merchant.passphrase] - The merchant shared passphrase used for a single private key and/or a PFX.
+        * @param {BinaryLike} [config.merchant.cert] - The merchant cert chains in PEM format
+        * @param {BinaryLike} [config.merchant.key] - The merchant private keys in PEM format
+        * @param {BinaryLike} [config.merchant.pfx] - The merchant PFX or PKCS12 encoded private key and certificate chain.
+        * @param {BinaryLike} [config.merchant.passphrase] - The merchant shared passphrase used for a single private key and/or a PFX.
         * @constructor
         */
         constructor(config: apiConfig & AxiosRequestConfig);
@@ -674,12 +666,11 @@ export namespace WechatpayAxiosPlugin {
 
         /**
          * @property {function} get - The alias of the HTTP `GET` request
-         * @param {any} data - The request post body
          * @param {any} config - The request configuration
          * @returns {PromiseLike} - The `AxiosPromise`
          */
         // @ts-ignore: FIXEME, needs contributing
-        get<T = any, R = AxiosResponse<T>>(config?: ExtraRequestConfig & AxiosRequestConfig): Promise<R>;
+        async get<T = any, R = AxiosResponse<T>>(config?: ExtraRequestConfig & AxiosRequestConfig): Promise<R>;
 
         /**
          * @property {function} post - The alias of the HTTP `POST` request
@@ -688,7 +679,7 @@ export namespace WechatpayAxiosPlugin {
          * @returns {PromiseLike} - The `AxiosPromise`
          */
         // @ts-ignore: FIXEME, needs contributing
-        post<T = any, R = AxiosResponse<T>>(data?: T, config?: ExtraRequestConfig & AxiosRequestConfig): Promise<R>;
+        async post<T = any, R = AxiosResponse<T>>(data?: T, config?: ExtraRequestConfig & AxiosRequestConfig): Promise<R>;
 
         /**
          * @property {function} put - The alias of the HTTP 'PUT' request
@@ -697,7 +688,7 @@ export namespace WechatpayAxiosPlugin {
          * @returns {PromiseLike} - The `AxiosPromise`
          */
         // @ts-ignore: FIXEME, needs contributing
-        put<T = any, R = AxiosResponse<T>>(data?: T, config?: ExtraRequestConfig & AxiosRequestConfig): Promise<R>;
+        async put<T = any, R = AxiosResponse<T>>(data?: T, config?: ExtraRequestConfig & AxiosRequestConfig): Promise<R>;
 
         /**
          * @property {function} patch - The alias of the HTTP 'PATCH' request
@@ -706,7 +697,7 @@ export namespace WechatpayAxiosPlugin {
          * @returns {PromiseLike} - The `AxiosPromise`
          */
         // @ts-ignore: FIXEME, needs contributing
-        patch<T = any, R = AxiosResponse<T>>(data?: T, config?: ExtraRequestConfig & AxiosRequestConfig): Promise<R>;
+        async patch<T = any, R = AxiosResponse<T>>(data?: T, config?: ExtraRequestConfig & AxiosRequestConfig): Promise<R>;
 
         /**
          * @property {function} delete - The alias of the HTTP 'DELETE' request
@@ -714,7 +705,7 @@ export namespace WechatpayAxiosPlugin {
          * @returns {PromiseLike} - The `AxiosPromise`
          */
         // @ts-ignore: FIXEME, needs contributing
-        delete<T = any, R = AxiosResponse<T>>(config?: ExtraRequestConfig & AxiosRequestConfig): Promise<R>;
+        async delete<T = any, R = AxiosResponse<T>>(config?: ExtraRequestConfig & AxiosRequestConfig): Promise<R>;
 
         // @ts-ignore: FIXEME, needs contributing
         chain(thing: string): this
