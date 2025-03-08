@@ -522,9 +522,9 @@ export namespace WechatpayAxiosPlugin {
         * @param {string} [config.mchid] - The merchant ID
         * @param {KeyLike} [config.secret] - The merchant secret key string
         * @param {object} [config.merchant] - The merchant private key and certificate AKA {@link AgentOptions} for APIv2, while there were required in secure communication.
-        * @param {BinaryLike} [config.merchant.cert] - The merchant cert chains in PEM format
-        * @param {BinaryLike} [config.merchant.key] - The merchant private keys in PEM format
-        * @param {BinaryLike} [config.merchant.pfx] - The merchant PFX or PKCS12 encoded private key and certificate chain.
+        * @param {BinaryLike} [config.merchant.cert] - The merchant certificate in PEM format
+        * @param {BinaryLike} [config.merchant.key] - The merchant private key in PEM format
+        * @param {BinaryLike} [config.merchant.pfx] - The merchant private key and certificate chain in PFX or PKCS12 format.
         * @param {BinaryLike} [config.merchant.passphrase] - The merchant shared passphrase used for a single private key and/or a PFX.
         *
         * @returns {AxiosInstance} - The axios instance
@@ -552,7 +552,7 @@ export namespace WechatpayAxiosPlugin {
         * @param {object} config - configuration
         * @param {string} config.mchid - The merchant ID
         * @param {string} config.serial - The serial number of the merchant certificate
-        * @param {KeyLike} config.privateKey - The merchant private key certificate
+        * @param {KeyLike} config.privateKey - The merchant private key
         * @param {object} config.certs - The wechatpay provider size configuration, `{serial: publicKey}` pair
         *
         * @returns {AxiosInstance} - The axios instance
@@ -568,13 +568,13 @@ export namespace WechatpayAxiosPlugin {
         * @param {object} config - configuration
         * @param {string} config.mchid - The merchant ID
         * @param {string} config.serial - The serial number of the merchant certificate
-        * @param {KeyLike} config.privateKey - The merchant private key certificate
+        * @param {KeyLike} config.privateKey - The merchant private key
         * @param {object} config.certs - The wechatpay provider size configuration, `{serial: publicKey}` pair
         * @param {KeyLike} [config.secret] - The merchant secret key for APIv2
         * @param {object} [config.merchant] - The merchant private key and certificate AKA {@link AgentOptions} for APIv2, while there were required in secure communication.
-        * @param {BinaryLike} [config.merchant.cert] - The merchant cert chains in PEM format
-        * @param {BinaryLike} [config.merchant.key] - The merchant private keys in PEM format
-        * @param {BinaryLike} [config.merchant.pfx] - The merchant PFX or PKCS12 encoded private key and certificate chain.
+        * @param {BinaryLike} [config.merchant.cert] - The merchant certificate in PEM format
+        * @param {BinaryLike} [config.merchant.key] - The merchant private key in PEM format
+        * @param {BinaryLike} [config.merchant.pfx] - The merchant private key and certificate chain in PFX or PKCS12 format.
         * @param {BinaryLike} [config.merchant.passphrase] - The merchant shared passphrase used for a single private key and/or a PFX.
         * @constructor
         */
