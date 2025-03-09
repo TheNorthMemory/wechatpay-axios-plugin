@@ -1,6 +1,6 @@
 # 变更历史
 
-## v0.9.0 (2025-03-xx)
+## v0.9.0 (2025-03-09)
 
 - 调整`node`最低版本要求至`12`，不再支持`node10`；
 - 调整依赖 `@thenorthmemory/multipart` 及 `fast-xml-parser`；
@@ -17,6 +17,19 @@
 - 优化`AxiosConfig<'secret'|privateKey'|'certs'>`在实例后类型从`BinaryLike`调整成`KeyObject`，增强安全性；
 
 ---
+
+**针对APIv2的主要优化内容**
+
+`APIv2`的返回值验签与传输的载荷(`XML`)无关，本次优化:
+- 内置了「忽略无签(`sign`)可验」逻辑
+- 「加强判断状态码(`return_code`)/业务结果(`result_code`)非`SUCCESS`情形」，当数据校核异常时，载荷数据均以解析后的对象形式抛送`AxiosError`
+
+**针对APIv3的主要优化内容**
+
+`APIv3`的返回值验签与传输的载荷(`JSON`/`binary`)强相关，本次优化：
+- 内置「按所请求的`URL`，自动忽略下载行为(`binary`)的验签」逻辑，交由应用端自行验签，微信支付官方强烈建议商户对下载的数据进行验签
+- 对于 `HTTP状态码 20X` 区间时的客户端异常`AxiosError.response.data`标注为原始传输的载荷，有可能是`JSON`字符串，也可能是`空`字符串
+- 对于 `HTTP状态码 4XX/5XX`时的异常`AxiosError.response.data`类型，其有可能是`JSON`解析后的对象，也可能是`html`字符串
 
 **注意：破坏性更新**
 
