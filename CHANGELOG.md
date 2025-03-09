@@ -4,7 +4,7 @@
 
 - 调整`node`最低版本要求至`12`，不再支持`node10`；
 - 调整依赖 `@thenorthmemory/multipart` 及 `fast-xml-parser`；
-- 调整依赖 `axios` 版本到 `>= 0.28 < 1 || >= 1.7.4`；
+- 调整依赖 `axios` 版本到 `^1.8.2`；
 - 废弃并删除`Aes.encrypt`、`Aes.decrypt`方法；
 - 废弃并删除其他标记`@deprecated`的方法及属性；
 - 调整`Aes.AesGcm.encrypt`、`Aes.AesGcm.decrypt`参数顺序，遵循`里式代换原则`;
