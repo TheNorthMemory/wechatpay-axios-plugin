@@ -67,15 +67,6 @@ describe('lib/decorator', () => {
     });
   });
 
-  describe('Decorator::withDefaults', () => {
-    it('Function `withDefaults` should be static', () => {
-      should(Decorator.withDefaults).be.Function();
-      should((new Decorator({
-        mchid: '', serial: '', privateKey: '', certs: { any: undefined },
-      })).withDefaults).be.Undefined();
-    });
-  });
-
   describe('Decorator::xmlBased', () => {
     it('Function `xmlBased` should be static', () => {
       should(Decorator.xmlBased).be.Function();

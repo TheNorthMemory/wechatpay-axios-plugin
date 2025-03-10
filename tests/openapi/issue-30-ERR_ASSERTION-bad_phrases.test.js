@@ -79,7 +79,7 @@ describe('Issue #30 v3/pay/transcations/h5', () => {
       });
     });
 
-    it('post onto the `v3/pay/transactions/h5` with an `AxiosError` response, which is caused by the bad `Wechatpay-Timestamp` value', async () => {
+    it('post onto the `v3/pay/transactions/h5` with an `AxiosError` response, which is caused by the bad `wechatpay-timestamp` value', async () => {
       scope.post('/v3/pay/transactions/h5').reply(200, mocks, {
         'Wechatpay-Nonce': 'mock',
         'Wechatpay-Serial': 'mock',
@@ -88,7 +88,7 @@ describe('Issue #30 v3/pay/transcations/h5', () => {
       });
       await instance.v3.pay.transactions.h5.post({}).catch((resp) => {
         resp.should.instanceOf(AxiosError);
-        resp.message.should.be.String().and.match(/Wechatpay-Timestamp/);
+        resp.message.should.be.String().and.match(/wechatpay-timestamp/);
         resp.response.should.be.Object().and.have.keys('headers', 'data');
         resp.response.headers.should.be.Object();
         resp.response.headers.should.not.have.keys('Wechatpay-Nonce', 'Wechatpay-Serial', 'Wechatpay-Signature', 'Wechatpay-Timestamp');
@@ -96,7 +96,7 @@ describe('Issue #30 v3/pay/transcations/h5', () => {
       });
     });
 
-    it('post onto the `v3/pay/transactions/h5` with an `AxiosError` response, which is caused by the bad `Wechatpay-Serial` value', async () => {
+    it('post onto the `v3/pay/transactions/h5` with an `AxiosError` response, which is caused by the bad `wechatpay-serial` value', async () => {
       scope.post('/v3/pay/transactions/h5').reply(200, mocks, {
         'Wechatpay-Nonce': 'mock',
         'Wechatpay-Serial': 'fake',
@@ -105,7 +105,7 @@ describe('Issue #30 v3/pay/transcations/h5', () => {
       });
       await instance.v3.pay.transactions.h5.post({}).catch((resp) => {
         resp.should.instanceOf(AxiosError);
-        resp.message.should.be.String().and.match(/Wechatpay-Serial/);
+        resp.message.should.be.String().and.match(/wechatpay-serial/);
         resp.response.should.be.Object().and.have.keys('headers', 'data');
         resp.response.headers.should.be.Object();
         resp.response.headers.should.not.have.keys('Wechatpay-Nonce', 'Wechatpay-Serial', 'Wechatpay-Signature', 'Wechatpay-Timestamp');
