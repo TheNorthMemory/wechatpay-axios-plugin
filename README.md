@@ -161,170 +161,28 @@ wxpay.v3.pay.transactions.outTradeNo.$out_trade_no$.close
 ```
 </details>
 
-### [合单JSAPI下单](https://wechatpay.js.org/openapi/v3/combine-transactions/jsapi)
+### [发起退款](https://wechatpay.js.org/openapi/v3/refund/domestic/refunds)
 
 <details><summary>示例代码</summary>
 
 ```js
-wxpay.v3.combineTransactions.jsapi
-  .post({/*文档参数放这里就好*/})
-  .then(res => console.info(res.data))
-  .catch(({response: {
-    status,
-    statusText,
-    data
-  } }) => console.error(status, statusText, data))
-```
-</details>
 
-### [H5下单](https://wechatpay.js.org/openapi/v3/pay/transactions/h5)
-
-<details><summary>示例代码</summary>
-
-```js
-wxpay.v3.pay.transactions.h5
-  .post({/*文档参数放这里就好*/})
-  .then(({data: {h5_url}}) => console.info(h5_url))
-  .catch(console.error)
-```
-</details>
-
-### [交易账单下载及解析](https://wechatpay.js.org/openapi/v3/bill/tradebill)
-
-<details><summary>示例代码</summary>
-
-```js
-const assert = require('assert')
-const {Hash: {sha1}} = require('wechatpay-axios-plugin')
-
-wxpay.v3.bill.tradebill.get({
-  params: {
-    bill_date: '2021-02-12',
-    bill_type: 'ALL',
-  }
-}).then(({data: {download_url, hash_value}}) => wxpay.v3.billdownload.file.get({
-  params: (new URL(download_url)).searchParams,
-  responseType: 'arraybuffer', // To prevent the axios:utils.stripBOM feature
-  transformResponse: [function csvDigestValidator(data) {
-    assert(sha1(data) === hash_value, 'verify the SHA1 digest failed.')
-    return data
-  }, function csvCastor(data) { return Formatter.castCsvBill(data) }]
-})).then(res => {
-  console.info(res.data.summary)
-}).catch(error => {
-  console.error(error)
-})
-```
-</details>
-
-### [创建商家券](https://wechatpay.js.org/openapi/v3/marketing/busifavor/stocks)
-
-<details><summary>示例代码</summary>
-
-```js
-wxpay.v3.marketing.busifavor.stocks
-  .post({/*商家券创建条件*/})
-  .then(({data}) => console.info(data))
-  .catch(({response: {
-    status,
-    statusText,
-    data
-  } }) => console.error(status, statusText, data))
-```
-</details>
-
-### [查询用户单张券详情](https://wechatpay.js.org/openapi/v3/marketing/busifavor/users/{openid}/coupons/{coupon_code}/appids/{appid})
-
-<details><summary>示例代码</summary>
-
-```js
 ;(async () => {
   try {
-    const {data: detail} = await wxpay.v3.marketing.busifavor
-      .users.$openid$.coupons['{coupon_code}'].appids['wx233544546545989']
-      .get({openid: '2323dfsdf342342', coupon_code: '123446565767'})
-    console.info(detail)
-  } catch({response: {status, statusText, data}}) {
-    console.error(status, statusText, data)
-  }
-})()
-```
-</details>
-
-### [服务商模式Native下单](https://wechatpay.js.org/openapi/v3/pay/partner/transactions/native)
-
-<details><summary>示例代码</summary>
-
-```js
-;(async () => {
-  try {
-    const res = await wxpay.v3.pay.partner.transactions.native({
-      sp_appid,
-      sp_mchid,
-      sub_mchid,
-      description,
-      out_trade_no,
-      time_expire: new Date( (+new Date) + 33*60*1000 ), //after 33 minutes
-      attach,
-      notify_url,
+    const res = await wxpay.v3.refund.domestic.refunds.post({
+      transaction_id: '1217752501201407033233368018',
+      out_refund_no: '1217752501201407033233368018',
+      reason: '商品已售完',
+      notify_url: 'https://weixin.qq.com',
+      funds_account: 'AVAILABLE',
       amount: {
-        total: 1,
-      }
-    })
-    console.info(res.data.code_url)
-  } catch (error) {
-    console.error(error)
-  }
-})()
-```
-</details>
-
-### [支付即服务](https://wechatpay.js.org/openapi/v3/smartguide/guides/{guide_id}/assign)
-
-<details><summary>示例代码</summary>
-
-```js
-;(async () => {
-  try {
-    const {status, statusText} = await wxpay.v3.smartguide.guides.$guide_id$.assign
-      .post({sub_mchid, out_trade_no}, {guide_id})
-    console.info(status, statusText)
-  } catch({response: {status, statusText, data}}) {
-    console.error(status, statusText, data)
-  }
-})()
-```
-</details>
-
-### [商家转账到零钱](https://wechatpay.js.org/openapi/v3/transfer/batches)
-
-<details><summary>示例代码</summary>
-
-```js
-const {Rsa} = require('wechatpay-axios-plugin');
-
-;(async () => {
-  try {
-    const res = await wxpay.v3.transfer.batches.post({
-      appid: 'wxf636efh567hg4356',
-      out_batch_no: 'plfk2020042013',
-      batch_name: '2019年1月深圳分部报销单',
-      batch_remark: '2019年1月深圳分部报销单',
-      total_amount: 4000000,
-      total_num: 200,
-      transfer_detail_list: [
-        {
-          out_detail_no: 'x23zy545Bd5436',
-          transfer_amount: 200000,
-          transfer_remark: '2020年4月报销',
-          openid: 'o-MYE42l80oelYMDE34nYD456Xoy',
-          user_name: Rsa.encrypt('张三', platformPublicKeyInstance),
-        }
-      ],
-      transfer_scene_id: '1001',
-    }, {
-      headers: {
-        'Wechatpay-Serial' => platformCertificateSerial,
+        refund: 888,
+        from: [{
+          account: 'AVAILABLE',
+          amount: 444,
+        }],
+        total: 888,
+        currency: 'CNY'
       },
     });
   } catch({response: {status, statusText, data}}) {
@@ -334,274 +192,9 @@ const {Rsa} = require('wechatpay-axios-plugin');
 ```
 </details>
 
-### [商业投诉查询](https://wechatpay.js.org/openapi/v3/merchant-service/complaints-v2)
-
-<details><summary>示例代码</summary>
-
-```js
-;(async () => {
-  try {
-    const res = await wxpay.v3.merchantService.complaintsV2.get({
-      params: {
-        limit      : 5,
-        offset     : 0,
-        begin_date : '2020-03-07',
-        end_date   : '2020-03-14',
-      }
-    })
-    console.info(res.data)
-  } catch (error) {
-    console.error(error)
-  }
-})()
-```
-</details>
-
-### [图片上传](https://wechatpay.js.org/openapi/v3/marketing/favor/media/image-upload)
-
-<details><summary>示例代码</summary>
-
-```js
-const { Multipart } = require('wechatpay-axios-plugin')
-const {createReadStream} = require('fs')
-
-const imageMeta = {
-  filename: 'hellowechatpay.png',
-  sha256: '1a47b1eb40f501457eaeafb1b1417edaddfbe7a4a8f9decec2d330d1b4477fbe',
-}
-
-const imageData = new Multipart()
-imageData.append('meta', JSON.stringify(imageMeta), 'meta.json')
-imageData.append('file', createReadStream('./hellowechatpay.png'), 'hellowechatpay.png')
-
-;(async () => {
-  try {
-    const res = await wxpay.v3.marketing.favor.media.imageUpload.post(imageData, {
-      meta: imageMeta,
-      headers: imageData.getHeaders()
-    })
-    console.info(res.data.media_url)
-  } catch (error) {
-    console.error(error)
-  }
-})()
-```
-</details>
-
-### [查询优惠券详情](https://wechatpay.js.org/openapi/v3/marketing/favor/stocks/{stock_id})
-
-<details><summary>示例代码</summary>
-
-```js
-;(async () => {
-  try {
-    const res = await wxpay.v3.marketing.favor.stocks.$stock_id$.get({
-      params: {
-        stock_creator_mchid,
-      },
-      stock_id,
-    })
-    console.info(res.data)
-  } catch(error) {
-    console.error(error)
-  }
-})()
-```
-</details>
-
-### [优惠券委托营销](https://wechatpay.js.org/openapi/v3/marketing/partnerships/build)
-
-<details><summary>示例代码</summary>
-
-```js
-(async () => {
-  try {
-    const res = await wxpay.v3.marketing.partnerships.build.post({
-      partner: {
-        type,
-        appid
-      },
-      authorized_data: {
-        business_type,
-        stock_id
-      }
-    }, {
-      headers: {
-        'Idempotency-Key': 12345
-      }
-    })
-    console.info(res.data)
-  } catch (error) {
-    console.error(error)
-  }
-})()
-```
-</details>
-
-### [优惠券核销记录下载](https://wechatpay.js.org/openapi/v3/marketing/favor/stocks/{stock_id}/use-flow)
-
-<details><summary>示例代码</summary>
-
-```js
-(async () => {
-  try {
-    let res = await wxpay.v3.marketing.favor.stocks.$stock_id$.useFlow.get({stock_id})
-    res = await wxpay.v3.billdownload.file.get({
-      params: (new URL(res.data.url)).searchParams,
-      responseType: 'arraybuffer', // To prevent the axios:utils.stripBOM feature
-      transformResponse: [function csvDigestValidator(data) {
-        assert(sha1(data) === res.data.hash_value, 'verify the SHA1 digest failed.')
-        return data
-      }]
-    })
-    // 备注：此接口下载的文件格式与商户平台下载的不完全一致，Formatter.castCsvBill解析有差异
-    console.info(res.data.toString())
-  } catch (error) {
-    console.error(error)
-  }
-})()
-```
-</details>
-
-### [视频文件上传](https://wechatpay.js.org/openapi/v3/merchant/media/video_upload)
-
-<details><summary>示例代码</summary>
-
-```js
-const { Multipart } = require('wechatpay-axios-plugin')
-const {createReadStream} = require('fs')
-
-const videoMeta = {
-  filename: 'hellowechatpay.mp4',
-  sha256: '1a47b1eb40f501457eaeafb1b1417edaddfbe7a4a8f9decec2d330d1b4477fbe',
-}
-
-const videoData = new Multipart()
-videoData.append('meta', JSON.stringify(videoMeta))
-videoData.append('file', createReadStream('./hellowechatpay.mp4'), 'hellowechatpay.mp4')
-
-;(async () => {
-  try {
-    const res = await wxpay.v3.merchant.media.video_upload.post(videoData, {
-      meta: videoMeta,
-      headers: videoData.getHeaders()
-    })
-    console.info(res.data.media_id)
-  } catch (error) {
-    console.error(error)
-  }
-})()
-```
-</details>
-
-### [GZIP下载资金账单](https://wechatpay.js.org/openapi/v3/bill/fundflowbill)
-
-<details><summary>示例代码</summary>
-
-```js
-const {unzipSync} = require('zlib')
-const assert = require('assert')
-const {Hash: {sha1}} = require('wechatpay-axios-plugin')
-
-;(async () => {
-  try {
-    const {data: {download_url, hash_value}} = await wxpay.v3.bill.fundflowbill.get({
-      params: {
-        bill_date: '2020-02-12',
-        bill_type: 'BASIC',
-        tar_type: 'GZIP',
-      }
-    })
-    const {data} = await wxpay.v3.billdownload.file.get({
-      params: (new URL(download_url)).searchParams,
-      responseType: 'arraybuffer', // To prevent the axios:utils.stripBOM feature
-      transformResponse: [function csvDigestValidator(data) {
-        // note here: previous `hash_value` was about the source `csv`, not the `gzip` data
-        //            so it needs unziped first, then to compare the `SHA1` degest
-        const bill = unzipSync(data)
-        assert.ok(hash_value === sha1(bill), 'SHA1 verification failed')
-        return bill
-      }, function csvCastor(data) { return Formatter.castCsvBill(data) }]
-    })
-    console.info(data.summary)
-  } catch (error) {
-    console.error(error)
-  }
-})()
-```
-</details>
+**更多示例代码访问[这里](https://wechatpay.js.org/openapi/)**
 
 ## APIv2
-
-### [付款码(刷卡)支付](https://wechatpay.js.org/openapi/v2/pay/micropay)
-
-<details><summary>示例代码</summary>
-
-```js
-wxpay.v2.pay.micropay.post({
-  appid: 'wx8888888888888888',
-  mch_id: '1900000109',
-  nonce_str: Formatter.nonce(),
-  sign_type: 'HMAC-SHA256',
-  body: 'image形象店-深圳腾大-QQ公仔',
-  out_trade_no: '1217752501201407033233368018',
-  total_fee: '888',
-  fee_type: 'CNY',
-  spbill_create_ip: '8.8.8.8',
-  auth_code: '120061098828009406',
-})
-.then(res => console.info(res.data))
-.catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
-```
-</details>
-
-### [H5支付](https://wechatpay.js.org/openapi/v2/pay/unifiedorder)
-
-<details><summary>示例代码</summary>
-
-```js
-wxpay.v2.pay.unifiedorder.post({
-  appid: 'wx2421b1c4370ec43b',
-  attach: '支付测试',
-  body: 'H5支付测试',
-  mch_id: '10000100',
-  nonce_str: Formatter.nonce(),
-  notify_url: 'http://wxpay.wxutil.com/pub_v2/pay/notify.v2.php',
-  openid: 'oUpF8uMuAJO_M2pxb1Q9zNjWeS6o',
-  out_trade_no: '1415659990',
-  spbill_create_ip: '14.23.150.211',
-  total_fee: '1',
-  trade_type: 'MWEB',
-  scene_info: JSON.stringify({
-    h5_info: {
-      type:"IOS",
-      app_name: "王者荣耀",
-      package_name: "com.tencent.tmgp.sgame"
-    }
-  }),
-}).then(({data: {mweb_url}}) => console.info(mweb_url)).catch(console.error);
-```
-</details>
-
-### [申请退款](https://wechatpay.js.org/openapi/v2/secapi/pay/refund)
-
-<details><summary>示例代码</summary>
-
-```js
-wxpay.v2.secapi.pay.refund.post({
-  appid: 'wx8888888888888888',
-  mch_id: '1900000109',
-  out_trade_no: '1217752501201407033233368018',
-  out_refund_no: '1217752501201407033233368018',
-  total_fee: '100',
-  refund_fee: '100',
-  refund_fee_type: 'CNY',
-  nonce_str: Formatter.nonce(),
-})
-.then(res => console.info(res.data))
-.catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
-```
-</details>
 
 ### [现金红包](https://wechatpay.js.org/openapi/v2/mmpaymkttransfers/sendredpack)
 
@@ -628,31 +221,6 @@ wxpay.v2.mmpaymkttransfers.sendredpack.post({
 ```
 </details>
 
-### [企业付款到零钱](https://wechatpay.js.org/openapi/v2/mmpaymkttransfers/promotion/transfers)
-
-<details><summary>示例代码</summary>
-
-```js
-wxpay.v2.mmpaymkttransfers.promotion.transfers.post({
-  mch_appid: 'wx8888888888888888',
-  mchid: '1900000109',// 注意这个商户号，key是`mchid`非`mch_id`
-  partner_trade_no: '10000098201411111234567890',
-  openid: 'oxTWIuGaIt6gTKsQRLau2M0yL16E',
-  check_name: 'FORCE_CHECK',
-  re_user_name: '王小王',
-  amount: '10099',
-  desc: '理赔',
-  spbill_create_ip: '192.168.0.1',
-  nonce_str: Formatter.nonce(),
-}, {
-  // 返回值无`sign`字段，无需数据校验
-  transformResponse: [Transformer.toObject],
-})
-.then(res => console.info(res.data))
-.catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
-```
-</details>
-
 ### [企业付款到银行卡-获取RSA公钥](https://wechatpay.js.org/openapi/v2/risk/getpublickey)
 
 <details><summary>示例代码</summary>
@@ -672,29 +240,7 @@ wxpay.v2.risk.getpublickey.post({
 ```
 </details>
 
-### [下载交易账单](https://wechatpay.js.org/openapi/v2/pay/downloadbill)
-
-<details><summary>示例代码</summary>
-
-```js
-wxpay.v2.pay.downloadbill.post({
-  mch_id,
-  nonce_str: fmt.nonce(),
-  appid,
-  bill_date,
-  bill_type,
-}, {
-  responseType: 'arraybuffer', // To prevent the axios:utils.stripBOM feature
-  transformResponse: [function detector(data) {
-    // 无账单时返回值为`xml`，抛到异常`catch`处理
-    assert.notDeepStrictEqual(data.slice(0, 5), Buffer.from('<xml>'), data.toString())
-    return data
-  }, function csvCastor(data) { return Formatter.castCsvBill(data) }]
-})
-.then(res => console.info(res.data.summary))
-.catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
-```
-</details>
+**更多示例代码访问[这里](https://wechatpay.js.org/openapi/)**
 
 ## 企业微信
 
