@@ -546,7 +546,7 @@ Q: 如何加载`RSA`公/私钥和`X509`证书公钥？
 
 > `v0.9`提供了统一的加载函数 `Rsa.from(thing: KeyLike, type: 'public'|'private'): KeyObject`
 >
-> - `Rsa.from(thing, type)` 支持从文件/字符串/字节流加载公/私钥和证书，特别地，支持`file://`, `private.pkcs8://`, `private.pkcs1://`, `public.kcs1://`, `public.spki://` 协议的公/私钥字符串；
+> - `Rsa.from(thing, type)` 支持从文件/字符串/字节流加载公/私钥和证书，特别地，支持`file://`, `private.pkcs8://`, `private.pkcs1://`, `public.pkcs1://`, `public.spki://` 协议的公/私钥字符串；
 > - `Rsa.fromPkcs1`是个语法糖，支持加载 `PKCS#1` 格式的公/私钥，入参是 `base64` 字符串;
 > - `Rsa.fromPkcs8`是个语法糖，支持加载 `PKCS#8` 格式的私钥，入参是 `base64` 字符串;
 > - `Rsa.fromSpki`是个语法糖，支持加载 `SPKI` 格式的公钥，入参是 `base64` 字符串;
