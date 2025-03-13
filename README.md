@@ -542,6 +542,15 @@ console.info(params)
 
 ## 常见问题
 
+Q: 如何加载`RSA`公/私钥和`X509`证书公钥？
+
+> `v0.9`提供了统一的加载函数 `Rsa.from(thing: KeyLike, type: 'public'|'private'): KeyObject`
+>
+> - `Rsa.from(thing, type)` 支持从文件/字符串/字节流加载公/私钥和证书，特别地，支持`file://`, `private.pkcs8://`, `private.pkcs1://`, `public.kcs1://`, `public.spki://` 协议的公/私钥字符串；
+> - `Rsa.fromPkcs1`是个语法糖，支持加载 `PKCS#1` 格式的公/私钥，入参是 `base64` 字符串;
+> - `Rsa.fromPkcs8`是个语法糖，支持加载 `PKCS#8` 格式的私钥，入参是 `base64` 字符串;
+> - `Rsa.fromSpki`是个语法糖，支持加载 `SPKI` 格式的公钥，入参是 `base64` 字符串;
+
 Q: APIv3消息通知，`AES-256-GCM`加密字段，应该如何解密？
 
 > 官方文档有介绍，APIv3平台证书及消息通知关键信息均使用`AesGcm`加解密，依赖`APIv3密钥`，商户侧解密可参考`bin/cli/cert.js`证书下载工具，例如：
