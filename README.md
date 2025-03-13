@@ -202,7 +202,7 @@ wxpay.v3.pay.transactions.outTradeNo.$out_trade_no$.close
 
 ```js
 wxpay.v2.mmpaymkttransfers.sendredpack.post({
-  nonce_str: Formatter.nonce(),
+  nonce_str: Formatter.nonce(), // 自v0.9起可以无需声明
   mch_billno: '10000098201411111234567890',
   mch_id: '10000098',
   wxappid: 'wx8888888888888888',
@@ -229,11 +229,11 @@ wxpay.v2.mmpaymkttransfers.sendredpack.post({
 wxpay.v2.risk.getpublickey.post({
   mch_id: '1900000109',
   sign_type: 'MD5',
-  nonce_str: Formatter.nonce(),
+  nonce_str: Formatter.nonce(), // 自v0.9起可以无需声明
 }, {
   baseURL: 'https://fraud.mch.weixin.qq.com/',
-  // 返回值无`sign`字段，无需数据校验
-  transformResponse: [Transformer.toObject],
+  // 声明请求是私有ssl协议，对应加载初始化的 merchant{key,cert} 参数
+  security: true,
 })
 .then(res => console.info(res.data))
 .catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
@@ -247,9 +247,8 @@ wxpay.v2.risk.getpublickey.post({
 企业微信的企业支付，数据请求包需要额外的签名，仅需做如下简单扩展适配，即可支持；以下签名注入函数所需的两个参数`agentId` `agentSecret`来自企业微信工作台，以下为示例值。
 
 ```js
-const agentId = '0'
+const agentId = '0' // 企业微信应用ID，0是企微内置的特殊应用
 const agentSecret = 'from_wework_agent_special_string'
-const {Hash} = require('wechatpay-axios-plugin')
 ```
 
 ### 企业红包-注入签名规则
@@ -257,7 +256,9 @@ const {Hash} = require('wechatpay-axios-plugin')
 <details><summary>示例代码</summary>
 
 ```js
-wxpay.client.v2.defaults.transformRequest.unshift(function workwxredpack(data, headers) {
+const {Hash,Formatter} = require('wechatpay-axios-plugin')
+
+wxpay.client.v2.defaults.transformRequest.unshift(function workwxredpack(data) {
   const {act_name, mch_billno, mch_id, nonce_str, re_openid, total_amount, wxappid} = data
 
   if (!(act_name && mch_billno && mch_id && nonce_str && re_openid && total_amount && wxappid)) {
@@ -291,7 +292,10 @@ wxpay.v2.mmpaymkttransfers.sendworkwxredpack.post({
   act_name: '猜灯谜抢红包活动',
   remark: '猜越多得越多，快来抢！',
   mch_id: '1900000109',
-  nonce_str: Formatter.nonce(),
+  nonce_str: Formatter.nonce(), // 需要显式声明
+}, {
+  // 声明请求是私有ssl协议，对应加载初始化的 merchant{key,cert} 参数
+  security: true,
 })
 .then(res => console.info(res.data))
 .catch(console.error)
@@ -303,7 +307,8 @@ wxpay.v2.mmpaymkttransfers.sendworkwxredpack.post({
 <details><summary>示例代码</summary>
 
 ```js
-wxpay.client.v2.defaults.transformRequest.unshift(function wwsptrans2pocket(data, headers) {
+const {Hash,Formatter} = require('wechatpay-axios-plugin')
+wxpay.client.v2.defaults.transformRequest.unshift(function wwsptrans2pocket(data) {
   const {amount, appid, desc, mch_id, nonce_str, openid, partner_trade_no, ww_msg_type} = data
 
   if (!(amount && appid && desc && mch_id && nonce_str && openid && partner_trade_no && ww_msg_type)) {
@@ -339,7 +344,10 @@ wxpay.v2.mmpaymkttransfers.promotion.paywwsptrans2pocket.post({
   ww_msg_type: 'NORMAL_MSG',
   act_name: '示例项目',
   mch_id: '1900000109',
-  nonce_str: Formatter.nonce(),
+  nonce_str: Formatter.nonce(), // 需要显式声明
+}, {
+  // 声明请求是私有ssl协议，对应加载初始化的 merchant{key,cert} 参数
+  security: true,
 })
 .then(res => console.info(res.data))
 .catch(console.error)
@@ -528,10 +536,6 @@ console.info(params)
 </details>
 
 ## 常见问题
-
-Q: `平台证书`下载工具，一直抛异常`AssertionError [ERR_ASSERTION]: The response's Headers incomplete`是为何？
-
-> 命令行下的 `-s`参数，即：`商户证书序列号`参数给错了，就会抛上述异常，这个时候服务端其实返回的是`401`状态码，下一个版本会优化一下下载工具，对异常进行捕获，当前请校对你的`商户证书序列号`并且确保正确；
 
 Q: APIv3消息通知，`AES-256-GCM`加密字段，应该如何解密？
 
