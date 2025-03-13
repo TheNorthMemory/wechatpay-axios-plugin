@@ -226,6 +226,8 @@ wxpay.v2.mmpaymkttransfers.sendredpack.post({
 <details><summary>示例代码</summary>
 
 ```js
+const {Rsa} = require('wechatpay-axios-plugin')
+
 wxpay.v2.risk.getpublickey.post({
   mch_id: '1900000109',
   sign_type: 'MD5',
@@ -235,7 +237,10 @@ wxpay.v2.risk.getpublickey.post({
   // 声明请求是私有ssl协议，对应加载初始化的 merchant{key,cert} 参数
   security: true,
 })
-.then(res => console.info(res.data))
+.then(res => {
+  const b64 = res.data.pub_key.slice(31, res.data.pub_key.indexOf('-----', 31 * 3)).replace(/\r|\n/g, '')
+  console.info(Rsa.fromPkcs1(b64, Rsa.KEY_TYPE_PUBLIC))
+})
 .catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
 ```
 </details>
