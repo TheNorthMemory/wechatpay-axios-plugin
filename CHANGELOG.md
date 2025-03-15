@@ -1,5 +1,14 @@
 # 变更历史
 
+## v0.9.1 (2025-03-15)
+
+- 隔离`APIv2`和`APIv3`配置和客户端实例；
+- 重构`Transformer.signer`以支持`GET`或`POST`请求自动签名；
+- 将初始化声明的`merchant{key，cert}`移动到`transformer.signer`内部，当需要时，通过每个请求声明的`security:true`加载；
+- 修复文件流下载的`Transformer.parse(xml)`异常问题；
+- 修复`Rsa.fromPkcs1(str，KEY_TYPE_PUBLIC)`加载公钥异常问题；
+- 优化文档，`Q/A`简单说明`Rsa.from[Pkcs8|Pkcs1|Spki]`加载公/私钥新机制;
+
 ## v0.9.0 (2025-03-09)
 
 - 调整`node`最低版本要求至`12`，不再支持`node10`；
