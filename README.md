@@ -1,6 +1,6 @@
 # 微信支付 OpenAPI SDK
 
-Promise based and chained WeChatPay OpenAPI client SDK for NodeJS
+Promise based and chained WeChatPay OpenAPI SDK for NodeJS
 
 [![GitHub actions](https://github.com/TheNorthMemory/wechatpay-axios-plugin/workflows/npm%20test/badge.svg)](https://github.com/TheNorthMemory/wechatpay-axios-plugin/actions)
 [![GitHub release](https://img.shields.io/npm/v/wechatpay-axios-plugin)](https://github.com/TheNorthMemory/wechatpay-axios-plugin/releases)
@@ -33,36 +33,41 @@ const merchantCertificateSerial = '3775B6A45ACD588826D15E583A95F5DD********';
 // 「商户API私钥」`file://`协议的本地文件绝对路径
 const merchantPrivateKeyFilePath = 'file:///path/to/merchant/apiclient_key.pem';
 
+// APIv3 的「平台证书」接入模式 {{{
 // 「平台证书」的「证书序列号」
 // 可以从「平台证书」文件解析，也可以在 商户平台 -> 账户中心 -> API安全 查询到
-const platformCertificateSerial = '7132d72a03e93cddf8c03bbd1f37eedf********';
+// const platformCertificateSerial = '7132D72A03E93CDDF8C03BBD1F37EEDF********';
 
 // 「平台证书」`file://`协议的本地文件绝对路径
 // 「平台证书」文件可由内置的CLI工具下载到
-const platformCertificateFilePath  = 'file:///path/to/wechatpay/certificate.pem';
+// const platformCertificateFilePath = 'file:///path/to/wechatpay/certificate.pem';
+// }}}
 
+// APIv3 的「微信支付公钥」接入模式 {{{
 // 「微信支付公钥」`file://`协议的本地文件绝对路径
 // 需要在 商户平台 -> 账户中心 -> API安全 下载
-const platformPublicKeyFilePath    = 'file:///path/to/wechatpay/publickey.pem';
+const platformPublicKeyFilePath = 'file:///path/to/wechatpay/publickey.pem';
 
 // 「微信支付公钥」的「微信支付公钥ID」
 // 需要在 商户平台 -> 账户中心 -> API安全 查询
 const platformPublicKeyId = 'PUB_KEY_ID_01142321349124100000000000********';
+// }}}
 
 // 构造一个 APIv2 & APIv3 客户端实例
 const wxpay = new Wechatpay({
   mchid: merchantId,
   serial: merchantCertificateSerial,
   privateKey: merchantPrivateKeyFilePath,
+  // 根据商户号所能接入的APIv3模式(微信支付公钥/平台证书)按需配置certs对象内容
   certs: {
-    // 「平台证书」 模式，则 platformCertificate* 行必填，多证书时配多行
-    [platformCertificateSerial]: platformCertificateFilePath,
-    // 「微信支付公钥」 模式，则 platformPublicKey* 必填
+    // 「平台证书」 接入模式时，则填 platformCertificate* 配置项及配置行，多平台证书时配多行
+    // [platformCertificateSerial]: platformCertificateFilePath,
+    // 「微信支付公钥」 接入模式时，则填 platformPublicKey* 配置项及配置行，当前新商户只此模式
     [platformPublicKeyId]: platformPublicKeyFilePath,
   },
-  // 使用APIv2(密钥32字节)时，需要至少设置 `secret`字段
+  // APIv2(密钥32字节)
   secret: 'your_merchant_secret_key_string',
-  // 接口不要求证书情形，例如仅收款merchant对象参数可选
+  // 部分接口要求使用「商户API证书」的场景，需要额外配置如下{cert,key}或{pfx,passphrase}参数
   merchant: {
     cert: readFileSync('/path/to/merchant/apiclient_cert.pem'),
     key: readFileSync(merchantPrivateKeyFilePath.slice(7)),
@@ -238,7 +243,7 @@ wxpay.v2.risk.getpublickey.post({
   security: true,
 })
 .then(res => {
-  const b64 = res.data.pub_key.slice(31, res.data.pub_key.indexOf('-----', 31 * 3)).replace(/\r|\n/g, '')
+  const b64 = res.data.pub_key.trim().split(/\r?\n/).slice(1, -1).join('')
   console.info(Rsa.fromPkcs1(b64, Rsa.KEY_TYPE_PUBLIC))
 })
 .catch(({response: {status, statusText, data}}) => console.error(status, statusText, data))
