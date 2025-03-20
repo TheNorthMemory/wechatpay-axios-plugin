@@ -8,7 +8,7 @@ describe('v2/papay/h5entrustweb', () => {
   let instance;
 
   const mocks = (requestUri) => {
-    requestUri.should.be.String().and.match(/^\/papay\/h5entrustweb\?mch_id=101&nonce_str=[^=]{32}&sign=[\d\w]{32}$/);
+    requestUri.should.be.String().and.match(/^\/papay\/h5entrustweb\?mch_id=101&nonce_str=[A-Za-z0-9]{32}&sign=[A-Z0-9]{32}$/);
     return [
       '<xml>',
       '<return_code>SUCCESS</return_code>',
