@@ -136,13 +136,15 @@ export namespace WechatpayAxiosPlugin {
          * Calculate the input string with an optional secret `key` in MD5,
          * when the `key` is Falsey, this method works as normal `MD5`.
          *
-         * @param {BinaryLike} thing - The input.
+         * @since v0.9.2 - The first argument is supported a `KeyObject`.
+         *
+         * @param {BinaryLike|KeyObject} thing - The input.
          * @param {CipherKey} [key] - The secret key.
          * @param {boolean|number|string} [agency = false] - `true` or better of the `AgentId` value.
          *
          * @return {string} - data signature
          */
-        static md5(thing: BinaryLike, key?: CipherKey, agency?: boolean | number | string): string;
+        static md5(thing: BinaryLike|KeyObject, key?: CipherKey, agency?: boolean | number | string): string;
         /**
          * Calculate the input string with a secret `key` as of `algorithm` string which is one of the 'sha256', 'sha512' etc.
          * @param {BinaryLike} thing - The input.
@@ -523,7 +525,7 @@ export namespace WechatpayAxiosPlugin {
         * @param {KeyLike} [config.secret] - The merchant secret key string
         * @param {object} [config.merchant] - The merchant private key and certificate AKA {@link AgentOptions} for APIv2, while there were required in secure communication.
         * @param {BinaryLike} [config.merchant.cert] - The merchant certificate in PEM format
-        * @param {BinaryLike} [config.merchant.key] - The merchant private key in PEM format
+        * @param {KeyLike} [config.merchant.key] - The merchant private key in PEM format
         * @param {BinaryLike} [config.merchant.pfx] - The merchant private key and certificate chain in PFX or PKCS12 format.
         * @param {BinaryLike} [config.merchant.passphrase] - The merchant shared passphrase used for a single private key and/or a PFX.
         *
@@ -560,7 +562,7 @@ export namespace WechatpayAxiosPlugin {
         static jsonBased(config?: {
             mchid: string;
             serial: string;
-            privateKey: string | Buffer;
+            privateKey: KeyLike;
             certs: platformCertificates;
         }): AxiosInstance;
         /**
@@ -573,7 +575,7 @@ export namespace WechatpayAxiosPlugin {
         * @param {KeyLike} [config.secret] - The merchant secret key for APIv2
         * @param {object} [config.merchant] - The merchant private key and certificate AKA {@link AgentOptions} for APIv2, while there were required in secure communication.
         * @param {BinaryLike} [config.merchant.cert] - The merchant certificate in PEM format
-        * @param {BinaryLike} [config.merchant.key] - The merchant private key in PEM format
+        * @param {KeyLike} [config.merchant.key] - The merchant private key in PEM format
         * @param {BinaryLike} [config.merchant.pfx] - The merchant private key and certificate chain in PFX or PKCS12 format.
         * @param {BinaryLike} [config.merchant.passphrase] - The merchant shared passphrase used for a single private key and/or a PFX.
         * @constructor

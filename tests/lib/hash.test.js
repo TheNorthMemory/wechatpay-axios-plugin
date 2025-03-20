@@ -20,6 +20,15 @@ describe('lib/hash', () => {
       });
     });
 
+    it('method `md5` should accept KeyObject and returns a 32 length string and equal to `4ad14ac334ab13540eb6c5479512a8e8`', () => {
+      const fakeSecret = 'exposed_your_key_here_have_risks';
+      Hash.md5(fakeSecret).should.be.String().and.have.length(32);
+      Hash.md5(fakeSecret).should.be.String().and.equal('4ad14ac334ab13540eb6c5479512a8e8');
+      const cipherSecret = Hash.keyObjectFrom(fakeSecret);
+      Hash.md5(cipherSecret).should.be.String().and.have.length(32);
+      Hash.md5(cipherSecret).should.be.String().and.equal('4ad14ac334ab13540eb6c5479512a8e8');
+    });
+
     it('method `md5` should accept empty string and returns a 32 length string and equal to `d41d8cd98f00b204e9800998ecf8427e`', () => {
       Hash.md5('').should.be.String().and.have.length(32);
       Hash.md5('').should.be.String().and.equal('d41d8cd98f00b204e9800998ecf8427e');

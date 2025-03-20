@@ -207,7 +207,7 @@ wxpay.v3.pay.transactions.outTradeNo.$out_trade_no$.close
 
 ```js
 wxpay.v2.mmpaymkttransfers.sendredpack.post({
-  nonce_str: Formatter.nonce(), // 自v0.9起可以无需声明
+  nonce_str: Formatter.nonce(), // 自v0.9.0起可以无需声明
   mch_billno: '10000098201411111234567890',
   mch_id: '10000098',
   wxappid: 'wx8888888888888888',
@@ -235,8 +235,8 @@ const {Rsa} = require('wechatpay-axios-plugin')
 
 wxpay.v2.risk.getpublickey.post({
   mch_id: '1900000109',
-  sign_type: 'MD5',
-  nonce_str: Formatter.nonce(), // 自v0.9起可以无需声明
+  sign_type: Hash.ALGO_MD5,
+  nonce_str: Formatter.nonce(), // 自v0.9.0起可以无需声明
 }, {
   baseURL: 'https://fraud.mch.weixin.qq.com/',
   // 声明请求是私有ssl协议，对应加载初始化的 merchant{key,cert} 参数
@@ -257,8 +257,9 @@ wxpay.v2.risk.getpublickey.post({
 企业微信的企业支付，数据请求包需要额外的签名，仅需做如下简单扩展适配，即可支持；以下签名注入函数所需的两个参数`agentId` `agentSecret`来自企业微信工作台，以下为示例值。
 
 ```js
+const {Hash} = require('wechatpay-axios-plugin')
 const agentId = '0' // 企业微信应用ID，0是企微内置的特殊应用
-const agentSecret = 'from_wework_agent_special_string'
+const agentSecret = Hash.keyObjectFrom('from_wework_agent_special_string') // 自v0.9.0可用
 ```
 
 ### 企业红包-注入签名规则
@@ -401,10 +402,10 @@ console.info(xml)
 
 ```js
 const {Aes: {AesEcb}, Transformer, Hash} = require('wechatpay-axios-plugin')
-const secret = 'exposed_your_key_here_have_risks'
+const v2Secret = Hash.keyObjectFrom('exposed_your_key_here_have_risks') // 自v0.9.0可用
 const xml = '<xml>' + ... '</xml>'
 const obj = Transformer.toObject(xml)
-const res = AesEcb.decrypt(obj.req_info, Hash.md5(secret))
+const res = AesEcb.decrypt(obj.req_info, Hash.md5(v2Secret/*自v0.9.2开始支持*/))
 obj.req_info = Transformer.toObject(res)
 console.info(obj)
 ```
@@ -416,7 +417,7 @@ console.info(obj)
 
 ```js
 const obj = Transformer.toObject(xml)
-const ciphertext = AesEcb.encrypt(obj.req_info, Hash.md5(secret))
+const ciphertext = AesEcb.encrypt(obj.req_info, Hash.md5(v2Secret/*自v0.9.2开始支持*/))
 console.assert(
   obj.req_info === ciphertext,
   `The notify hash digest should be matched the local one`
@@ -432,13 +433,13 @@ console.assert(
 
 ```js
 const {Hash, Formatter} = require('wechatpay-axios-plugin')
-const v2Secret = 'exposed_your_key_here_have_risks'
+const v2Secret = Hash.keyObjectFrom('exposed_your_key_here_have_risks') // 自v0.9.0可用
 const params = {
   appId: 'wx8888888888888888',
   timeStamp: `${Formatter.timestamp()}`,
   nonceStr: Formatter.nonce(),
   package: 'prepay_id=wx201410272009395522657a690389285100',
-  signType: 'HMAC-SHA256',
+  signType: Hash.ALGO_HMAC_SHA256,
 }
 params.paySign = Hash.sign(params.signType, params, v2Secret)
 
@@ -452,7 +453,7 @@ console.info(params)
 
 ```js
 const {Hash, Formatter} = require('wechatpay-axios-plugin')
-const v2Secret = 'exposed_your_key_here_have_risks'
+const v2Secret = Hash.keyObjectFrom('exposed_your_key_here_have_risks') // 自v0.9.0可用
 const params = {
   appid: 'wx8888888888888888',
   partnerid: '1900000109',
@@ -461,7 +462,7 @@ const params = {
   timestamp: `${Formatter.timestamp()}`,
   noncestr: Formatter.nonce(),
 }
-params.sign = Hash.sign('MD5', params, v2Secret)
+params.sign = Hash.sign(Hash.ALGO_MD5, params, v2Secret)
 
 console.info(params)
 ```
@@ -475,7 +476,7 @@ console.info(params)
 
 ```js
 const {Rsa, Formatter} = require('wechatpay-axios-plugin')
-const privateKey = require('fs').readFileSync('/your/merchant/priviate_key.pem')
+const merchantPrivateKeyInstance = Rsa.from('file:///your/merchant/priviate_key.pem') // 自v0.9.0可用
 
 const params = {
   appId: 'wx8888888888888888',
@@ -486,7 +487,7 @@ const params = {
 }
 params.paySign = Rsa.sign(Formatter.joinedByLineFeed(
   params.appId, params.timeStamp, params.nonceStr, params.package
-), privateKey)
+), merchantPrivateKeyInstance)
 
 console.info(params)
 ```
@@ -498,7 +499,7 @@ console.info(params)
 
 ```js
 const {Hash, Formatter} = require('wechatpay-axios-plugin')
-const v2Secret = 'exposed_your_key_here_have_risks'
+const v2Secret = Hash.keyObjectFrom('exposed_your_key_here_have_risks') // 自v0.9.0可用
 
 // flat the miniprogram data transferring structure for sign
 const busiFavorFlat = ({send_coupon_merchant, send_coupon_params = []} = {}) => {
@@ -519,7 +520,7 @@ const busiFavor = {
   send_coupon_merchant: '10016226'
 }
 
-busiFavor.sign = Hash.sign('HMAC-SHA256', busiFavorFlat(busiFavor), v2Secret)
+busiFavor.sign = Hash.sign(Hash.ALGO_HMAC_SHA256, busiFavorFlat(busiFavor), v2Secret)
 
 console.info(busiFavor)
 ```
@@ -531,7 +532,7 @@ console.info(busiFavor)
 
 ```js
 const {Hash, Formatter} = require('wechatpay-axios-plugin')
-const v2Secret = 'exposed_your_key_here_have_risks'
+const v2Secret = Hash.keyObjectFrom('exposed_your_key_here_have_risks') // 自v0.9.0可用
 const params = {
   stock_id: '12111100000001',
   out_request_no: '20191204550002',
@@ -539,7 +540,7 @@ const params = {
   open_id: 'oVvBvwEurkeUJpBzX90-6MfCHbec',
   coupon_code: '75345199',
 }
-params.sign = Hash.sign('HMAC-SHA256', params, v2Secret)
+params.sign = Hash.sign(Hash.ALGO_HMAC_SHA256, params, v2Secret)
 
 console.info(params)
 ```
@@ -547,9 +548,13 @@ console.info(params)
 
 ## 常见问题
 
+Q: 如何安全地在应用内使用`APIv2`及`APIv3`对称密钥?
+
+> `v0.9.0`提供了统一的对称密钥加载函数 `Hash.keyObjectFrom(thing: BinaryLike): KeyObject`，建议应用升级至`v0.9.2`使用此函数进行统一对称密钥管理;
+
 Q: 如何加载`RSA`公/私钥和`X509`证书公钥？
 
-> `v0.9`提供了统一的加载函数 `Rsa.from(thing: KeyLike, type: 'public'|'private'): KeyObject`
+> `v0.9.0`提供了统一的加载函数 `Rsa.from(thing: KeyLike, type: 'public'|'private'): KeyObject`
 >
 > - `Rsa.from(thing, type)` 支持从文件/字符串/字节流加载公/私钥和证书，特别地，支持`file://`, `private.pkcs8://`, `private.pkcs1://`, `public.pkcs1://`, `public.spki://` 协议的公/私钥字符串；
 > - `Rsa.fromPkcs1`是个语法糖，支持加载 `PKCS#1` 格式的公/私钥，入参是 `base64` 字符串;
