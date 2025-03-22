@@ -130,7 +130,7 @@ export namespace WechatpayAxiosPlugin {
 
         static isKeyObject(thing: any): boolean;
 
-        static keyObjectFrom(thing: Buffer): KeyObject;
+        static keyObjectFrom(thing: BinaryLike|KeyObject): KeyObject;
 
         /**
          * Calculate the input string with an optional secret `key` in MD5,
@@ -607,16 +607,16 @@ export namespace WechatpayAxiosPlugin {
     }
 
     /**
-     * A WeChatPay OpenAPI v2&v3's amazing client.
+     * Promise based and chained WeChatPay OpenAPI v2&v3's client.
      *
      * @example
-     * const {Wechatpay} = require('wechatpay-axios-plugin');
+     * const {Wechatpay,Rsa} = require('wechatpay-axios-plugin');
      * const wxpay = new Wechatpay({
      *   mchid,
      *   serial,
-     *   privateKey: '-----BEGIN PRIVATE KEY-----\n-FULL-OF-THE-FILE-CONTENT-\n-----END PRIVATE KEY-----',
+     *   privateKey: Rsa.from('file:///path/to/wechatpay/apiclient_key.pem', Rsa.KEY_TYPE_PRIVATE),
      *   certs: {
-     *     'serial_number': '-----BEGIN CERTIFICATE-----\n-FULL-OF-THE-FILE-CONTENT-\n-----END CERTIFICATE-----',
+     *     [`${pubkey_id}`]: Rsa.from('file:///path/to/wechatpay/publickey.pem', Rsa.KEY_TYPE_PUBLIC),
      *   },
      *   secret,
      *   merchant: {
@@ -641,14 +641,11 @@ export namespace WechatpayAxiosPlugin {
      *
      * (async () => {
      *   try {
-     *     const {data: detail} = await wxpay.v3.pay.transactions.id.$transaction_id$
+     *     const {data: detail} = await wxpay.v3.pay.transactions.id._transaction_id_
      *       .get({params: {mchid: '1230000109'}, transaction_id: '1217752501201407033233368018'});
      *     // or simple like this
      *     // const {data: detail} = await wxpay.v3.pay.transactions.id['{transaction_id}']
      *     //   .get({params: {mchid: '1230000109'}, transaction_id: '1217752501201407033233368018'});
-     *     // or simple like this
-     *     // const {data: detail} = await wxpay.v3.pay.transactions.id['1217752501201407033233368018']
-     *     //   .get({params: {mchid: '1230000109'}});
      *     console.info(detail);
      *   } catch({response: {status, statusText, data}}) {
      *     console.error(status, statusText, data);
