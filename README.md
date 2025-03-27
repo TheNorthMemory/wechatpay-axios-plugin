@@ -548,6 +548,20 @@ console.info(params)
 
 ## 常见问题
 
+Q: `APIv3`上请求参数敏感信息如何加密？返回参数敏感信息如何解密？
+
+> 接口区分国内版还是国际版，国内版的`RSA`填充方案是`RSA_PKCS1_OAEP_PADDING`，方法如下：
+>
+> 请求字段需要密文的，加密方法: `Rsa.encrypt('原始信息', Rsa.from(platformPublicKeyFilePath, Rsa.KEY_TYPE_PUBLIC), Rsa.RSA_PKCS1_OAEP_PADDING)`
+>
+> 返回字段需要明文的，解密方法: `Rsa.decrypt('密文base64', Rsa.from(merchantPrivateKeyFilePath, Rsa.KEY_TYPE_PRIVATE), Rsa.RSA_PKCS1_OAEP_PADDING)`
+>
+> 国际版的`RSA`填充方案是`RSA_PKCS1_PADDING`(不是所有node版本都支持)，方法如下：
+>
+> 请求字段需要密文的，加密方法: `Rsa.encrypt('原始信息', Rsa.from(platformCertificateFilePath, Rsa.KEY_TYPE_PUBLIC), Rsa.RSA_PKCS1_PADDING)`
+>
+> 返回字段需要明文的，解密方法: `Rsa.decrypt('密文base64', Rsa.from(merchantPrivateKeyFilePath, Rsa.KEY_TYPE_PRIVATE), Rsa.RSA_PKCS1_PADDING)`
+
 Q: 如何安全地在应用内使用`APIv2`及`APIv3`对称密钥?
 
 > `v0.9.0`提供了统一的对称密钥加载函数 `Hash.keyObjectFrom(thing: BinaryLike): KeyObject`，建议应用升级至`v0.9.2`使用此函数进行统一对称密钥管理;
@@ -572,16 +586,7 @@ Q: 敏感信息或者幂等操作要求额外头信息上送时，应该如何�
 
 > `DELETE`/`GET`请求的第一个参数，`POST`/`PUT`/`PATCH`请求的第二个参数，是 [AxiosRequestConfig](https://github.com/axios/axios) 对象，可以按需上送额外头参数，例如：
 > ```js
-> wxpay.v3.applyment4sub.applyment.$noop$(
->   {},
->   { noop: '', headers: { 'Wechatpay-Serial': '123456' } },
-> ).then(console.info).catch(console.error);
-> ```
-> 可参考 [#17](https://github.com/TheNorthMemory/wechatpay-axios-plugin/issues/17)
-
-Q: 接口地址为slash(`/`)结尾的，应该如何构建请求参数？
-
-> 动态参数`uri_template`或者属性`property`方式构建，可参考 [#16](https://github.com/TheNorthMemory/wechatpay-axios-plugin/issues/16)
+> 可参考 [这里](https://wechatpay.js.org/openapi/v3/applyment4sub/applyment/) 或 [这里](https://wechatpay.js.org/openapi/v3/marketing/partnerships/build) 的实现
 
 ## 单元测试
 
