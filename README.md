@@ -585,7 +585,7 @@ Q: APIv3消息通知，`AES-256-GCM`加密字段，应该如何解密？
 Q: 敏感信息或者幂等操作要求额外头信息上送时，应该如何构建请求参数？
 
 > `DELETE`/`GET`请求的第一个参数，`POST`/`PUT`/`PATCH`请求的第二个参数，是 [AxiosRequestConfig](https://github.com/axios/axios) 对象，可以按需上送额外头参数，例如：
-> ```js
+>
 > 可参考 [这里](https://wechatpay.js.org/openapi/v3/applyment4sub/applyment/) 或 [这里](https://wechatpay.js.org/openapi/v3/marketing/partnerships/build) 的实现
 
 ## 单元测试
