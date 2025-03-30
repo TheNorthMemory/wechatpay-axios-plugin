@@ -552,15 +552,12 @@ Q: `APIv3`上请求参数敏感信息如何加密？返回参数敏感信息如�
 
 > 接口区分国内版还是国际版，国内版的`RSA`填充方案是`RSA_PKCS1_OAEP_PADDING`，方法如下：
 >
-> 请求字段需要密文的，加密方法: `Rsa.encrypt('原始信息', Rsa.from(platformPublicKeyFilePath, Rsa.KEY_TYPE_PUBLIC), Rsa.RSA_PKCS1_OAEP_PADDING)`
+> 加密: `Rsa.encrypt('原始信息', Rsa.from(platformPublicKeyFilePath, Rsa.KEY_TYPE_PUBLIC), Rsa.RSA_PKCS1_OAEP_PADDING)`
 >
-> 返回字段需要明文的，解密方法: `Rsa.decrypt('密文base64', Rsa.from(merchantPrivateKeyFilePath, Rsa.KEY_TYPE_PRIVATE), Rsa.RSA_PKCS1_OAEP_PADDING)`
+> 解密: `Rsa.decrypt('密文base64', Rsa.from(merchantPrivateKeyFilePath, Rsa.KEY_TYPE_PRIVATE), Rsa.RSA_PKCS1_OAEP_PADDING)`
 >
-> 国际版的`RSA`填充方案是`RSA_PKCS1_PADDING`(不是所有node版本都支持)，方法如下：
->
-> 请求字段需要密文的，加密方法: `Rsa.encrypt('原始信息', Rsa.from(platformCertificateFilePath, Rsa.KEY_TYPE_PUBLIC), Rsa.RSA_PKCS1_PADDING)`
->
-> 返回字段需要明文的，解密方法: `Rsa.decrypt('密文base64', Rsa.from(merchantPrivateKeyFilePath, Rsa.KEY_TYPE_PRIVATE), Rsa.RSA_PKCS1_PADDING)`
+> 国际版`RSA`填充方案是`RSA_PKCS1_PADDING`，本类库放弃支持此种`加/解密`填充方案，同时`node18.19.0`也是最后一版默认支持`加密`的版本(延展阅读见[CVE-2023-46809](https://nodejs.org/en/blog/vulnerability/february-2024-security-releases)及[这里](https://github.com/wechatpay-apiv3/wechatpay-php/issues/133))，如需使用，请自行寻替代方案。
+
 
 Q: 如何安全地在应用内使用`APIv2`及`APIv3`对称密钥?
 

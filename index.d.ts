@@ -434,6 +434,7 @@ export namespace WechatpayAxiosPlugin {
         static RSA_PKCS1_OAEP_PADDING: 4;
         /**
          * Alias of the `RSA_PKCS1_PADDING` mode
+         * @deprecated see [CVE-2023-46809](https://nodejs.org/en/blog/vulnerability/february-2024-security-releases)
          */
         static RSA_PKCS1_PADDING: 1;
 
@@ -453,22 +454,20 @@ export namespace WechatpayAxiosPlugin {
 
         /**
          * Encrypts text with sha256WithRSAEncryption/RSA_PKCS1_OAEP_PADDING.
-         * Node Limits >= 12.9.0 (`oaepHash` was added)
          *
          * @param {string} plaintext - Cleartext to encode.
          * @param {KeyLike} publicKey - A public key.
-         * @param {number} [padding] - Supporting `RSA_PKCS1_OAEP_PADDING` or `RSA_PKCS1_PADDING`, default is `RSA_PKCS1_OAEP_PADDING`.
+         * @param {number} [padding] - Supporting `RSA_PKCS1_OAEP_PADDING`, default is `RSA_PKCS1_OAEP_PADDING`.
          *
          * @returns {string} Base64-encoded ciphertext.
          */
         static encrypt(plaintext: string, publicKey: KeyLike, padding?: number): string;
         /**
          * Decrypts base64 encoded string with `privateKey`.
-         * Node Limits >= 12.9.0 (`oaepHash` was added)
          *
          * @param {string} ciphertext - Was previously encrypted string using the corresponding public certificate.
          * @param {KeyLike} privateKey - A public key.
-         * @param {number} [padding] - Supporting `RSA_PKCS1_OAEP_PADDING` or `RSA_PKCS1_PADDING`, default is `RSA_PKCS1_OAEP_PADDING`.
+         * @param {number} [padding] - Supporting `RSA_PKCS1_OAEP_PADDING`, default is `RSA_PKCS1_OAEP_PADDING`.
          *
          * @returns {string} Utf-8 plaintext.
          */
