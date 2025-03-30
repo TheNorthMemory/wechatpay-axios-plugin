@@ -1,5 +1,10 @@
 # 变更历史
 
+## v0.9.3 (2025-03-30)
+
+- 优化`Rsa.encrypt` 及 `Rsa.decrypt` 第三参数放弃支持 `RSA_PKCS1_PADDING` 填充方案;
+- 标记`Rsa.RSA_PKCS1_PADDING`封装常量为废弃，下一主要版本将剔除；
+
 ## v0.9.2 (2025-03-22)
 
 - 支持 `Hash.keyObjectFrom` 及 `Hash.md5` 第一个参数是`KeyObject`对象的用法;
