@@ -1,5 +1,18 @@
 # 变更历史
 
+## v0.9.4 (2025-05-08)
+
+- 优化`文件上传API`功能，支持`Axios`的`Automatic serialization to FormData`用法，伪代码示例如下:
+ ```js
+ wxpay.v3.merchant.media.upload.post({
+  meta: JSON.stringify({ filename, sha256 }),
+  file: fs.createReadStream(localfilepath),
+}, {
+  meta: { filename, sha256 },
+  headers: { 'Content-Type': 'multipart/form-data' },
+});
+```
+
 ## v0.9.3 (2025-03-30)
 
 - 优化`Rsa.encrypt` 及 `Rsa.decrypt` 第三参数放弃支持 `RSA_PKCS1_PADDING` 填充方案;
