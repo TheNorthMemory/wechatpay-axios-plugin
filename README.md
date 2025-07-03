@@ -548,6 +548,10 @@ console.info(params)
 
 ## 常见问题
 
+Q: 在`Next.js V14` 集成解决方案中，如何解决`TypeError: Cannot set property of class Wechatpay {`异常提示？
+
+> 参考[这里](https://nextjs.org/docs/14/app/api-reference/next-config-js/serverComponentsExternalPackages)，在`next.config.js`中加入声明`serverComponentsExternalPackages: ['wechatpay-axios-plugin']`
+
 Q: `APIv3`上请求参数敏感信息如何加密？返回参数敏感信息如何解密？
 
 > 接口区分国内版还是国际版，国内版的`RSA`填充方案是`RSA_PKCS1_OAEP_PADDING`，方法如下：
