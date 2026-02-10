@@ -19,7 +19,7 @@ jobs:
           git config --global core.autocrlf false
           git config --global core.symlinks true
         if: runner.os == 'Windows'
-      - uses: actions/checkout@6
+      - uses: actions/checkout@v6
         with:
           show-progress: false
       - name: v${{ matrix.node-version }} on ${{ matrix.os }}
