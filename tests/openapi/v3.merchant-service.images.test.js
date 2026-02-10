@@ -6,8 +6,8 @@ const {
   Wechatpay, Rsa, Formatter, Hash,
 } = require('../..');
 
-const privateKey = Rsa.from(`file://${join(__dirname, '../fixtures/apiclient_key.pem')}`, Rsa.KEY_TYPE_PRIVATE);
-const mockPubkey = Rsa.from(`file://${join(__dirname, '../fixtures/apiserver_cert.pem')}`, Rsa.KEY_TYPE_PUBLIC);
+const privateKey = Rsa.from(fs.readFileSync(join(__dirname, '../fixtures/apiclient_key.pem')), Rsa.KEY_TYPE_PRIVATE);
+const mockPubkey = Rsa.from(fs.readFileSync(join(__dirname, '../fixtures/apiserver_cert.pem')), Rsa.KEY_TYPE_PUBLIC);
 
 describe('v3/merchant-service/images/[upload|{media_id}]', () => {
   let scope;
